@@ -9,7 +9,6 @@
 
 import { useMemo, memo, useCallback } from "react";
 import type { PipelineWorld, Tank, Station } from "@/lib/domain";
-import type { ActiveFlow } from "@/lib/simulation/types";
 import { useSimulationStore, selectTankLevel, useActiveFlows } from "@/store/simulationStore";
 import { useSelectionStore, EntityType } from "@/store/selectionStore";
 import { buildStationLayout, buildEdges, flowRateToAnimDur } from "@/lib/diagrams/layout";
@@ -319,12 +318,18 @@ export function FlowDiagram({ world }: FlowDiagramProps) {
         </span>
       </div>
 
-      {/* SVG diagram */}
+      {/* SVG diagram — constrained to max-w-[1080px] + mx-auto so at wide viewports
+          the panel never letterboxes with dead side space; aspect-ratio governs height.
+          At 2000px the SVG container is 1080px wide (centered) and ~320px tall — no dead space. */}
       <svg
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         preserveAspectRatio="xMidYMid meet"
-        className="w-full"
-        style={{ height: `${VIEW_H * 0.55}px`, display: "block" }}
+        className="mx-auto block w-full"
+        style={{
+          display: "block",
+          aspectRatio: `${VIEW_W} / ${VIEW_H}`,
+          maxWidth: `${VIEW_W}px`,
+        }}
         aria-hidden="true"
       >
         {/* Pipe track baseline */}
@@ -372,9 +377,12 @@ export function FlowDiagram({ world }: FlowDiagramProps) {
         {world.stations.map((station) => {
           const x = stationXMap[station.id] ?? 0;
           const tanks = tanksByStation[station.id] ?? [];
+          // activeNodeIds contains station IDs (fromNodeId/toNodeId from flows).
+          // A tank is "active" when its parent station is involved in an active flow.
+          const stationIsActive = activeNodeIds.has(station.id);
           return tanks.map((tank, idx) => {
             const tankY = TANK_Y_START + idx * TANK_Y_STEP;
-            const isActive = activeNodeIds.has(tank.id);
+            const isActive = stationIsActive;
             return (
               <TankNode
                 key={tank.id}

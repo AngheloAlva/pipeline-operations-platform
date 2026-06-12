@@ -9,14 +9,7 @@
 
 import { useSelectionStore } from "@/store/selectionStore";
 import type { PipelineWorld, Tank, Station } from "@/lib/domain";
-import {
-  TELEMETRY_BLUE,
-  INK_TERTIARY,
-  STATUS_OK,
-  STATUS_WARNING,
-  ALARM_RED,
-  AMBER_SAFETY,
-} from "@/lib/charts/palette";
+import { TELEMETRY_BLUE, STATUS_WARNING, AMBER_SAFETY } from "@/lib/charts/palette";
 
 // ============================================================================
 // TYPES
@@ -261,6 +254,17 @@ export function ContextPanel({ world }: ContextPanelProps) {
 
         {selectedStation && !selectedTank && (
           <StationDetail station={selectedStation} world={world} />
+        )}
+
+        {selectedEntityId && !selectedTank && !selectedStation && (
+          <div className="flex h-full items-center justify-center py-8">
+            <p
+              className="text-center text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+              style={monoStyle}
+            >
+              Sin detalle disponible para este nodo
+            </p>
+          </div>
         )}
       </div>
     </aside>

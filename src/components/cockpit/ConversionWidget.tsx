@@ -5,6 +5,11 @@
  * SR-011: V@15C and V@60F from lib/volumetrics/conversions.ts.
  * Resets when selectedNodeId changes. Local state only (no store persistence).
  * UI copy: Spanish.
+ *
+ * NOTE: DOMAIN_RULES.md §1.3 defines a single fixed thermal expansion coefficient
+ * α = 0.0007 /°C for the project — no API-dependent alpha formula or table exists.
+ * Therefore, °API gravity has no effect on VCF and the input is not present.
+ * Label reflects the simplification honestly.
  */
 
 import { useState, useEffect } from "react";
@@ -43,7 +48,6 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
   // Local form state — SR-011 req 5 (no store persistence)
   const [volumeM3, setVolumeM3] = useState("");
   const [tempC, setTempC] = useState("");
-  const [apiGravity, setApiGravity] = useState("");
   const [result, setResult] = useState<ConversionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,7 +55,6 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
   useEffect(() => {
     setVolumeM3("");
     setTempC("");
-    setApiGravity("");
     setResult(null);
     setError(null);
   }, [selectedNodeId]);
@@ -62,9 +65,8 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
 
     const v = parseFloat(volumeM3);
     const t = parseFloat(tempC);
-    const api = parseFloat(apiGravity);
 
-    if (isNaN(v) || isNaN(t) || isNaN(api)) {
+    if (isNaN(v) || isNaN(t)) {
       setError("Ingrese valores numéricos válidos en todos los campos.");
       return;
     }
@@ -90,7 +92,6 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
   function handleReset() {
     setVolumeM3("");
     setTempC("");
-    setApiGravity("");
     setResult(null);
     setError(null);
   }
@@ -110,6 +111,9 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
         <h2 className={labelClass} style={monoStyle}>
           Conversión Volumétrica
         </h2>
+        <p className="mt-0.5 text-[10px] text-ink-muted" style={monoStyle}>
+          Corrección lineal — α fijo 0.0007/°C
+        </p>
         {selectedNodeId ? (
           <p className="mt-0.5 text-[10px] text-ink-muted" style={monoStyle}>
             Nodo: {selectedNodeId}
@@ -157,24 +161,6 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
             style={monoStyle}
             placeholder="15.0"
             aria-label="Temperatura en grados Celsius"
-          />
-        </div>
-
-        {/* Gravedad API */}
-        <div className="flex flex-col gap-1">
-          <label htmlFor="conv-api" className={labelClass} style={monoStyle}>
-            Gravedad API (°API)
-          </label>
-          <input
-            id="conv-api"
-            type="number"
-            step="any"
-            value={apiGravity}
-            onChange={(e) => setApiGravity(e.target.value)}
-            className={inputClass}
-            style={monoStyle}
-            placeholder="37.0"
-            aria-label="Gravedad API"
           />
         </div>
 

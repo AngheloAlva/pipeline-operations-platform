@@ -26,6 +26,7 @@ import {
   STATUS_WARNING,
   INK_TERTIARY,
   STATUS_OK,
+  CHART_FONT_MONO,
 } from "@/lib/charts/palette";
 
 // ============================================================================
@@ -126,6 +127,8 @@ export function BalancePanel({ movements, tankIds }: BalancePanelProps) {
     [movements, tankIds],
   );
 
+  const isEmpty = hourlyData.length === 0;
+
   return (
     <section
       className="flex flex-col gap-3 border border-border-mid bg-surface-raised p-4"
@@ -149,52 +152,63 @@ export function BalancePanel({ movements, tankIds }: BalancePanelProps) {
 
       {/* Chart — SR-009 req 1 */}
       <div className="h-48 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={hourlyData}
-            barCategoryGap="30%"
-            barGap={2}
-            margin={{ top: 4, right: 8, left: 8, bottom: 4 }}
-          >
-            <CartesianGrid strokeDasharray="2 4" stroke={COLORS.grid} vertical={false} />
-            <XAxis
-              dataKey="hour"
-              tickFormatter={formatHour}
-              tick={{ fill: COLORS.axis, fontSize: 10, fontFamily: "var(--font-mono), monospace" }}
-              axisLine={{ stroke: COLORS.grid }}
-              tickLine={false}
-              label={{
-                value: "Hora",
-                position: "insideBottom",
-                offset: -2,
-                fill: COLORS.axis,
-                fontSize: 10,
-              }}
-            />
-            <YAxis
-              tick={{ fill: COLORS.axis, fontSize: 10, fontFamily: "var(--font-mono), monospace" }}
-              axisLine={false}
-              tickLine={false}
-              width={60}
-              tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
-            />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(200,208,220,0.04)" }} />
-            <Legend
-              wrapperStyle={{
-                fontSize: 10,
-                fontFamily: "var(--font-mono), monospace",
-                color: COLORS.legendText,
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-                paddingTop: 4,
-              }}
-            />
-            {/* SR-009 req 1: grouped bars for entradas / salidas / Δstock */}
-            <Bar dataKey="entradas" name="Entradas" fill={COLORS.entradas} radius={0} />
-            <Bar dataKey="salidas" name="Salidas" fill={COLORS.salidas} radius={0} />
-            <Bar dataKey="deltaStock" name="Δ Stock" fill={COLORS.delta} radius={0} />
-          </BarChart>
-        </ResponsiveContainer>
+        {isEmpty ? (
+          <div className="flex h-full items-center justify-center">
+            <p
+              className="text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+              style={{ fontFamily: "'Geist Mono', monospace" }}
+            >
+              Sin datos de balance horario
+            </p>
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={hourlyData}
+              barCategoryGap="30%"
+              barGap={2}
+              margin={{ top: 4, right: 8, left: 8, bottom: 4 }}
+            >
+              <CartesianGrid strokeDasharray="2 4" stroke={COLORS.grid} vertical={false} />
+              <XAxis
+                dataKey="hour"
+                tickFormatter={formatHour}
+                tick={{ fill: COLORS.axis, fontSize: 10, fontFamily: CHART_FONT_MONO }}
+                axisLine={{ stroke: COLORS.grid }}
+                tickLine={false}
+                label={{
+                  value: "Hora",
+                  position: "insideBottom",
+                  offset: -2,
+                  fill: COLORS.axis,
+                  fontSize: 10,
+                }}
+              />
+              <YAxis
+                tick={{ fill: COLORS.axis, fontSize: 10, fontFamily: CHART_FONT_MONO }}
+                axisLine={false}
+                tickLine={false}
+                width={60}
+                tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(200,208,220,0.04)" }} />
+              <Legend
+                wrapperStyle={{
+                  fontSize: 10,
+                  fontFamily: "var(--font-mono), monospace",
+                  color: COLORS.legendText,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  paddingTop: 4,
+                }}
+              />
+              {/* SR-009 req 1: grouped bars for entradas / salidas / Δstock */}
+              <Bar dataKey="entradas" name="Entradas" fill={COLORS.entradas} radius={0} />
+              <Bar dataKey="salidas" name="Salidas" fill={COLORS.salidas} radius={0} />
+              <Bar dataKey="deltaStock" name="Δ Stock" fill={COLORS.delta} radius={0} />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </section>
   );

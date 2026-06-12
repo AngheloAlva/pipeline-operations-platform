@@ -21,7 +21,13 @@ import {
 import { buildWaterfallData } from "@/lib/charts/waterfall";
 import type { WaterfallEntry, WaterfallInput } from "@/lib/charts/waterfall";
 import type { ComplianceBand } from "@/lib/volumetrics/compliance";
-import { STATUS_OK, ALARM_RED, STATUS_WARNING, INK_TERTIARY } from "@/lib/charts/palette";
+import {
+  STATUS_OK,
+  ALARM_RED,
+  STATUS_WARNING,
+  INK_TERTIARY,
+  CHART_FONT_MONO,
+} from "@/lib/charts/palette";
 
 // ============================================================================
 // CHART COLORS
@@ -175,7 +181,7 @@ export function WaterfallChart({ inputs }: WaterfallChartProps) {
                 tick={{
                   fill: COLORS.axis,
                   fontSize: 10,
-                  fontFamily: "var(--font-mono), monospace",
+                  fontFamily: CHART_FONT_MONO,
                 }}
                 axisLine={{ stroke: COLORS.grid }}
                 tickLine={false}
@@ -184,7 +190,7 @@ export function WaterfallChart({ inputs }: WaterfallChartProps) {
                 tick={{
                   fill: COLORS.axis,
                   fontSize: 10,
-                  fontFamily: "var(--font-mono), monospace",
+                  fontFamily: CHART_FONT_MONO,
                 }}
                 axisLine={false}
                 tickLine={false}

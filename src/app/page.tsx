@@ -81,7 +81,7 @@ export default function OverviewPage() {
     (o) => o.status === "IN_PROGRESS" || o.status === "PLANNED",
   ).length;
   const openOrderStatus: AlertLevel =
-    openOrders > 5 ? "WARNING" : openOrders > 0 ? "WARNING" : "OK";
+    openOrders > 5 ? "CRITICAL" : openOrders > 0 ? "WARNING" : "OK";
 
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-6 sm:px-6">

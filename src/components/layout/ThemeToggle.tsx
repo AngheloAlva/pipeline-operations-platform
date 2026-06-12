@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
 
@@ -20,14 +20,15 @@ function applyTheme(theme: Theme): void {
 }
 
 export function ThemeToggle() {
-  // Read the DOM class set by the inline script before hydration so the icon
-  // is correct on first render — no post-mount flip needed.
-  // During SSR document is undefined, so we fall back to "light".
-  const [theme, setTheme] = useState<Theme>(() =>
-    typeof document !== "undefined" && document.documentElement.classList.contains("dark")
-      ? "dark"
-      : "light",
-  );
+  // SSR: document is undefined → start with "light" to match server render.
+  // Client: useEffect syncs state from the actual DOM class (set by the inline
+  // script) so the icon is correct after hydration without a mismatch warning.
+  const [theme, setTheme] = useState<Theme>("light");
+
+  useEffect(() => {
+    const initial: Theme = document.documentElement.classList.contains("dark") ? "dark" : "light";
+    setTheme(initial);
+  }, []);
 
   function toggle() {
     const next: Theme = theme === "light" ? "dark" : "light";
@@ -41,6 +42,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
+      suppressHydrationWarning
       aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
       className="inline-flex items-center justify-center w-8 h-8 rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors"
     >

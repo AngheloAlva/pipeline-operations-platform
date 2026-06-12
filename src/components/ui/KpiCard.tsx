@@ -67,10 +67,10 @@ export function KpiCard({ label, value, secondary, status, className }: KpiCardP
       className={cn(
         // Hairline frame — no radius softness, no shadow
         "flex flex-col gap-2.5 border border-border-mid bg-surface-raised p-5",
-        // Thin left accent bar for visual grounding
-        "border-l border-l-border-strong",
         className,
       )}
+      // Left accent bar: inline style wins over Tailwind cascade order
+      style={{ borderLeftColor: "var(--border-strong)" }}
     >
       {/* Label — uppercase, wide tracking, secondary ink */}
       <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-secondary">

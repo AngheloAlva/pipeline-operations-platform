@@ -50,7 +50,7 @@
   /* --- Ink hierarchy (4 levels) --- */
   --ink-primary:   #e8ecf2;  /* level 1 — main readouts */
   --ink-secondary: #9ba6b5;  /* level 2 — labels, secondary */
-  --ink-tertiary:  #6b7585;  /* level 3 — metadata, timestamps */
+  --ink-tertiary:  #8892a2;  /* level 3 — metadata, timestamps — 5.91:1 on graphite-800 */
   --ink-muted:     #4a5260;  /* level 4 — disabled, ghost */
 
   /* --- Surface elevation (hairline steps, same graphite hue) --- */
@@ -98,11 +98,11 @@
 
   --ink-primary:   #111827;
   --ink-secondary: #374151;
-  --ink-tertiary:  #6b7280;
+  --ink-tertiary:  #5a6474;  /* 5.33:1 on graphite-900 #f0f2f5 */
   --ink-muted:     #9ca3af;
 
   /* --- Signal colors adjusted for light bg --- */
-  --phosphor:         #16a34a;  /* green-600 — readable on light */
+  --phosphor:         #15803d;  /* green-700 — 4.55:1 on white, safe for text-accent */
   --phosphor-dim:     rgba(22, 163, 74, 0.10);
   --phosphor-glow:    rgba(22, 163, 74, 0.20);
   --amber-safety:     #d97706;  /* amber-600 */

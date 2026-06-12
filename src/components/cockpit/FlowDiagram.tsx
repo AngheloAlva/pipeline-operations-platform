@@ -7,12 +7,12 @@
  * SR-014: per-tank selectTankLevel selectors — NO coarse tankLevels subscription.
  */
 
-import { useMemo, memo } from "react";
+import { useMemo, memo, useCallback } from "react";
 import type { PipelineWorld, Tank, Station } from "@/lib/domain";
 import type { ActiveFlow } from "@/lib/simulation/types";
 import { useSimulationStore, selectTankLevel, useActiveFlows } from "@/store/simulationStore";
 import { useSelectionStore, EntityType } from "@/store/selectionStore";
-import { buildStationLayout, buildEdges } from "@/lib/diagrams/layout";
+import { buildStationLayout, buildEdges, flowRateToAnimDur } from "@/lib/diagrams/layout";
 import type { NodePosition } from "@/lib/diagrams/layout";
 import { TankGauge } from "./TankGauge";
 
@@ -96,9 +96,19 @@ interface StationNodeProps {
 }
 
 function StationNode({ station, x, isSelected, onClick }: StationNodeProps) {
+  function handleKeyDown(e: React.KeyboardEvent<SVGGElement>) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onClick(station.id);
+    }
+  }
+
   return (
     <g
+      role="button"
+      tabIndex={0}
       onClick={() => onClick(station.id)}
+      onKeyDown={handleKeyDown}
       style={{ cursor: "pointer" }}
       aria-label={`Estación ${station.name}`}
     >
@@ -145,11 +155,14 @@ interface PipeEdgeProps {
   y2: number;
   isActive: boolean;
   edgeId: string;
+  /** Flow rate in m³/h — drives animateMotion speed (faster flow → shorter dur). */
+  flowRateM3h?: number;
 }
 
-function PipeEdge({ x1, y1, x2, y2, isActive, edgeId }: PipeEdgeProps) {
+function PipeEdge({ x1, y1, x2, y2, isActive, edgeId, flowRateM3h = 500 }: PipeEdgeProps) {
   const pathD = `M ${x1} ${y1} C ${(x1 + x2) / 2} ${y1}, ${(x1 + x2) / 2} ${y2}, ${x2} ${y2}`;
   const pathLen = Math.hypot(x2 - x1, y2 - y1) * 1.1; // approx bezier length
+  const animDur = flowRateToAnimDur(flowRateM3h);
 
   return (
     <g>
@@ -167,12 +180,12 @@ function PipeEdge({ x1, y1, x2, y2, isActive, edgeId }: PipeEdgeProps) {
             strokeWidth="2"
             strokeDasharray={`${pathLen * 0.15} ${pathLen * 0.85}`}
             style={{
-              animation: "flow-dash 2s linear infinite",
+              animation: `flow-dash ${animDur}s linear infinite`,
             }}
           />
-          {/* Flow dot using animateMotion */}
+          {/* Flow dot using animateMotion — dur derived from flow rate */}
           <circle r="3" fill="var(--telemetry-blue)" opacity="0.8">
-            <animateMotion dur="2s" repeatCount="indefinite" path={pathD} />
+            <animateMotion dur={`${animDur}s`} repeatCount="indefinite" path={pathD} />
           </circle>
         </>
       )}
@@ -268,13 +281,21 @@ export function FlowDiagram({ world }: FlowDiagramProps) {
     return keys;
   }, [activeFlows]);
 
-  function handleTankClick(tankId: string) {
-    selectEntity(tankId, EntityType.TANK);
-  }
+  // useCallback: selectEntity from Zustand is a stable store action reference.
+  // Without memoization, new function instances on every render defeat TankNode/StationNode memo.
+  const handleTankClick = useCallback(
+    (tankId: string) => {
+      selectEntity(tankId, EntityType.TANK);
+    },
+    [selectEntity],
+  );
 
-  function handleStationClick(stationId: string) {
-    selectEntity(stationId, EntityType.STATION);
-  }
+  const handleStationClick = useCallback(
+    (stationId: string) => {
+      selectEntity(stationId, EntityType.STATION);
+    },
+    [selectEntity],
+  );
 
   return (
     <div
@@ -368,13 +389,6 @@ export function FlowDiagram({ world }: FlowDiagramProps) {
           });
         })}
       </svg>
-
-      {/* CSS keyframes for pipe flow animation */}
-      <style>{`
-        @keyframes flow-dash {
-          to { stroke-dashoffset: -100; }
-        }
-      `}</style>
     </div>
   );
 }

@@ -1,0 +1,3607 @@
+{
+  "pipeline": {
+    "id": "PL-0001",
+    "name": "Oleoducto Principal",
+    "diameterInches": 16,
+    "totalLengthKm": 270,
+    "segments": [
+      {
+        "id": "SEG-0002",
+        "pipelineId": "PL-0001",
+        "fromKm": 0,
+        "toKm": 96.8
+      },
+      {
+        "id": "SEG-0003",
+        "pipelineId": "PL-0001",
+        "fromKm": 96.8,
+        "toKm": 186.4,
+        "label": "Alta montaña pk96.8-pk186.4"
+      },
+      {
+        "id": "SEG-0004",
+        "pipelineId": "PL-0001",
+        "fromKm": 186.4,
+        "toKm": 270
+      }
+    ]
+  },
+  "stations": [
+    {
+      "id": "STA-0005",
+      "name": "Medanito",
+      "kind": "SOURCE",
+      "km": 6.31063895765692,
+      "pipelineId": "PL-0001"
+    },
+    {
+      "id": "STA-0006",
+      "name": "Confluencia",
+      "kind": "TANK",
+      "km": 54.5,
+      "pipelineId": "PL-0001"
+    },
+    {
+      "id": "STA-0007",
+      "name": "Neuquén Terminal",
+      "kind": "PUMP_STATION",
+      "km": 147.4,
+      "pipelineId": "PL-0001"
+    },
+    {
+      "id": "STA-0008",
+      "name": "Cipolletti",
+      "kind": "PUMP_STATION",
+      "km": 210.9,
+      "pipelineId": "PL-0001"
+    },
+    {
+      "id": "STA-0009",
+      "name": "El Porton",
+      "kind": "TERMINAL",
+      "km": 270,
+      "pipelineId": "PL-0001"
+    }
+  ],
+  "tanks": [
+    {
+      "id": "TNK-0010",
+      "tag": "T-6010",
+      "stationId": "STA-0005",
+      "capacityM3": 62347,
+      "currentLevelM3": 24964,
+      "heightMm": 8008,
+      "product": "Hidra",
+      "apiGravity": 34.453827547840774,
+      "temperatureF": 79.21257976209745
+    },
+    {
+      "id": "TNK-0011",
+      "tag": "T-6011",
+      "stationId": "STA-0005",
+      "capacityM3": 26953,
+      "currentLevelM3": 10447,
+      "heightMm": 7752,
+      "product": "Cañadón Seco",
+      "apiGravity": 36.03011961095035,
+      "temperatureF": 79.09785928670317
+    },
+    {
+      "id": "TNK-0012",
+      "tag": "T-6012",
+      "stationId": "STA-0006",
+      "capacityM3": 61527,
+      "currentLevelM3": 17143,
+      "heightMm": 5573,
+      "product": "Hidra",
+      "apiGravity": 35.05776781588793,
+      "temperatureF": 77.63268821989186
+    },
+    {
+      "id": "TNK-0013",
+      "tag": "T-6013",
+      "stationId": "STA-0006",
+      "capacityM3": 41870,
+      "currentLevelM3": 32484,
+      "heightMm": 15517,
+      "product": "OTASA-2",
+      "apiGravity": 34.83773758402094,
+      "temperatureF": 73.70982189895585
+    },
+    {
+      "id": "TNK-0014",
+      "tag": "T-6014",
+      "stationId": "STA-0006",
+      "capacityM3": 89191,
+      "currentLevelM3": 59575,
+      "heightMm": 13359,
+      "product": "Rincon",
+      "apiGravity": 39.73813845543191,
+      "temperatureF": 76.22969072312117
+    },
+    {
+      "id": "TNK-0015",
+      "tag": "T-6015",
+      "stationId": "STA-0007",
+      "capacityM3": 57142,
+      "currentLevelM3": 42720,
+      "heightMm": 14952,
+      "product": "Escalante",
+      "apiGravity": 33.04681812180206,
+      "temperatureF": 70.84197688731365
+    },
+    {
+      "id": "TNK-0016",
+      "tag": "T-6016",
+      "stationId": "STA-0007",
+      "capacityM3": 54161,
+      "currentLevelM3": 38243,
+      "heightMm": 14122,
+      "product": "Rincon",
+      "apiGravity": 35.053120625671,
+      "temperatureF": 72.67131136381067
+    },
+    {
+      "id": "TNK-0017",
+      "tag": "T-6017",
+      "stationId": "STA-0007",
+      "capacityM3": 56422,
+      "currentLevelM3": 41104,
+      "heightMm": 14570,
+      "product": "Rincon",
+      "apiGravity": 30.471492854412645,
+      "temperatureF": 71.64631301537156
+    },
+    {
+      "id": "TNK-0018",
+      "tag": "T-6018",
+      "stationId": "STA-0008",
+      "capacityM3": 64681,
+      "currentLevelM3": 29542,
+      "heightMm": 9135,
+      "product": "Escalante",
+      "apiGravity": 33.94796846201643,
+      "temperatureF": 75.45758509426378
+    },
+    {
+      "id": "TNK-0019",
+      "tag": "T-6019",
+      "stationId": "STA-0008",
+      "capacityM3": 66519,
+      "currentLevelM3": 43068,
+      "heightMm": 12949,
+      "product": "Cañadón Seco",
+      "apiGravity": 33.72504870174453,
+      "temperatureF": 79.77805740665644
+    },
+    {
+      "id": "TNK-0020",
+      "tag": "T-6020",
+      "stationId": "STA-0009",
+      "capacityM3": 91918,
+      "currentLevelM3": 82207,
+      "heightMm": 17887,
+      "product": "Escalante",
+      "apiGravity": 37.26488662650809,
+      "temperatureF": 78.21133402991109
+    },
+    {
+      "id": "TNK-0021",
+      "tag": "T-6021",
+      "stationId": "STA-0009",
+      "capacityM3": 76104,
+      "currentLevelM3": 19444,
+      "heightMm": 5110,
+      "product": "Medanito",
+      "apiGravity": 38.5979961999692,
+      "temperatureF": 82.87269828491844
+    }
+  ],
+  "shippers": [
+    {
+      "id": "SHP-0059",
+      "name": "Pampa Energía"
+    },
+    {
+      "id": "SHP-0060",
+      "name": "CGC S.A."
+    },
+    {
+      "id": "SHP-0061",
+      "name": "Vista Energy"
+    },
+    {
+      "id": "SHP-0062",
+      "name": "YPF S.A."
+    }
+  ],
+  "equipment": [
+    {
+      "id": "EQP-0022",
+      "tag": "MOV-000",
+      "name": "Medidor de Flujo Medanito",
+      "type": "VALVE",
+      "criticality": "CRITICAL",
+      "isOperational": true,
+      "stationId": "STA-0005",
+      "operatingHours": 1191
+    },
+    {
+      "id": "EQP-0023",
+      "tag": "J-001",
+      "name": "Actuador Neumático Medanito",
+      "type": "PUMP",
+      "criticality": "HIGH",
+      "isOperational": true,
+      "stationId": "STA-0005",
+      "operatingHours": 4189
+    },
+    {
+      "id": "EQP-0024",
+      "tag": "MOV-002",
+      "name": "Rectificador Catódico Medanito",
+      "type": "VALVE",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0005",
+      "operatingHours": 7293
+    },
+    {
+      "id": "EQP-0025",
+      "tag": "AG-003",
+      "name": "Sensor de Presión Medanito",
+      "type": "AGITATOR",
+      "criticality": "HIGH",
+      "isOperational": true,
+      "stationId": "STA-0005",
+      "operatingHours": 2575
+    },
+    {
+      "id": "EQP-0026",
+      "tag": "AG-004",
+      "name": "Válvula de Control Medanito",
+      "type": "AGITATOR",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0005",
+      "operatingHours": 6365
+    },
+    {
+      "id": "EQP-0027",
+      "tag": "J-005",
+      "name": "Medidor de Flujo Medanito",
+      "type": "PUMP",
+      "criticality": "LOW",
+      "isOperational": true,
+      "stationId": "STA-0005",
+      "operatingHours": 1258
+    },
+    {
+      "id": "EQP-0028",
+      "tag": "J-006",
+      "name": "Agitador de Tanque Medanito",
+      "type": "PUMP",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0005",
+      "operatingHours": 1437
+    },
+    {
+      "id": "EQP-0029",
+      "tag": "AG-007",
+      "name": "Agitador de Tanque Confluencia",
+      "type": "AGITATOR",
+      "criticality": "HIGH",
+      "isOperational": true,
+      "stationId": "STA-0006",
+      "operatingHours": 3490
+    },
+    {
+      "id": "EQP-0030",
+      "tag": "REC-008",
+      "name": "Compresor Confluencia",
+      "type": "RECTIFIER",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0006",
+      "operatingHours": 6056
+    },
+    {
+      "id": "EQP-0031",
+      "tag": "AG-009",
+      "name": "Válvula de Bloqueo Confluencia",
+      "type": "AGITATOR",
+      "criticality": "MEDIUM",
+      "isOperational": false,
+      "stationId": "STA-0006",
+      "operatingHours": 4634
+    },
+    {
+      "id": "EQP-0032",
+      "tag": "MOV-010",
+      "name": "Bomba de Reserva Confluencia",
+      "type": "VALVE",
+      "criticality": "CRITICAL",
+      "isOperational": true,
+      "stationId": "STA-0006",
+      "operatingHours": 1128
+    },
+    {
+      "id": "EQP-0033",
+      "tag": "REC-011",
+      "name": "Sensor de Presión Confluencia",
+      "type": "RECTIFIER",
+      "criticality": "CRITICAL",
+      "isOperational": true,
+      "stationId": "STA-0006",
+      "operatingHours": 6136
+    },
+    {
+      "id": "EQP-0034",
+      "tag": "AG-012",
+      "name": "Bomba de Reserva Confluencia",
+      "type": "AGITATOR",
+      "criticality": "LOW",
+      "isOperational": true,
+      "stationId": "STA-0006",
+      "operatingHours": 1882
+    },
+    {
+      "id": "EQP-0035",
+      "tag": "MOV-013",
+      "name": "Medidor de Flujo Confluencia",
+      "type": "VALVE",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0006",
+      "operatingHours": 7210
+    },
+    {
+      "id": "EQP-0036",
+      "tag": "AG-014",
+      "name": "Transformador Confluencia",
+      "type": "AGITATOR",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0006",
+      "operatingHours": 1423
+    },
+    {
+      "id": "EQP-0037",
+      "tag": "AG-015",
+      "name": "Bomba de Reserva Confluencia",
+      "type": "AGITATOR",
+      "criticality": "HIGH",
+      "isOperational": true,
+      "stationId": "STA-0006",
+      "operatingHours": 6195
+    },
+    {
+      "id": "EQP-0038",
+      "tag": "REC-016",
+      "name": "Actuador Neumático Neuquén Terminal",
+      "type": "RECTIFIER",
+      "criticality": "HIGH",
+      "isOperational": true,
+      "stationId": "STA-0007",
+      "operatingHours": 7498
+    },
+    {
+      "id": "EQP-0039",
+      "tag": "MOV-017",
+      "name": "Sensor de Presión Neuquén Terminal",
+      "type": "VALVE",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0007",
+      "operatingHours": 2519
+    },
+    {
+      "id": "EQP-0040",
+      "tag": "J-018",
+      "name": "Medidor de Flujo Neuquén Terminal",
+      "type": "PUMP",
+      "criticality": "CRITICAL",
+      "isOperational": true,
+      "stationId": "STA-0007",
+      "operatingHours": 4333
+    },
+    {
+      "id": "EQP-0041",
+      "tag": "MOV-019",
+      "name": "Actuador Neumático Neuquén Terminal",
+      "type": "VALVE",
+      "criticality": "CRITICAL",
+      "isOperational": true,
+      "stationId": "STA-0007",
+      "operatingHours": 958
+    },
+    {
+      "id": "EQP-0042",
+      "tag": "MOV-020",
+      "name": "Compresor Neuquén Terminal",
+      "type": "VALVE",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0007",
+      "operatingHours": 6319
+    },
+    {
+      "id": "EQP-0043",
+      "tag": "MOT-021",
+      "name": "Sensor de Presión Neuquén Terminal",
+      "type": "MOTOR",
+      "criticality": "LOW",
+      "isOperational": true,
+      "stationId": "STA-0007",
+      "operatingHours": 2518
+    },
+    {
+      "id": "EQP-0044",
+      "tag": "REC-022",
+      "name": "Compresor Cipolletti",
+      "type": "RECTIFIER",
+      "criticality": "CRITICAL",
+      "isOperational": true,
+      "stationId": "STA-0008",
+      "operatingHours": 2646
+    },
+    {
+      "id": "EQP-0045",
+      "tag": "J-023",
+      "name": "Motor Eléctrico Cipolletti",
+      "type": "PUMP",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0008",
+      "operatingHours": 2601
+    },
+    {
+      "id": "EQP-0046",
+      "tag": "J-024",
+      "name": "Actuador Neumático Cipolletti",
+      "type": "PUMP",
+      "criticality": "HIGH",
+      "isOperational": true,
+      "stationId": "STA-0008",
+      "operatingHours": 6685
+    },
+    {
+      "id": "EQP-0047",
+      "tag": "MOT-025",
+      "name": "Compresor Cipolletti",
+      "type": "MOTOR",
+      "criticality": "HIGH",
+      "isOperational": true,
+      "stationId": "STA-0008",
+      "operatingHours": 7997
+    },
+    {
+      "id": "EQP-0048",
+      "tag": "MOV-026",
+      "name": "Motor Eléctrico Cipolletti",
+      "type": "VALVE",
+      "criticality": "HIGH",
+      "isOperational": false,
+      "stationId": "STA-0008",
+      "operatingHours": 7463
+    },
+    {
+      "id": "EQP-0049",
+      "tag": "J-027",
+      "name": "Transformador Cipolletti",
+      "type": "PUMP",
+      "criticality": "LOW",
+      "isOperational": false,
+      "stationId": "STA-0008",
+      "operatingHours": 1136
+    },
+    {
+      "id": "EQP-0050",
+      "tag": "REC-028",
+      "name": "Agitador de Tanque Cipolletti",
+      "type": "RECTIFIER",
+      "criticality": "HIGH",
+      "isOperational": true,
+      "stationId": "STA-0008",
+      "operatingHours": 1578
+    },
+    {
+      "id": "EQP-0051",
+      "tag": "REC-029",
+      "name": "Transformador Cipolletti",
+      "type": "RECTIFIER",
+      "criticality": "LOW",
+      "isOperational": true,
+      "stationId": "STA-0008",
+      "operatingHours": 3592
+    },
+    {
+      "id": "EQP-0052",
+      "tag": "MOV-030",
+      "name": "Compresor El Porton",
+      "type": "VALVE",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0009",
+      "operatingHours": 4111
+    },
+    {
+      "id": "EQP-0053",
+      "tag": "AG-031",
+      "name": "Bomba Principal El Porton",
+      "type": "AGITATOR",
+      "criticality": "HIGH",
+      "isOperational": true,
+      "stationId": "STA-0009",
+      "operatingHours": 6375
+    },
+    {
+      "id": "EQP-0054",
+      "tag": "MOV-032",
+      "name": "Válvula de Bloqueo El Porton",
+      "type": "VALVE",
+      "criticality": "LOW",
+      "isOperational": true,
+      "stationId": "STA-0009",
+      "operatingHours": 2852
+    },
+    {
+      "id": "EQP-0055",
+      "tag": "AG-033",
+      "name": "Transformador El Porton",
+      "type": "AGITATOR",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0009",
+      "operatingHours": 6222
+    },
+    {
+      "id": "EQP-0056",
+      "tag": "MOV-034",
+      "name": "Motor Eléctrico El Porton",
+      "type": "VALVE",
+      "criticality": "HIGH",
+      "isOperational": true,
+      "stationId": "STA-0009",
+      "operatingHours": 3587
+    },
+    {
+      "id": "EQP-0057",
+      "tag": "MOV-035",
+      "name": "Agitador de Tanque El Porton",
+      "type": "VALVE",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0009",
+      "operatingHours": 6836
+    },
+    {
+      "id": "EQP-0058",
+      "tag": "J-036",
+      "name": "Rectificador Catódico El Porton",
+      "type": "PUMP",
+      "criticality": "MEDIUM",
+      "isOperational": true,
+      "stationId": "STA-0009",
+      "operatingHours": 838
+    }
+  ],
+  "movements": [
+    {
+      "id": "MOV-0063",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 2676.615649565844,
+      "volume15CM3": 2675.5824624973025,
+      "volume60FM3": 2676.615649565844,
+      "temperatureF": 78.21133402991109,
+      "apiGravity": 37.26488662650809,
+      "startedAt": "2026-05-13T20:00:00.000Z",
+      "endedAt": "2026-05-14T01:00:00.000Z"
+    },
+    {
+      "id": "MOV-0064",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 3116.109867819196,
+      "volume15CM3": 3114.9039778944966,
+      "volume60FM3": 3116.109867819196,
+      "temperatureF": 71.64631301537156,
+      "apiGravity": 30.471492854412645,
+      "startedAt": "2026-05-13T18:00:00.000Z",
+      "endedAt": "2026-05-13T23:00:00.000Z"
+    },
+    {
+      "id": "MOV-0065",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 5435.130861347166,
+      "volume15CM3": 5433.03359126073,
+      "volume60FM3": 5435.130861347166,
+      "temperatureF": 79.09785928670317,
+      "apiGravity": 36.03011961095035,
+      "startedAt": "2026-05-13T04:00:00.000Z",
+      "endedAt": "2026-05-13T12:00:00.000Z"
+    },
+    {
+      "id": "MOV-0066",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 2836.1699559981635,
+      "volume15CM3": 2835.0740152247063,
+      "volume60FM3": 2836.1699559981635,
+      "temperatureF": 75.45758509426378,
+      "apiGravity": 33.94796846201643,
+      "startedAt": "2026-05-14T04:00:00.000Z",
+      "endedAt": "2026-05-14T10:00:00.000Z"
+    },
+    {
+      "id": "MOV-0067",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0005",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 4610.803704888337,
+      "volume15CM3": 4609.022017663315,
+      "volume60FM3": 4610.803704888337,
+      "temperatureF": 75.45758509426378,
+      "apiGravity": 33.94796846201643,
+      "startedAt": "2026-05-14T11:00:00.000Z",
+      "endedAt": "2026-05-14T16:00:00.000Z"
+    },
+    {
+      "id": "MOV-0068",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 3572.7781075804637,
+      "volume15CM3": 3571.3995301080618,
+      "volume60FM3": 3572.7781075804637,
+      "temperatureF": 79.21257976209745,
+      "apiGravity": 34.453827547840774,
+      "startedAt": "2026-05-14T09:00:00.000Z",
+      "endedAt": "2026-05-14T13:00:00.000Z"
+    },
+    {
+      "id": "MOV-0069",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 2485.5309416923674,
+      "volume15CM3": 2484.5690767879655,
+      "volume60FM3": 2485.5309416923674,
+      "temperatureF": 71.64631301537156,
+      "apiGravity": 30.471492854412645,
+      "startedAt": "2026-05-15T04:00:00.000Z",
+      "endedAt": "2026-05-15T12:00:00.000Z"
+    },
+    {
+      "id": "MOV-0070",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 5107.611928375901,
+      "volume15CM3": 5105.641126235323,
+      "volume60FM3": 5107.611928375901,
+      "temperatureF": 79.21257976209745,
+      "apiGravity": 34.453827547840774,
+      "startedAt": "2026-05-15T20:00:00.000Z",
+      "endedAt": "2026-05-15T23:00:00.000Z"
+    },
+    {
+      "id": "MOV-0071",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 3346.0823243455006,
+      "volume15CM3": 3344.7911616219844,
+      "volume60FM3": 3346.0823243455006,
+      "temperatureF": 79.09785928670317,
+      "apiGravity": 36.03011961095035,
+      "startedAt": "2026-05-15T14:00:00.000Z",
+      "endedAt": "2026-05-15T19:00:00.000Z"
+    },
+    {
+      "id": "MOV-0072",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 7001.521737216424,
+      "volume15CM3": 6998.819114701243,
+      "volume60FM3": 7001.521737216424,
+      "temperatureF": 78.21133402991109,
+      "apiGravity": 37.26488662650809,
+      "startedAt": "2026-05-16T18:00:00.000Z",
+      "endedAt": "2026-05-16T20:00:00.000Z"
+    },
+    {
+      "id": "MOV-0073",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 4155.439780138983,
+      "volume15CM3": 4153.836379229011,
+      "volume60FM3": 4155.439780138983,
+      "temperatureF": 79.21257976209745,
+      "apiGravity": 34.453827547840774,
+      "startedAt": "2026-05-16T08:00:00.000Z",
+      "endedAt": "2026-05-16T14:00:00.000Z"
+    },
+    {
+      "id": "MOV-0074",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0005",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 8171.649246054505,
+      "volume15CM3": 8168.496854900516,
+      "volume60FM3": 8171.649246054505,
+      "temperatureF": 79.77805740665644,
+      "apiGravity": 33.72504870174453,
+      "startedAt": "2026-05-16T13:00:00.000Z",
+      "endedAt": "2026-05-16T17:00:00.000Z"
+    },
+    {
+      "id": "MOV-0075",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 912.1977921871677,
+      "volume15CM3": 911.8457997160989,
+      "volume60FM3": 912.1977921871677,
+      "temperatureF": 79.09785928670317,
+      "apiGravity": 36.03011961095035,
+      "startedAt": "2026-05-17T19:00:00.000Z",
+      "endedAt": "2026-05-17T23:00:00.000Z"
+    },
+    {
+      "id": "MOV-0076",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 4839.882717178993,
+      "volume15CM3": 4838.015219931175,
+      "volume60FM3": 4839.882717178993,
+      "temperatureF": 79.21257976209745,
+      "apiGravity": 34.453827547840774,
+      "startedAt": "2026-05-17T16:00:00.000Z",
+      "endedAt": "2026-05-17T19:00:00.000Z"
+    },
+    {
+      "id": "MOV-0077",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0005",
+      "volumeGsvM3": 5661.695254890787,
+      "volume15CM3": 5659.513737345614,
+      "volume60FM3": 5661.695254890787,
+      "temperatureF": 82.87269828491844,
+      "apiGravity": 38.5979961999692,
+      "startedAt": "2026-05-18T00:00:00.000Z",
+      "endedAt": "2026-05-18T03:00:00.000Z"
+    },
+    {
+      "id": "MOV-0078",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 1488.720063944558,
+      "volume15CM3": 1488.1437712039794,
+      "volume60FM3": 1488.720063944558,
+      "temperatureF": 70.84197688731365,
+      "apiGravity": 33.04681812180206,
+      "startedAt": "2026-05-18T15:00:00.000Z",
+      "endedAt": "2026-05-18T20:00:00.000Z"
+    },
+    {
+      "id": "MOV-0079",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 2730.800244278224,
+      "volume15CM3": 2729.7467787813375,
+      "volume60FM3": 2730.800244278224,
+      "temperatureF": 79.77805740665644,
+      "apiGravity": 33.72504870174453,
+      "startedAt": "2026-05-18T22:00:00.000Z",
+      "endedAt": "2026-05-19T03:00:00.000Z"
+    },
+    {
+      "id": "MOV-0080",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0005",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 2917.044271274855,
+      "volume15CM3": 2915.918958100039,
+      "volume60FM3": 2917.044271274855,
+      "temperatureF": 79.77805740665644,
+      "apiGravity": 33.72504870174453,
+      "startedAt": "2026-05-19T00:00:00.000Z",
+      "endedAt": "2026-05-19T05:00:00.000Z"
+    },
+    {
+      "id": "MOV-0081",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0005",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 4487.674937187642,
+      "volume15CM3": 4485.943719125291,
+      "volume60FM3": 4487.674937187642,
+      "temperatureF": 79.77805740665644,
+      "apiGravity": 33.72504870174453,
+      "startedAt": "2026-05-19T08:00:00.000Z",
+      "endedAt": "2026-05-19T10:00:00.000Z"
+    },
+    {
+      "id": "MOV-0082",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0009",
+      "volumeGsvM3": 3200.366098717276,
+      "volume15CM3": 3199.130465356561,
+      "volume60FM3": 3200.366098717276,
+      "temperatureF": 77.63268821989186,
+      "apiGravity": 35.05776781588793,
+      "startedAt": "2026-05-19T17:00:00.000Z",
+      "endedAt": "2026-05-20T01:00:00.000Z"
+    },
+    {
+      "id": "MOV-0083",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 1974.0207414575946,
+      "volume15CM3": 1973.2585893138553,
+      "volume60FM3": 1974.0207414575946,
+      "temperatureF": 77.63268821989186,
+      "apiGravity": 35.05776781588793,
+      "startedAt": "2026-05-19T16:00:00.000Z",
+      "endedAt": "2026-05-19T20:00:00.000Z"
+    },
+    {
+      "id": "MOV-0084",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0005",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 5496.480226633709,
+      "volume15CM3": 5494.362368375489,
+      "volume60FM3": 5496.480226633709,
+      "temperatureF": 82.87269828491844,
+      "apiGravity": 38.5979961999692,
+      "startedAt": "2026-05-20T09:00:00.000Z",
+      "endedAt": "2026-05-20T14:00:00.000Z"
+    },
+    {
+      "id": "MOV-0085",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 4028.502657160015,
+      "volume15CM3": 4026.947287516864,
+      "volume60FM3": 4028.502657160015,
+      "temperatureF": 77.63268821989186,
+      "apiGravity": 35.05776781588793,
+      "startedAt": "2026-05-20T22:00:00.000Z",
+      "endedAt": "2026-05-21T02:00:00.000Z"
+    },
+    {
+      "id": "MOV-0086",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 2257.172346927433,
+      "volume15CM3": 2256.2985815572515,
+      "volume60FM3": 2257.172346927433,
+      "temperatureF": 70.84197688731365,
+      "apiGravity": 33.04681812180206,
+      "startedAt": "2026-05-20T12:00:00.000Z",
+      "endedAt": "2026-05-20T17:00:00.000Z"
+    },
+    {
+      "id": "MOV-0087",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 9531.955365852027,
+      "volume15CM3": 9528.275983261736,
+      "volume60FM3": 9531.955365852027,
+      "temperatureF": 78.21133402991109,
+      "apiGravity": 37.26488662650809,
+      "startedAt": "2026-05-21T07:00:00.000Z",
+      "endedAt": "2026-05-21T13:00:00.000Z"
+    },
+    {
+      "id": "MOV-0088",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 3509.8781848342696,
+      "volume15CM3": 3508.5209959870335,
+      "volume60FM3": 3509.8781848342696,
+      "temperatureF": 73.70982189895585,
+      "apiGravity": 34.83773758402094,
+      "startedAt": "2026-05-21T08:00:00.000Z",
+      "endedAt": "2026-05-21T12:00:00.000Z"
+    },
+    {
+      "id": "MOV-0089",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 8077.881671139726,
+      "volume15CM3": 8074.7568860105675,
+      "volume60FM3": 8077.881671139726,
+      "temperatureF": 72.67131136381067,
+      "apiGravity": 35.053120625671,
+      "startedAt": "2026-05-21T18:00:00.000Z",
+      "endedAt": "2026-05-22T01:00:00.000Z"
+    },
+    {
+      "id": "MOV-0090",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 6601.73764588,
+      "volume15CM3": 6599.190213769088,
+      "volume60FM3": 6601.73764588,
+      "temperatureF": 79.09785928670317,
+      "apiGravity": 36.03011961095035,
+      "startedAt": "2026-05-22T20:00:00.000Z",
+      "endedAt": "2026-05-22T23:00:00.000Z"
+    },
+    {
+      "id": "MOV-0091",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0009",
+      "volumeGsvM3": 6513.119068568831,
+      "volume15CM3": 6510.598584697493,
+      "volume60FM3": 6513.119068568831,
+      "temperatureF": 71.64631301537156,
+      "apiGravity": 30.471492854412645,
+      "startedAt": "2026-05-22T05:00:00.000Z",
+      "endedAt": "2026-05-22T07:00:00.000Z"
+    },
+    {
+      "id": "MOV-0092",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 9241.615414511407,
+      "volume15CM3": 9238.047307625871,
+      "volume60FM3": 9241.615414511407,
+      "temperatureF": 77.63268821989186,
+      "apiGravity": 35.05776781588793,
+      "startedAt": "2026-05-22T19:00:00.000Z",
+      "endedAt": "2026-05-23T02:00:00.000Z"
+    },
+    {
+      "id": "MOV-0093",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 6091.819062318292,
+      "volume15CM3": 6089.467589599338,
+      "volume60FM3": 6091.819062318292,
+      "temperatureF": 78.21133402991109,
+      "apiGravity": 37.26488662650809,
+      "startedAt": "2026-05-23T16:00:00.000Z",
+      "endedAt": "2026-05-23T23:00:00.000Z"
+    },
+    {
+      "id": "MOV-0094",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 2980.3478739557204,
+      "volume15CM3": 2979.1971877073347,
+      "volume60FM3": 2980.3478739557204,
+      "temperatureF": 77.63268821989186,
+      "apiGravity": 35.05776781588793,
+      "startedAt": "2026-05-23T09:00:00.000Z",
+      "endedAt": "2026-05-23T14:00:00.000Z"
+    },
+    {
+      "id": "MOV-0095",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 1804.9284160304846,
+      "volume15CM3": 1804.2321256977805,
+      "volume60FM3": 1804.9284160304846,
+      "temperatureF": 79.77805740665644,
+      "apiGravity": 33.72504870174453,
+      "startedAt": "2026-05-23T05:00:00.000Z",
+      "endedAt": "2026-05-23T08:00:00.000Z"
+    },
+    {
+      "id": "MOV-0096",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 2094.84504266295,
+      "volume15CM3": 2094.03436761043,
+      "volume60FM3": 2094.84504266295,
+      "temperatureF": 71.64631301537156,
+      "apiGravity": 30.471492854412645,
+      "startedAt": "2026-05-24T17:00:00.000Z",
+      "endedAt": "2026-05-25T00:00:00.000Z"
+    },
+    {
+      "id": "MOV-0097",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 6107.292063279315,
+      "volume15CM3": 6104.935528671707,
+      "volume60FM3": 6107.292063279315,
+      "temperatureF": 79.21257976209745,
+      "apiGravity": 34.453827547840774,
+      "startedAt": "2026-05-24T23:00:00.000Z",
+      "endedAt": "2026-05-25T01:00:00.000Z"
+    },
+    {
+      "id": "MOV-0098",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 3363.3340359374606,
+      "volume15CM3": 3362.036273693489,
+      "volume60FM3": 3363.3340359374606,
+      "temperatureF": 79.21257976209745,
+      "apiGravity": 34.453827547840774,
+      "startedAt": "2026-05-24T04:00:00.000Z",
+      "endedAt": "2026-05-24T08:00:00.000Z"
+    },
+    {
+      "id": "MOV-0099",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 1578.0519287096804,
+      "volume15CM3": 1577.4410550519683,
+      "volume60FM3": 1578.0519287096804,
+      "temperatureF": 70.84197688731365,
+      "apiGravity": 33.04681812180206,
+      "startedAt": "2026-05-25T18:00:00.000Z",
+      "endedAt": "2026-05-26T02:00:00.000Z"
+    },
+    {
+      "id": "MOV-0100",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0005",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 11421.76465604554,
+      "volume15CM3": 11417.355797588607,
+      "volume60FM3": 11421.76465604554,
+      "temperatureF": 78.21133402991109,
+      "apiGravity": 37.26488662650809,
+      "startedAt": "2026-05-25T17:00:00.000Z",
+      "endedAt": "2026-05-25T20:00:00.000Z"
+    },
+    {
+      "id": "MOV-0101",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0006",
+      "volumeGsvM3": 2932.5515355342886,
+      "volume15CM3": 2931.4215890537953,
+      "volume60FM3": 2932.5515355342886,
+      "temperatureF": 82.87269828491844,
+      "apiGravity": 38.5979961999692,
+      "startedAt": "2026-05-25T14:00:00.000Z",
+      "endedAt": "2026-05-25T21:00:00.000Z"
+    },
+    {
+      "id": "MOV-0102",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 2217.0057078753857,
+      "volume15CM3": 2216.14775839365,
+      "volume60FM3": 2217.0057078753857,
+      "temperatureF": 71.64631301537156,
+      "apiGravity": 30.471492854412645,
+      "startedAt": "2026-05-27T00:00:00.000Z",
+      "endedAt": "2026-05-27T07:00:00.000Z"
+    },
+    {
+      "id": "MOV-0103",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0009",
+      "volumeGsvM3": 5891.327402214381,
+      "volume15CM3": 5889.0546947316225,
+      "volume60FM3": 5891.327402214381,
+      "temperatureF": 79.77805740665644,
+      "apiGravity": 33.72504870174453,
+      "startedAt": "2026-05-26T23:00:00.000Z",
+      "endedAt": "2026-05-27T07:00:00.000Z"
+    },
+    {
+      "id": "MOV-0104",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 5429.391902434538,
+      "volume15CM3": 5427.297396602311,
+      "volume60FM3": 5429.391902434538,
+      "temperatureF": 79.77805740665644,
+      "apiGravity": 33.72504870174453,
+      "startedAt": "2026-05-26T05:00:00.000Z",
+      "endedAt": "2026-05-26T13:00:00.000Z"
+    },
+    {
+      "id": "MOV-0105",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0008",
+      "volumeGsvM3": 3627.3618148428945,
+      "volume15CM3": 3625.960563133513,
+      "volume60FM3": 3627.3618148428945,
+      "temperatureF": 76.22969072312117,
+      "apiGravity": 39.73813845543191,
+      "startedAt": "2026-05-27T11:00:00.000Z",
+      "endedAt": "2026-05-27T14:00:00.000Z"
+    },
+    {
+      "id": "MOV-0106",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 2429.3869052821005,
+      "volume15CM3": 2428.4481518909747,
+      "volume60FM3": 2429.3869052821005,
+      "temperatureF": 75.45758509426378,
+      "apiGravity": 33.94796846201643,
+      "startedAt": "2026-05-27T11:00:00.000Z",
+      "endedAt": "2026-05-27T17:00:00.000Z"
+    },
+    {
+      "id": "MOV-0107",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0006",
+      "volumeGsvM3": 3321.3638499754134,
+      "volume15CM3": 3320.082561742821,
+      "volume60FM3": 3321.3638499754134,
+      "temperatureF": 79.77805740665644,
+      "apiGravity": 33.72504870174453,
+      "startedAt": "2026-05-27T13:00:00.000Z",
+      "endedAt": "2026-05-27T15:00:00.000Z"
+    },
+    {
+      "id": "MOV-0108",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0005",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 2941.640224456596,
+      "volume15CM3": 2940.501497339386,
+      "volume60FM3": 2941.640224456596,
+      "temperatureF": 70.84197688731365,
+      "apiGravity": 33.04681812180206,
+      "startedAt": "2026-05-28T16:00:00.000Z",
+      "endedAt": "2026-05-28T18:00:00.000Z"
+    },
+    {
+      "id": "MOV-0109",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 3242.8605467540215,
+      "volume15CM3": 3241.611034574223,
+      "volume60FM3": 3242.8605467540215,
+      "temperatureF": 82.87269828491844,
+      "apiGravity": 38.5979961999692,
+      "startedAt": "2026-05-28T15:00:00.000Z",
+      "endedAt": "2026-05-28T22:00:00.000Z"
+    },
+    {
+      "id": "MOV-0110",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0005",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 9892.272372407655,
+      "volume15CM3": 9888.449842445323,
+      "volume60FM3": 9892.272372407655,
+      "temperatureF": 75.45758509426378,
+      "apiGravity": 33.94796846201643,
+      "startedAt": "2026-05-28T20:00:00.000Z",
+      "endedAt": "2026-05-29T03:00:00.000Z"
+    },
+    {
+      "id": "MOV-0111",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0009",
+      "volumeGsvM3": 1677.1785980893194,
+      "volume15CM3": 1676.5314202028771,
+      "volume60FM3": 1677.1785980893194,
+      "temperatureF": 79.09785928670317,
+      "apiGravity": 36.03011961095035,
+      "startedAt": "2026-05-29T07:00:00.000Z",
+      "endedAt": "2026-05-29T09:00:00.000Z"
+    },
+    {
+      "id": "MOV-0112",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 7981.66425771938,
+      "volume15CM3": 7978.574506139575,
+      "volume60FM3": 7981.66425771938,
+      "temperatureF": 70.84197688731365,
+      "apiGravity": 33.04681812180206,
+      "startedAt": "2026-05-29T21:00:00.000Z",
+      "endedAt": "2026-05-30T05:00:00.000Z"
+    },
+    {
+      "id": "MOV-0113",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 2867.6846340864,
+      "volume15CM3": 2866.576515544609,
+      "volume60FM3": 2867.6846340864,
+      "temperatureF": 75.45758509426378,
+      "apiGravity": 33.94796846201643,
+      "startedAt": "2026-05-29T04:00:00.000Z",
+      "endedAt": "2026-05-29T12:00:00.000Z"
+    },
+    {
+      "id": "MOV-0114",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 6269.185283574355,
+      "volume15CM3": 6266.766281514329,
+      "volume60FM3": 6269.185283574355,
+      "temperatureF": 79.21257976209745,
+      "apiGravity": 34.453827547840774,
+      "startedAt": "2026-05-30T21:00:00.000Z",
+      "endedAt": "2026-05-31T05:00:00.000Z"
+    },
+    {
+      "id": "MOV-0115",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 6006.3977372685395,
+      "volume15CM3": 6004.079237609589,
+      "volume60FM3": 6006.3977372685395,
+      "temperatureF": 78.21133402991109,
+      "apiGravity": 37.26488662650809,
+      "startedAt": "2026-05-30T21:00:00.000Z",
+      "endedAt": "2026-05-31T05:00:00.000Z"
+    },
+    {
+      "id": "MOV-0116",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 8716.904636369576,
+      "volume15CM3": 8713.545910838135,
+      "volume60FM3": 8716.904636369576,
+      "temperatureF": 82.87269828491844,
+      "apiGravity": 38.5979961999692,
+      "startedAt": "2026-05-30T07:00:00.000Z",
+      "endedAt": "2026-05-30T10:00:00.000Z"
+    },
+    {
+      "id": "MOV-0117",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 3364.339217527112,
+      "volume15CM3": 3363.040275579313,
+      "volume60FM3": 3364.339217527112,
+      "temperatureF": 77.63268821989186,
+      "apiGravity": 35.05776781588793,
+      "startedAt": "2026-05-31T23:00:00.000Z",
+      "endedAt": "2026-06-01T01:00:00.000Z"
+    },
+    {
+      "id": "MOV-0118",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 10454.373331931356,
+      "volume15CM3": 10450.32637938171,
+      "volume60FM3": 10454.373331931356,
+      "temperatureF": 70.84197688731365,
+      "apiGravity": 33.04681812180206,
+      "startedAt": "2026-05-31T05:00:00.000Z",
+      "endedAt": "2026-05-31T07:00:00.000Z"
+    },
+    {
+      "id": "MOV-0119",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 1278.793879924812,
+      "volume15CM3": 1278.300259071821,
+      "volume60FM3": 1278.793879924812,
+      "temperatureF": 78.21133402991109,
+      "apiGravity": 37.26488662650809,
+      "startedAt": "2026-05-31T12:00:00.000Z",
+      "endedAt": "2026-05-31T17:00:00.000Z"
+    },
+    {
+      "id": "MOV-0120",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 1489.1742086255288,
+      "volume15CM3": 1488.5997273353184,
+      "volume60FM3": 1489.1742086255288,
+      "temperatureF": 79.77805740665644,
+      "apiGravity": 33.72504870174453,
+      "startedAt": "2026-06-01T08:00:00.000Z",
+      "endedAt": "2026-06-01T13:00:00.000Z"
+    },
+    {
+      "id": "MOV-0121",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0005",
+      "volumeGsvM3": 3973.788670457827,
+      "volume15CM3": 3972.250392296041,
+      "volume60FM3": 3973.788670457827,
+      "temperatureF": 70.84197688731365,
+      "apiGravity": 33.04681812180206,
+      "startedAt": "2026-06-01T17:00:00.000Z",
+      "endedAt": "2026-06-01T19:00:00.000Z"
+    },
+    {
+      "id": "MOV-0122",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 6401.942190892543,
+      "volume15CM3": 6399.468379525394,
+      "volume60FM3": 6401.942190892543,
+      "temperatureF": 75.45758509426378,
+      "apiGravity": 33.94796846201643,
+      "startedAt": "2026-06-01T05:00:00.000Z",
+      "endedAt": "2026-06-01T08:00:00.000Z"
+    },
+    {
+      "id": "MOV-0123",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 3822.942835631349,
+      "volume15CM3": 3821.4639980587367,
+      "volume60FM3": 3822.942835631349,
+      "temperatureF": 72.67131136381067,
+      "apiGravity": 35.053120625671,
+      "startedAt": "2026-06-02T12:00:00.000Z",
+      "endedAt": "2026-06-02T14:00:00.000Z"
+    },
+    {
+      "id": "MOV-0124",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 1826.4506316100155,
+      "volume15CM3": 1825.7460386152702,
+      "volume60FM3": 1826.4506316100155,
+      "temperatureF": 79.77805740665644,
+      "apiGravity": 33.72504870174453,
+      "startedAt": "2026-06-02T12:00:00.000Z",
+      "endedAt": "2026-06-02T14:00:00.000Z"
+    },
+    {
+      "id": "MOV-0125",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 7362.852185769441,
+      "volume15CM3": 7360.011060130703,
+      "volume60FM3": 7362.852185769441,
+      "temperatureF": 79.09785928670317,
+      "apiGravity": 36.03011961095035,
+      "startedAt": "2026-06-02T21:00:00.000Z",
+      "endedAt": "2026-06-03T00:00:00.000Z"
+    },
+    {
+      "id": "MOV-0126",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 6975.040330980429,
+      "volume15CM3": 6972.34506545903,
+      "volume60FM3": 6975.040330980429,
+      "temperatureF": 75.45758509426378,
+      "apiGravity": 33.94796846201643,
+      "startedAt": "2026-06-03T06:00:00.000Z",
+      "endedAt": "2026-06-03T14:00:00.000Z"
+    },
+    {
+      "id": "MOV-0127",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 4699.881777709801,
+      "volume15CM3": 4698.063711874514,
+      "volume60FM3": 4699.881777709801,
+      "temperatureF": 72.67131136381067,
+      "apiGravity": 35.053120625671,
+      "startedAt": "2026-06-03T07:00:00.000Z",
+      "endedAt": "2026-06-03T11:00:00.000Z"
+    },
+    {
+      "id": "MOV-0128",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 2294.4632781448613,
+      "volume15CM3": 2293.5776038088366,
+      "volume60FM3": 2294.4632781448613,
+      "temperatureF": 78.21133402991109,
+      "apiGravity": 37.26488662650809,
+      "startedAt": "2026-06-03T08:00:00.000Z",
+      "endedAt": "2026-06-03T12:00:00.000Z"
+    },
+    {
+      "id": "MOV-0129",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 5026.991006501929,
+      "volume15CM3": 5025.049077325722,
+      "volume60FM3": 5026.991006501929,
+      "temperatureF": 76.22969072312117,
+      "apiGravity": 39.73813845543191,
+      "startedAt": "2026-06-05T00:00:00.000Z",
+      "endedAt": "2026-06-05T07:00:00.000Z"
+    },
+    {
+      "id": "MOV-0130",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0007",
+      "volumeGsvM3": 1403.305328834807,
+      "volume15CM3": 1402.7646188427875,
+      "volume60FM3": 1403.305328834807,
+      "temperatureF": 82.87269828491844,
+      "apiGravity": 38.5979961999692,
+      "startedAt": "2026-06-04T08:00:00.000Z",
+      "endedAt": "2026-06-04T15:00:00.000Z"
+    },
+    {
+      "id": "MOV-0131",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0008",
+      "volumeGsvM3": 2618.898123626487,
+      "volume15CM3": 2617.884647531273,
+      "volume60FM3": 2618.898123626487,
+      "temperatureF": 71.64631301537156,
+      "apiGravity": 30.471492854412645,
+      "startedAt": "2026-06-04T19:00:00.000Z",
+      "endedAt": "2026-06-05T03:00:00.000Z"
+    },
+    {
+      "id": "MOV-0132",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 2780.822989412384,
+      "volume15CM3": 2779.7495777878835,
+      "volume60FM3": 2780.822989412384,
+      "temperatureF": 78.21133402991109,
+      "apiGravity": 37.26488662650809,
+      "startedAt": "2026-06-05T19:00:00.000Z",
+      "endedAt": "2026-06-05T23:00:00.000Z"
+    },
+    {
+      "id": "MOV-0133",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 3624.05543638041,
+      "volume15CM3": 3622.657378295045,
+      "volume60FM3": 3624.05543638041,
+      "temperatureF": 79.77805740665644,
+      "apiGravity": 33.72504870174453,
+      "startedAt": "2026-06-06T00:00:00.000Z",
+      "endedAt": "2026-06-06T05:00:00.000Z"
+    },
+    {
+      "id": "MOV-0134",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0007",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 6431.5396218722135,
+      "volume15CM3": 6429.050708079277,
+      "volume60FM3": 6431.5396218722135,
+      "temperatureF": 71.64631301537156,
+      "apiGravity": 30.471492854412645,
+      "startedAt": "2026-06-05T17:00:00.000Z",
+      "endedAt": "2026-06-06T00:00:00.000Z"
+    },
+    {
+      "id": "MOV-0135",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0008",
+      "volumeGsvM3": 6122.436077855797,
+      "volume15CM3": 6120.072786815248,
+      "volume60FM3": 6122.436077855797,
+      "temperatureF": 78.21133402991109,
+      "apiGravity": 37.26488662650809,
+      "startedAt": "2026-06-06T07:00:00.000Z",
+      "endedAt": "2026-06-06T11:00:00.000Z"
+    },
+    {
+      "id": "MOV-0136",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 3940.251377038655,
+      "volume15CM3": 3938.7309405382434,
+      "volume60FM3": 3940.251377038655,
+      "temperatureF": 79.09785928670317,
+      "apiGravity": 36.03011961095035,
+      "startedAt": "2026-06-06T05:00:00.000Z",
+      "endedAt": "2026-06-06T08:00:00.000Z"
+    },
+    {
+      "id": "MOV-0137",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 6870.950281628613,
+      "volume15CM3": 6868.293443812295,
+      "volume60FM3": 6870.950281628613,
+      "temperatureF": 73.70982189895585,
+      "apiGravity": 34.83773758402094,
+      "startedAt": "2026-06-06T17:00:00.000Z",
+      "endedAt": "2026-06-06T22:00:00.000Z"
+    },
+    {
+      "id": "MOV-0138",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 3307.5675041204377,
+      "volume15CM3": 3306.2885441418634,
+      "volume60FM3": 3307.5675041204377,
+      "temperatureF": 73.70982189895585,
+      "apiGravity": 34.83773758402094,
+      "startedAt": "2026-06-07T12:00:00.000Z",
+      "endedAt": "2026-06-07T18:00:00.000Z"
+    },
+    {
+      "id": "MOV-0139",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0006",
+      "volumeGsvM3": 6155.574886615895,
+      "volume15CM3": 6153.199616653891,
+      "volume60FM3": 6155.574886615895,
+      "temperatureF": 79.09785928670317,
+      "apiGravity": 36.03011961095035,
+      "startedAt": "2026-06-07T11:00:00.000Z",
+      "endedAt": "2026-06-07T17:00:00.000Z"
+    },
+    {
+      "id": "MOV-0140",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0005",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 2980.149940993661,
+      "volume15CM3": 2979.00165428962,
+      "volume60FM3": 2980.149940993661,
+      "temperatureF": 82.87269828491844,
+      "apiGravity": 38.5979961999692,
+      "startedAt": "2026-06-07T18:00:00.000Z",
+      "endedAt": "2026-06-07T20:00:00.000Z"
+    },
+    {
+      "id": "MOV-0141",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 7016.2491213685225,
+      "volume15CM3": 7013.536099845982,
+      "volume60FM3": 7016.2491213685225,
+      "temperatureF": 73.70982189895585,
+      "apiGravity": 34.83773758402094,
+      "startedAt": "2026-06-08T09:00:00.000Z",
+      "endedAt": "2026-06-08T11:00:00.000Z"
+    },
+    {
+      "id": "MOV-0142",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0005",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 1931.4796557562322,
+      "volume15CM3": 1930.7340949194338,
+      "volume60FM3": 1931.4796557562322,
+      "temperatureF": 78.21133402991109,
+      "apiGravity": 37.26488662650809,
+      "startedAt": "2026-06-08T19:00:00.000Z",
+      "endedAt": "2026-06-09T03:00:00.000Z"
+    },
+    {
+      "id": "MOV-0143",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0005",
+      "volumeGsvM3": 6856.836661741786,
+      "volume15CM3": 6854.18929707572,
+      "volume60FM3": 6856.836661741786,
+      "temperatureF": 77.63268821989186,
+      "apiGravity": 35.05776781588793,
+      "startedAt": "2026-06-08T18:00:00.000Z",
+      "endedAt": "2026-06-08T22:00:00.000Z"
+    },
+    {
+      "id": "MOV-0144",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0006",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 1172.3655219290613,
+      "volume15CM3": 1171.9132564696308,
+      "volume60FM3": 1172.3655219290613,
+      "temperatureF": 79.77805740665644,
+      "apiGravity": 33.72504870174453,
+      "startedAt": "2026-06-09T06:00:00.000Z",
+      "endedAt": "2026-06-09T11:00:00.000Z"
+    },
+    {
+      "id": "MOV-0145",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0007",
+      "volumeGsvM3": 3716.808075083427,
+      "volume15CM3": 3715.3722702383347,
+      "volume60FM3": 3716.808075083427,
+      "temperatureF": 76.22969072312117,
+      "apiGravity": 39.73813845543191,
+      "startedAt": "2026-06-09T11:00:00.000Z",
+      "endedAt": "2026-06-09T19:00:00.000Z"
+    },
+    {
+      "id": "MOV-0146",
+      "type": "RECEPTION",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0005",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 6028.148241579969,
+      "volume15CM3": 6025.825525403653,
+      "volume60FM3": 6028.148241579969,
+      "temperatureF": 82.87269828491844,
+      "apiGravity": 38.5979961999692,
+      "startedAt": "2026-06-09T20:00:00.000Z",
+      "endedAt": "2026-06-09T22:00:00.000Z"
+    },
+    {
+      "id": "MOV-0147",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0008",
+      "toNodeId": "STA-0009",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 3935.2656684370304,
+      "volume15CM3": 3933.745019756825,
+      "volume60FM3": 3935.2656684370304,
+      "temperatureF": 75.45758509426378,
+      "apiGravity": 33.94796846201643,
+      "startedAt": "2026-06-10T22:00:00.000Z",
+      "endedAt": "2026-06-11T05:00:00.000Z"
+    },
+    {
+      "id": "MOV-0148",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0005",
+      "toNodeId": "STA-0007",
+      "shipperId": "SHP-0061",
+      "volumeGsvM3": 3644.981982441234,
+      "volume15CM3": 3643.5755446785183,
+      "volume60FM3": 3644.981982441234,
+      "temperatureF": 79.21257976209745,
+      "apiGravity": 34.453827547840774,
+      "startedAt": "2026-06-10T19:00:00.000Z",
+      "endedAt": "2026-06-11T03:00:00.000Z"
+    },
+    {
+      "id": "MOV-0149",
+      "type": "PIPELINE",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 5502.555511262988,
+      "volume15CM3": 5500.427800106671,
+      "volume60FM3": 5502.555511262988,
+      "temperatureF": 73.70982189895585,
+      "apiGravity": 34.83773758402094,
+      "startedAt": "2026-06-10T20:00:00.000Z",
+      "endedAt": "2026-06-11T02:00:00.000Z"
+    },
+    {
+      "id": "MOV-0150",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0005",
+      "shipperId": "SHP-0062",
+      "volumeGsvM3": 4455.373675528424,
+      "volume15CM3": 4453.653494718442,
+      "volume60FM3": 4455.373675528424,
+      "temperatureF": 77.63268821989186,
+      "apiGravity": 35.05776781588793,
+      "startedAt": "2026-06-11T13:00:00.000Z",
+      "endedAt": "2026-06-11T20:00:00.000Z"
+    },
+    {
+      "id": "MOV-0151",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0009",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0060",
+      "volumeGsvM3": 3618.1197144817797,
+      "volume15CM3": 3616.725610546062,
+      "volume60FM3": 3618.1197144817797,
+      "temperatureF": 82.87269828491844,
+      "apiGravity": 38.5979961999692,
+      "startedAt": "2026-06-11T04:00:00.000Z",
+      "endedAt": "2026-06-11T10:00:00.000Z"
+    },
+    {
+      "id": "MOV-0152",
+      "type": "TRANSFER",
+      "fromNodeId": "STA-0006",
+      "toNodeId": "STA-0008",
+      "shipperId": "SHP-0059",
+      "volumeGsvM3": 10268.775382693564,
+      "volume15CM3": 10264.810698327725,
+      "volume60FM3": 10268.775382693564,
+      "temperatureF": 77.63268821989186,
+      "apiGravity": 35.05776781588793,
+      "startedAt": "2026-06-11T15:00:00.000Z",
+      "endedAt": "2026-06-11T19:00:00.000Z"
+    }
+  ],
+  "volumeTargets": [
+    {
+      "id": "VTG-0153",
+      "period": "2026-06",
+      "budgetM3": 127941,
+      "programM3": 141385,
+      "realM3": 148256
+    },
+    {
+      "id": "VTG-0154",
+      "period": "2026-06",
+      "shipperId": "SHP-0059",
+      "budgetM3": 33170,
+      "programM3": 34977,
+      "realM3": 36382
+    },
+    {
+      "id": "VTG-0155",
+      "period": "2026-06",
+      "shipperId": "SHP-0060",
+      "budgetM3": 9984,
+      "programM3": 9893,
+      "realM3": 10339
+    },
+    {
+      "id": "VTG-0156",
+      "period": "2026-06",
+      "shipperId": "SHP-0061",
+      "budgetM3": 29321,
+      "programM3": 30396,
+      "realM3": 31912
+    },
+    {
+      "id": "VTG-0157",
+      "period": "2026-06",
+      "shipperId": "SHP-0062",
+      "budgetM3": 41396,
+      "programM3": 37925,
+      "realM3": 38775
+    }
+  ],
+  "maintenancePlans": [
+    {
+      "id": "PLN-0158",
+      "name": "Plan Preventivo — Actuador Neumático Medanito",
+      "description": "Plan de mantenimiento preventivo para J-001",
+      "isActive": true,
+      "equipmentId": "EQP-0023",
+      "tasks": [
+        {
+          "id": "TSK-0159",
+          "planId": "PLN-0158",
+          "name": "Actuador Neumático Medanito — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 2000,
+          "nextDueDate": "2026-10-14",
+          "nextDueAtHours": 5682
+        },
+        {
+          "id": "TSK-0160",
+          "planId": "PLN-0158",
+          "name": "Actuador Neumático Medanito — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 2000,
+          "nextDueDate": "2026-09-15",
+          "nextDueAtHours": 5329
+        },
+        {
+          "id": "TSK-0161",
+          "planId": "PLN-0158",
+          "name": "Actuador Neumático Medanito — Mantenimiento 3",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 2000,
+          "nextDueDate": "2026-07-29",
+          "nextDueAtHours": 4757
+        }
+      ]
+    },
+    {
+      "id": "PLN-0162",
+      "name": "Plan Preventivo — Válvula de Control Medanito",
+      "description": "Plan de mantenimiento preventivo para AG-004",
+      "isActive": true,
+      "equipmentId": "EQP-0026",
+      "tasks": [
+        {
+          "id": "TSK-0163",
+          "planId": "PLN-0162",
+          "name": "Válvula de Control Medanito — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "ANNUAL",
+          "nextDueDate": "2027-06-02"
+        },
+        {
+          "id": "TSK-0164",
+          "planId": "PLN-0162",
+          "name": "Válvula de Control Medanito — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 1500,
+          "nextDueDate": "2026-09-09",
+          "nextDueAtHours": 7433
+        }
+      ]
+    },
+    {
+      "id": "PLN-0165",
+      "name": "Plan Preventivo — Medidor de Flujo Medanito",
+      "description": "Plan de mantenimiento preventivo para J-005",
+      "isActive": true,
+      "equipmentId": "EQP-0027",
+      "tasks": [
+        {
+          "id": "TSK-0166",
+          "planId": "PLN-0165",
+          "name": "Medidor de Flujo Medanito — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 2000,
+          "nextDueDate": "2026-10-25",
+          "nextDueAtHours": 2881
+        },
+        {
+          "id": "TSK-0167",
+          "planId": "PLN-0165",
+          "name": "Medidor de Flujo Medanito — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "ANNUAL",
+          "nextDueDate": "2027-05-03"
+        },
+        {
+          "id": "TSK-0168",
+          "planId": "PLN-0165",
+          "name": "Medidor de Flujo Medanito — Mantenimiento 3",
+          "type": "PREVENTIVE",
+          "frequency": "MONTHLY",
+          "nextDueDate": "2026-06-08"
+        }
+      ]
+    },
+    {
+      "id": "PLN-0169",
+      "name": "Plan Preventivo — Agitador de Tanque Medanito",
+      "description": "Plan de mantenimiento preventivo para J-006",
+      "isActive": true,
+      "equipmentId": "EQP-0028",
+      "tasks": [
+        {
+          "id": "TSK-0170",
+          "planId": "PLN-0169",
+          "name": "Agitador de Tanque Medanito — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "MONTHLY",
+          "nextDueDate": "2026-06-25"
+        },
+        {
+          "id": "TSK-0171",
+          "planId": "PLN-0169",
+          "name": "Agitador de Tanque Medanito — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 2000,
+          "nextDueDate": "2026-07-29",
+          "nextDueAtHours": 2000
+        },
+        {
+          "id": "TSK-0172",
+          "planId": "PLN-0169",
+          "name": "Agitador de Tanque Medanito — Mantenimiento 3",
+          "type": "PREVENTIVE",
+          "frequency": "ANNUAL",
+          "nextDueDate": "2027-05-04"
+        }
+      ]
+    },
+    {
+      "id": "PLN-0173",
+      "name": "Plan Preventivo — Agitador de Tanque Confluencia",
+      "description": "Plan de mantenimiento preventivo para AG-007",
+      "isActive": true,
+      "equipmentId": "EQP-0029",
+      "tasks": [
+        {
+          "id": "TSK-0174",
+          "planId": "PLN-0173",
+          "name": "Agitador de Tanque Confluencia — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 1500,
+          "nextDueDate": "2026-06-13",
+          "nextDueAtHours": 3500
+        }
+      ]
+    },
+    {
+      "id": "PLN-0175",
+      "name": "Plan Preventivo — Válvula de Bloqueo Confluencia",
+      "description": "Plan de mantenimiento preventivo para AG-009",
+      "isActive": true,
+      "equipmentId": "EQP-0031",
+      "tasks": [
+        {
+          "id": "TSK-0176",
+          "planId": "PLN-0175",
+          "name": "Válvula de Bloqueo Confluencia — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "MONTHLY",
+          "nextDueDate": "2026-07-06"
+        },
+        {
+          "id": "TSK-0177",
+          "planId": "PLN-0175",
+          "name": "Válvula de Bloqueo Confluencia — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 1500,
+          "nextDueDate": "2026-09-13",
+          "nextDueAtHours": 5754
+        }
+      ]
+    },
+    {
+      "id": "PLN-0178",
+      "name": "Plan Preventivo — Bomba de Reserva Confluencia",
+      "description": "Plan de mantenimiento preventivo para AG-012",
+      "isActive": true,
+      "equipmentId": "EQP-0034",
+      "tasks": [
+        {
+          "id": "TSK-0179",
+          "planId": "PLN-0178",
+          "name": "Bomba de Reserva Confluencia — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "BIANNUAL",
+          "nextDueDate": "2026-11-06"
+        },
+        {
+          "id": "TSK-0180",
+          "planId": "PLN-0178",
+          "name": "Bomba de Reserva Confluencia — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "ANNUAL",
+          "nextDueDate": "2027-06-07"
+        },
+        {
+          "id": "TSK-0181",
+          "planId": "PLN-0178",
+          "name": "Bomba de Reserva Confluencia — Mantenimiento 3",
+          "type": "PREVENTIVE",
+          "frequency": "BIANNUAL",
+          "nextDueDate": "2026-12-02"
+        }
+      ]
+    },
+    {
+      "id": "PLN-0182",
+      "name": "Plan Preventivo — Transformador Confluencia",
+      "description": "Plan de mantenimiento preventivo para AG-014",
+      "isActive": true,
+      "equipmentId": "EQP-0036",
+      "tasks": [
+        {
+          "id": "TSK-0183",
+          "planId": "PLN-0182",
+          "name": "Transformador Confluencia — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "BIANNUAL",
+          "nextDueDate": "2026-12-04"
+        },
+        {
+          "id": "TSK-0184",
+          "planId": "PLN-0182",
+          "name": "Transformador Confluencia — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "QUARTERLY",
+          "nextDueDate": "2026-08-02"
+        }
+      ]
+    },
+    {
+      "id": "PLN-0185",
+      "name": "Plan Preventivo — Bomba de Reserva Confluencia",
+      "description": "Plan de mantenimiento preventivo para AG-015",
+      "isActive": true,
+      "equipmentId": "EQP-0037",
+      "tasks": [
+        {
+          "id": "TSK-0186",
+          "planId": "PLN-0185",
+          "name": "Bomba de Reserva Confluencia — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 1500,
+          "nextDueDate": "2026-07-11",
+          "nextDueAtHours": 6548
+        },
+        {
+          "id": "TSK-0187",
+          "planId": "PLN-0185",
+          "name": "Bomba de Reserva Confluencia — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 1500,
+          "nextDueDate": "2026-08-06",
+          "nextDueAtHours": 6860
+        }
+      ]
+    },
+    {
+      "id": "PLN-0188",
+      "name": "Plan Preventivo — Medidor de Flujo Neuquén Terminal",
+      "description": "Plan de mantenimiento preventivo para J-018",
+      "isActive": true,
+      "equipmentId": "EQP-0040",
+      "tasks": [
+        {
+          "id": "TSK-0189",
+          "planId": "PLN-0188",
+          "name": "Medidor de Flujo Neuquén Terminal — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 2000,
+          "nextDueDate": "2026-07-12",
+          "nextDueAtHours": 4696
+        },
+        {
+          "id": "TSK-0190",
+          "planId": "PLN-0188",
+          "name": "Medidor de Flujo Neuquén Terminal — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "MONTHLY",
+          "nextDueDate": "2026-06-30"
+        }
+      ]
+    },
+    {
+      "id": "PLN-0191",
+      "name": "Plan Preventivo — Sensor de Presión Neuquén Terminal",
+      "description": "Plan de mantenimiento preventivo para MOT-021",
+      "isActive": true,
+      "equipmentId": "EQP-0043",
+      "tasks": [
+        {
+          "id": "TSK-0192",
+          "planId": "PLN-0191",
+          "name": "Sensor de Presión Neuquén Terminal — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "ANNUAL",
+          "nextDueDate": "2027-05-28"
+        },
+        {
+          "id": "TSK-0193",
+          "planId": "PLN-0191",
+          "name": "Sensor de Presión Neuquén Terminal — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "BIANNUAL",
+          "nextDueDate": "2026-12-05"
+        }
+      ]
+    },
+    {
+      "id": "PLN-0194",
+      "name": "Plan Preventivo — Motor Eléctrico Cipolletti",
+      "description": "Plan de mantenimiento preventivo para J-023",
+      "isActive": true,
+      "equipmentId": "EQP-0045",
+      "tasks": [
+        {
+          "id": "TSK-0195",
+          "planId": "PLN-0194",
+          "name": "Motor Eléctrico Cipolletti — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 2000,
+          "nextDueDate": "2026-08-19",
+          "nextDueAtHours": 3414
+        },
+        {
+          "id": "TSK-0196",
+          "planId": "PLN-0194",
+          "name": "Motor Eléctrico Cipolletti — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 2000,
+          "nextDueDate": "2026-07-06",
+          "nextDueAtHours": 2885
+        },
+        {
+          "id": "TSK-0197",
+          "planId": "PLN-0194",
+          "name": "Motor Eléctrico Cipolletti — Mantenimiento 3",
+          "type": "PREVENTIVE",
+          "frequency": "MONTHLY",
+          "nextDueDate": "2026-06-27"
+        }
+      ]
+    },
+    {
+      "id": "PLN-0198",
+      "name": "Plan Preventivo — Actuador Neumático Cipolletti",
+      "description": "Plan de mantenimiento preventivo para J-024",
+      "isActive": true,
+      "equipmentId": "EQP-0046",
+      "tasks": [
+        {
+          "id": "TSK-0199",
+          "planId": "PLN-0198",
+          "name": "Actuador Neumático Cipolletti — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "MONTHLY",
+          "nextDueDate": "2026-06-03"
+        }
+      ]
+    },
+    {
+      "id": "PLN-0200",
+      "name": "Plan Preventivo — Compresor Cipolletti",
+      "description": "Plan de mantenimiento preventivo para MOT-025",
+      "isActive": true,
+      "equipmentId": "EQP-0047",
+      "tasks": [
+        {
+          "id": "TSK-0201",
+          "planId": "PLN-0200",
+          "name": "Compresor Cipolletti — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 1500,
+          "nextDueDate": "2026-08-20",
+          "nextDueAtHours": 8826
+        },
+        {
+          "id": "TSK-0202",
+          "planId": "PLN-0200",
+          "name": "Compresor Cipolletti — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "QUARTERLY",
+          "nextDueDate": "2026-08-02"
+        },
+        {
+          "id": "TSK-0203",
+          "planId": "PLN-0200",
+          "name": "Compresor Cipolletti — Mantenimiento 3",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 1500,
+          "nextDueDate": "2026-07-05",
+          "nextDueAtHours": 8271
+        }
+      ]
+    },
+    {
+      "id": "PLN-0204",
+      "name": "Plan Preventivo — Transformador Cipolletti",
+      "description": "Plan de mantenimiento preventivo para J-027",
+      "isActive": true,
+      "equipmentId": "EQP-0049",
+      "tasks": [
+        {
+          "id": "TSK-0205",
+          "planId": "PLN-0204",
+          "name": "Transformador Cipolletti — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "QUARTERLY",
+          "nextDueDate": "2026-08-05"
+        },
+        {
+          "id": "TSK-0206",
+          "planId": "PLN-0204",
+          "name": "Transformador Cipolletti — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "ANNUAL",
+          "nextDueDate": "2027-06-08"
+        },
+        {
+          "id": "TSK-0207",
+          "planId": "PLN-0204",
+          "name": "Transformador Cipolletti — Mantenimiento 3",
+          "type": "PREVENTIVE",
+          "frequency": "MONTHLY",
+          "nextDueDate": "2026-07-10"
+        }
+      ]
+    },
+    {
+      "id": "PLN-0208",
+      "name": "Plan Preventivo — Bomba Principal El Porton",
+      "description": "Plan de mantenimiento preventivo para AG-031",
+      "isActive": true,
+      "equipmentId": "EQP-0053",
+      "tasks": [
+        {
+          "id": "TSK-0209",
+          "planId": "PLN-0208",
+          "name": "Bomba Principal El Porton — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "ANNUAL",
+          "nextDueDate": "2027-05-31"
+        },
+        {
+          "id": "TSK-0210",
+          "planId": "PLN-0208",
+          "name": "Bomba Principal El Porton — Mantenimiento 2",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 1500,
+          "nextDueDate": "2026-08-15",
+          "nextDueAtHours": 7139
+        }
+      ]
+    },
+    {
+      "id": "PLN-0211",
+      "name": "Plan Preventivo — Transformador El Porton",
+      "description": "Plan de mantenimiento preventivo para AG-033",
+      "isActive": true,
+      "equipmentId": "EQP-0055",
+      "tasks": [
+        {
+          "id": "TSK-0212",
+          "planId": "PLN-0211",
+          "name": "Transformador El Porton — Mantenimiento 1",
+          "type": "PREVENTIVE",
+          "frequency": "BY_HOURS",
+          "intervalHours": 1500,
+          "nextDueDate": "2026-08-07",
+          "nextDueAtHours": 6890
+        }
+      ]
+    }
+  ],
+  "workOrders": [
+    {
+      "id": "WO-0213",
+      "otNumber": "OT-MED-0001",
+      "type": "PREVENTIVE",
+      "status": "IN_PROGRESS",
+      "priority": "MEDIUM",
+      "progress": 28,
+      "description": "Mantenimiento preventivo — Actuador Neumático Medanito — Mantenimiento 2",
+      "equipmentId": "EQP-0023",
+      "stationId": "STA-0005",
+      "taskId": "TSK-0160",
+      "programDate": "2026-05-22",
+      "estimatedHours": 11.500170798972249,
+      "startedAt": "2026-05-15"
+    },
+    {
+      "id": "WO-0214",
+      "otNumber": "OT-MED-0002",
+      "type": "PREVENTIVE",
+      "status": "COMPLETED",
+      "priority": "MEDIUM",
+      "progress": 100,
+      "description": "Mantenimiento preventivo — Medidor de Flujo Medanito — Mantenimiento 3",
+      "equipmentId": "EQP-0027",
+      "stationId": "STA-0005",
+      "taskId": "TSK-0168",
+      "programDate": "2026-07-08",
+      "estimatedHours": 2.5894930586218834,
+      "startedAt": "2026-06-07",
+      "endedAt": "2026-06-09"
+    },
+    {
+      "id": "WO-0215",
+      "otNumber": "OT-MED-0003",
+      "type": "PREVENTIVE",
+      "status": "PLANNED",
+      "priority": "MEDIUM",
+      "progress": 0,
+      "description": "Mantenimiento preventivo — Agitador de Tanque Medanito — Mantenimiento 2",
+      "equipmentId": "EQP-0028",
+      "stationId": "STA-0005",
+      "taskId": "TSK-0171",
+      "programDate": "2026-06-15",
+      "estimatedHours": 11.320947611238807
+    },
+    {
+      "id": "WO-0216",
+      "otNumber": "OT-MED-0004",
+      "type": "PREVENTIVE",
+      "status": "PLANNED",
+      "priority": "LOW",
+      "progress": 0,
+      "description": "Mantenimiento preventivo — Agitador de Tanque Medanito — Mantenimiento 3",
+      "equipmentId": "EQP-0028",
+      "stationId": "STA-0005",
+      "taskId": "TSK-0172",
+      "programDate": "2026-06-15",
+      "estimatedHours": 3.6261292374692857
+    },
+    {
+      "id": "WO-0217",
+      "otNumber": "OT-CON-0001",
+      "type": "PREVENTIVE",
+      "status": "IN_PROGRESS",
+      "priority": "MEDIUM",
+      "progress": 67,
+      "description": "Mantenimiento preventivo — Bomba de Reserva Confluencia — Mantenimiento 2",
+      "equipmentId": "EQP-0034",
+      "stationId": "STA-0006",
+      "taskId": "TSK-0180",
+      "programDate": "2026-06-19",
+      "estimatedHours": 12.160123424604535,
+      "startedAt": "2026-05-26"
+    },
+    {
+      "id": "WO-0218",
+      "otNumber": "OT-CON-0002",
+      "type": "PREVENTIVE",
+      "status": "IN_PROGRESS",
+      "priority": "LOW",
+      "progress": 71,
+      "description": "Mantenimiento preventivo — Bomba de Reserva Confluencia — Mantenimiento 3",
+      "equipmentId": "EQP-0034",
+      "stationId": "STA-0006",
+      "taskId": "TSK-0181",
+      "programDate": "2026-07-05",
+      "estimatedHours": 13.42138321371749,
+      "startedAt": "2026-06-05"
+    },
+    {
+      "id": "WO-0219",
+      "otNumber": "OT-CON-0003",
+      "type": "PREVENTIVE",
+      "status": "COMPLETED",
+      "priority": "LOW",
+      "progress": 100,
+      "description": "Mantenimiento preventivo — Transformador Confluencia — Mantenimiento 1",
+      "equipmentId": "EQP-0036",
+      "stationId": "STA-0006",
+      "taskId": "TSK-0183",
+      "programDate": "2026-06-13",
+      "estimatedHours": 5.97645079344511,
+      "startedAt": "2026-06-08",
+      "endedAt": "2026-05-31"
+    },
+    {
+      "id": "WO-0220",
+      "otNumber": "OT-CON-0004",
+      "type": "PREVENTIVE",
+      "status": "PLANNED",
+      "priority": "LOW",
+      "progress": 0,
+      "description": "Mantenimiento preventivo — Transformador Confluencia — Mantenimiento 2",
+      "equipmentId": "EQP-0036",
+      "stationId": "STA-0006",
+      "taskId": "TSK-0184",
+      "programDate": "2026-06-30",
+      "estimatedHours": 2.325748029630631
+    },
+    {
+      "id": "WO-0221",
+      "otNumber": "OT-NEU-0001",
+      "type": "PREVENTIVE",
+      "status": "PLANNED",
+      "priority": "MEDIUM",
+      "progress": 0,
+      "description": "Mantenimiento preventivo — Sensor de Presión Neuquén Terminal — Mantenimiento 2",
+      "equipmentId": "EQP-0043",
+      "stationId": "STA-0007",
+      "taskId": "TSK-0193",
+      "programDate": "2026-07-12",
+      "estimatedHours": 7.3101901058107615
+    },
+    {
+      "id": "WO-0222",
+      "otNumber": "OT-CIP-0001",
+      "type": "PREVENTIVE",
+      "status": "COMPLETED",
+      "priority": "URGENT",
+      "progress": 100,
+      "description": "Mantenimiento preventivo — Motor Eléctrico Cipolletti — Mantenimiento 3",
+      "equipmentId": "EQP-0045",
+      "stationId": "STA-0008",
+      "taskId": "TSK-0197",
+      "programDate": "2026-06-24",
+      "estimatedHours": 3.5973497154191136,
+      "startedAt": "2026-05-20",
+      "endedAt": "2026-06-03"
+    },
+    {
+      "id": "WO-0223",
+      "otNumber": "OT-CIP-0002",
+      "type": "PREVENTIVE",
+      "status": "IN_PROGRESS",
+      "priority": "LOW",
+      "progress": 65,
+      "description": "Mantenimiento preventivo — Actuador Neumático Cipolletti — Mantenimiento 1",
+      "equipmentId": "EQP-0046",
+      "stationId": "STA-0008",
+      "taskId": "TSK-0199",
+      "programDate": "2026-06-15",
+      "estimatedHours": 7.307158911600709,
+      "startedAt": "2026-05-30"
+    },
+    {
+      "id": "WO-0224",
+      "otNumber": "OT-CIP-0003",
+      "type": "PREVENTIVE",
+      "status": "ON_HOLD",
+      "priority": "HIGH",
+      "progress": 16,
+      "description": "Mantenimiento preventivo — Compresor Cipolletti — Mantenimiento 3",
+      "equipmentId": "EQP-0047",
+      "stationId": "STA-0008",
+      "taskId": "TSK-0203",
+      "programDate": "2026-06-11",
+      "estimatedHours": 6.567883494310081,
+      "startedAt": "2026-06-04"
+    },
+    {
+      "id": "WO-0225",
+      "otNumber": "OT-CIP-0004",
+      "type": "PREVENTIVE",
+      "status": "ON_HOLD",
+      "priority": "MEDIUM",
+      "progress": 48,
+      "description": "Mantenimiento preventivo — Transformador Cipolletti — Mantenimiento 2",
+      "equipmentId": "EQP-0049",
+      "stationId": "STA-0008",
+      "taskId": "TSK-0206",
+      "programDate": "2026-06-12",
+      "estimatedHours": 12.946674229111522,
+      "startedAt": "2026-05-13"
+    },
+    {
+      "id": "WO-0226",
+      "otNumber": "OT-EL-0001",
+      "type": "PREVENTIVE",
+      "status": "IN_PROGRESS",
+      "priority": "HIGH",
+      "progress": 25,
+      "description": "Mantenimiento preventivo — Bomba Principal El Porton — Mantenimiento 1",
+      "equipmentId": "EQP-0053",
+      "stationId": "STA-0009",
+      "taskId": "TSK-0209",
+      "programDate": "2026-06-24",
+      "estimatedHours": 3.511464250739664,
+      "startedAt": "2026-05-16"
+    },
+    {
+      "id": "WO-0227",
+      "otNumber": "OT-CON-0005",
+      "type": "CORRECTIVE",
+      "status": "IN_PROGRESS",
+      "priority": "URGENT",
+      "progress": 65,
+      "description": "Reparación correctiva — Válvula de Bloqueo Confluencia",
+      "equipmentId": "EQP-0031",
+      "stationId": "STA-0006",
+      "programDate": "2026-06-05",
+      "estimatedHours": 19.501848720014095,
+      "startedAt": "2026-06-10"
+    },
+    {
+      "id": "WO-0228",
+      "otNumber": "OT-CIP-0005",
+      "type": "CORRECTIVE",
+      "status": "IN_PROGRESS",
+      "priority": "URGENT",
+      "progress": 22,
+      "description": "Reparación correctiva — Motor Eléctrico Cipolletti",
+      "equipmentId": "EQP-0048",
+      "stationId": "STA-0008",
+      "programDate": "2026-06-11",
+      "estimatedHours": 23.226881777867675,
+      "startedAt": "2026-06-11"
+    },
+    {
+      "id": "WO-0229",
+      "otNumber": "OT-CIP-0006",
+      "type": "CORRECTIVE",
+      "status": "IN_PROGRESS",
+      "priority": "URGENT",
+      "progress": 34,
+      "description": "Reparación correctiva — Transformador Cipolletti",
+      "equipmentId": "EQP-0049",
+      "stationId": "STA-0008",
+      "programDate": "2026-06-09",
+      "estimatedHours": 16.97960435040295,
+      "startedAt": "2026-06-11"
+    }
+  ],
+  "cathodicReadings": [
+    {
+      "id": "CAT-0230",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 0,
+      "potentialV": -1.254,
+      "takenAt": "2026-06-02T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0231",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -0.372,
+      "takenAt": "2026-05-22T12:00:00.000Z",
+      "level": "CRITICAL"
+    },
+    {
+      "id": "CAT-0232",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 64.5,
+      "potentialV": -0.835,
+      "takenAt": "2026-05-15T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0233",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -1.084,
+      "takenAt": "2026-06-11T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0234",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.946,
+      "takenAt": "2026-05-20T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0235",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 114.7,
+      "potentialV": -1.198,
+      "takenAt": "2026-06-01T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0236",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 132.6,
+      "potentialV": -0.872,
+      "takenAt": "2026-05-19T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0237",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 150.6,
+      "potentialV": -1.06,
+      "takenAt": "2026-05-15T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0238",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 168.5,
+      "potentialV": -1.011,
+      "takenAt": "2026-05-18T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0239",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.043,
+      "takenAt": "2026-06-06T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0240",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.058,
+      "takenAt": "2026-06-08T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0241",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 203.1,
+      "potentialV": -0.866,
+      "takenAt": "2026-05-24T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0242",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 219.8,
+      "potentialV": -1.18,
+      "takenAt": "2026-06-04T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0243",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 236.6,
+      "potentialV": -1.183,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0244",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 253.3,
+      "potentialV": -0.991,
+      "takenAt": "2026-05-29T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0245",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 270,
+      "potentialV": -1.117,
+      "takenAt": "2026-06-03T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0246",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 1,
+      "potentialV": -0.9,
+      "takenAt": "2026-06-09T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0247",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 1,
+      "potentialV": -0.87,
+      "takenAt": "2026-06-10T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0248",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 1,
+      "potentialV": -0.84,
+      "takenAt": "2026-06-11T12:00:00.000Z",
+      "level": "WARNING"
+    }
+  ],
+  "telemetry": [
+    {
+      "id": "TEL-0249",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0010",
+      "value": 25015,
+      "unit": "mm",
+      "timestamp": "2026-06-12T21:00:00.000Z"
+    },
+    {
+      "id": "TEL-0250",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0010",
+      "value": 25355,
+      "unit": "mm",
+      "timestamp": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0251",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0010",
+      "value": 24857,
+      "unit": "mm",
+      "timestamp": "2026-06-10T05:00:00.000Z"
+    },
+    {
+      "id": "TEL-0252",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0010",
+      "value": 24731,
+      "unit": "mm",
+      "timestamp": "2026-06-09T08:00:00.000Z"
+    },
+    {
+      "id": "TEL-0253",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0010",
+      "value": 25123,
+      "unit": "mm",
+      "timestamp": "2026-06-08T14:00:00.000Z"
+    },
+    {
+      "id": "TEL-0254",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0010",
+      "value": 25415,
+      "unit": "mm",
+      "timestamp": "2026-06-07T21:00:00.000Z"
+    },
+    {
+      "id": "TEL-0255",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0010",
+      "value": 24606,
+      "unit": "mm",
+      "timestamp": "2026-06-07T00:00:00.000Z"
+    },
+    {
+      "id": "TEL-0256",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10579,
+      "unit": "mm",
+      "timestamp": "2026-06-12T06:00:00.000Z"
+    },
+    {
+      "id": "TEL-0257",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10241,
+      "unit": "mm",
+      "timestamp": "2026-06-11T10:00:00.000Z"
+    },
+    {
+      "id": "TEL-0258",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10335,
+      "unit": "mm",
+      "timestamp": "2026-06-10T11:00:00.000Z"
+    },
+    {
+      "id": "TEL-0259",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10470,
+      "unit": "mm",
+      "timestamp": "2026-06-09T17:00:00.000Z"
+    },
+    {
+      "id": "TEL-0260",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10569,
+      "unit": "mm",
+      "timestamp": "2026-06-09T03:00:00.000Z"
+    },
+    {
+      "id": "TEL-0261",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10393,
+      "unit": "mm",
+      "timestamp": "2026-06-07T16:00:00.000Z"
+    },
+    {
+      "id": "TEL-0262",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10436,
+      "unit": "mm",
+      "timestamp": "2026-06-06T07:00:00.000Z"
+    },
+    {
+      "id": "TEL-0263",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 17131,
+      "unit": "mm",
+      "timestamp": "2026-06-12T04:00:00.000Z"
+    },
+    {
+      "id": "TEL-0264",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 16963,
+      "unit": "mm",
+      "timestamp": "2026-06-11T19:00:00.000Z"
+    },
+    {
+      "id": "TEL-0265",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 17248,
+      "unit": "mm",
+      "timestamp": "2026-06-10T17:00:00.000Z"
+    },
+    {
+      "id": "TEL-0266",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 17251,
+      "unit": "mm",
+      "timestamp": "2026-06-09T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0267",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 17187,
+      "unit": "mm",
+      "timestamp": "2026-06-09T01:00:00.000Z"
+    },
+    {
+      "id": "TEL-0268",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 16948,
+      "unit": "mm",
+      "timestamp": "2026-06-07T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0269",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 16978,
+      "unit": "mm",
+      "timestamp": "2026-06-06T10:00:00.000Z"
+    },
+    {
+      "id": "TEL-0270",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32290,
+      "unit": "mm",
+      "timestamp": "2026-06-13T01:00:00.000Z"
+    },
+    {
+      "id": "TEL-0271",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32237,
+      "unit": "mm",
+      "timestamp": "2026-06-11T22:00:00.000Z"
+    },
+    {
+      "id": "TEL-0272",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32572,
+      "unit": "mm",
+      "timestamp": "2026-06-10T22:00:00.000Z"
+    },
+    {
+      "id": "TEL-0273",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32540,
+      "unit": "mm",
+      "timestamp": "2026-06-09T05:00:00.000Z"
+    },
+    {
+      "id": "TEL-0274",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32263,
+      "unit": "mm",
+      "timestamp": "2026-06-08T17:00:00.000Z"
+    },
+    {
+      "id": "TEL-0275",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32724,
+      "unit": "mm",
+      "timestamp": "2026-06-07T13:00:00.000Z"
+    },
+    {
+      "id": "TEL-0276",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32400,
+      "unit": "mm",
+      "timestamp": "2026-06-06T04:00:00.000Z"
+    },
+    {
+      "id": "TEL-0277",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 58689,
+      "unit": "mm",
+      "timestamp": "2026-06-12T14:00:00.000Z"
+    },
+    {
+      "id": "TEL-0278",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 58882,
+      "unit": "mm",
+      "timestamp": "2026-06-12T02:00:00.000Z"
+    },
+    {
+      "id": "TEL-0279",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 60765,
+      "unit": "mm",
+      "timestamp": "2026-06-11T01:00:00.000Z"
+    },
+    {
+      "id": "TEL-0280",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 59392,
+      "unit": "mm",
+      "timestamp": "2026-06-09T08:00:00.000Z"
+    },
+    {
+      "id": "TEL-0281",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 59056,
+      "unit": "mm",
+      "timestamp": "2026-06-08T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0282",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 59759,
+      "unit": "mm",
+      "timestamp": "2026-06-07T09:00:00.000Z"
+    },
+    {
+      "id": "TEL-0283",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 59406,
+      "unit": "mm",
+      "timestamp": "2026-06-06T14:00:00.000Z"
+    },
+    {
+      "id": "TEL-0284",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 42668,
+      "unit": "mm",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0285",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 43358,
+      "unit": "mm",
+      "timestamp": "2026-06-11T08:00:00.000Z"
+    },
+    {
+      "id": "TEL-0286",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 42172,
+      "unit": "mm",
+      "timestamp": "2026-06-10T16:00:00.000Z"
+    },
+    {
+      "id": "TEL-0287",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 43294,
+      "unit": "mm",
+      "timestamp": "2026-06-09T09:00:00.000Z"
+    },
+    {
+      "id": "TEL-0288",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 42300,
+      "unit": "mm",
+      "timestamp": "2026-06-08T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0289",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 42205,
+      "unit": "mm",
+      "timestamp": "2026-06-07T17:00:00.000Z"
+    },
+    {
+      "id": "TEL-0290",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 42613,
+      "unit": "mm",
+      "timestamp": "2026-06-06T22:00:00.000Z"
+    },
+    {
+      "id": "TEL-0291",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 38566,
+      "unit": "mm",
+      "timestamp": "2026-06-13T02:00:00.000Z"
+    },
+    {
+      "id": "TEL-0292",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 37487,
+      "unit": "mm",
+      "timestamp": "2026-06-11T22:00:00.000Z"
+    },
+    {
+      "id": "TEL-0293",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 37536,
+      "unit": "mm",
+      "timestamp": "2026-06-11T01:00:00.000Z"
+    },
+    {
+      "id": "TEL-0294",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 38597,
+      "unit": "mm",
+      "timestamp": "2026-06-09T04:00:00.000Z"
+    },
+    {
+      "id": "TEL-0295",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 38414,
+      "unit": "mm",
+      "timestamp": "2026-06-08T07:00:00.000Z"
+    },
+    {
+      "id": "TEL-0296",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 38417,
+      "unit": "mm",
+      "timestamp": "2026-06-07T07:00:00.000Z"
+    },
+    {
+      "id": "TEL-0297",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 38226,
+      "unit": "mm",
+      "timestamp": "2026-06-06T20:00:00.000Z"
+    },
+    {
+      "id": "TEL-0298",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 40946,
+      "unit": "mm",
+      "timestamp": "2026-06-12T21:00:00.000Z"
+    },
+    {
+      "id": "TEL-0299",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 41489,
+      "unit": "mm",
+      "timestamp": "2026-06-12T03:00:00.000Z"
+    },
+    {
+      "id": "TEL-0300",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 41297,
+      "unit": "mm",
+      "timestamp": "2026-06-10T19:00:00.000Z"
+    },
+    {
+      "id": "TEL-0301",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 40972,
+      "unit": "mm",
+      "timestamp": "2026-06-09T05:00:00.000Z"
+    },
+    {
+      "id": "TEL-0302",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 40540,
+      "unit": "mm",
+      "timestamp": "2026-06-08T06:00:00.000Z"
+    },
+    {
+      "id": "TEL-0303",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 40511,
+      "unit": "mm",
+      "timestamp": "2026-06-07T19:00:00.000Z"
+    },
+    {
+      "id": "TEL-0304",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 41426,
+      "unit": "mm",
+      "timestamp": "2026-06-06T13:00:00.000Z"
+    },
+    {
+      "id": "TEL-0305",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29117,
+      "unit": "mm",
+      "timestamp": "2026-06-12T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0306",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29963,
+      "unit": "mm",
+      "timestamp": "2026-06-11T18:00:00.000Z"
+    },
+    {
+      "id": "TEL-0307",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29259,
+      "unit": "mm",
+      "timestamp": "2026-06-11T03:00:00.000Z"
+    },
+    {
+      "id": "TEL-0308",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29885,
+      "unit": "mm",
+      "timestamp": "2026-06-09T05:00:00.000Z"
+    },
+    {
+      "id": "TEL-0309",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29975,
+      "unit": "mm",
+      "timestamp": "2026-06-08T22:00:00.000Z"
+    },
+    {
+      "id": "TEL-0310",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 30120,
+      "unit": "mm",
+      "timestamp": "2026-06-08T03:00:00.000Z"
+    },
+    {
+      "id": "TEL-0311",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29873,
+      "unit": "mm",
+      "timestamp": "2026-06-06T16:00:00.000Z"
+    },
+    {
+      "id": "TEL-0312",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 43121,
+      "unit": "mm",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0313",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 43125,
+      "unit": "mm",
+      "timestamp": "2026-06-12T00:00:00.000Z"
+    },
+    {
+      "id": "TEL-0314",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 42712,
+      "unit": "mm",
+      "timestamp": "2026-06-10T20:00:00.000Z"
+    },
+    {
+      "id": "TEL-0315",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 42943,
+      "unit": "mm",
+      "timestamp": "2026-06-10T00:00:00.000Z"
+    },
+    {
+      "id": "TEL-0316",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 42830,
+      "unit": "mm",
+      "timestamp": "2026-06-09T01:00:00.000Z"
+    },
+    {
+      "id": "TEL-0317",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 43691,
+      "unit": "mm",
+      "timestamp": "2026-06-07T07:00:00.000Z"
+    },
+    {
+      "id": "TEL-0318",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 42867,
+      "unit": "mm",
+      "timestamp": "2026-06-06T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0319",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 82186,
+      "unit": "mm",
+      "timestamp": "2026-06-12T23:00:00.000Z"
+    },
+    {
+      "id": "TEL-0320",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 81908,
+      "unit": "mm",
+      "timestamp": "2026-06-11T17:00:00.000Z"
+    },
+    {
+      "id": "TEL-0321",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 80762,
+      "unit": "mm",
+      "timestamp": "2026-06-10T05:00:00.000Z"
+    },
+    {
+      "id": "TEL-0322",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 82956,
+      "unit": "mm",
+      "timestamp": "2026-06-09T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0323",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 81439,
+      "unit": "mm",
+      "timestamp": "2026-06-08T08:00:00.000Z"
+    },
+    {
+      "id": "TEL-0324",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 81621,
+      "unit": "mm",
+      "timestamp": "2026-06-07T11:00:00.000Z"
+    },
+    {
+      "id": "TEL-0325",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 82038,
+      "unit": "mm",
+      "timestamp": "2026-06-06T08:00:00.000Z"
+    },
+    {
+      "id": "TEL-0326",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19222,
+      "unit": "mm",
+      "timestamp": "2026-06-12T05:00:00.000Z"
+    },
+    {
+      "id": "TEL-0327",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19746,
+      "unit": "mm",
+      "timestamp": "2026-06-11T16:00:00.000Z"
+    },
+    {
+      "id": "TEL-0328",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19413,
+      "unit": "mm",
+      "timestamp": "2026-06-10T11:00:00.000Z"
+    },
+    {
+      "id": "TEL-0329",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19567,
+      "unit": "mm",
+      "timestamp": "2026-06-10T03:00:00.000Z"
+    },
+    {
+      "id": "TEL-0330",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19163,
+      "unit": "mm",
+      "timestamp": "2026-06-08T04:00:00.000Z"
+    },
+    {
+      "id": "TEL-0331",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19632,
+      "unit": "mm",
+      "timestamp": "2026-06-07T04:00:00.000Z"
+    },
+    {
+      "id": "TEL-0332",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19074,
+      "unit": "mm",
+      "timestamp": "2026-06-06T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0333",
+      "metric": "PRESSURE",
+      "sourceId": "SEG-0002",
+      "value": 25.9,
+      "unit": "kg/cm²",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0334",
+      "metric": "PRESSURE",
+      "sourceId": "SEG-0002",
+      "value": 31.2,
+      "unit": "kg/cm²",
+      "timestamp": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0335",
+      "metric": "PRESSURE",
+      "sourceId": "SEG-0002",
+      "value": 38,
+      "unit": "kg/cm²",
+      "timestamp": "2026-06-10T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0336",
+      "metric": "PRESSURE",
+      "sourceId": "SEG-0003",
+      "value": 26.3,
+      "unit": "kg/cm²",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0337",
+      "metric": "PRESSURE",
+      "sourceId": "SEG-0003",
+      "value": 23.1,
+      "unit": "kg/cm²",
+      "timestamp": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0338",
+      "metric": "PRESSURE",
+      "sourceId": "SEG-0003",
+      "value": 33.8,
+      "unit": "kg/cm²",
+      "timestamp": "2026-06-10T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0339",
+      "metric": "PRESSURE",
+      "sourceId": "SEG-0004",
+      "value": 30.8,
+      "unit": "kg/cm²",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0340",
+      "metric": "PRESSURE",
+      "sourceId": "SEG-0004",
+      "value": 37.3,
+      "unit": "kg/cm²",
+      "timestamp": "2026-06-11T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0341",
+      "metric": "PRESSURE",
+      "sourceId": "SEG-0004",
+      "value": 26.5,
+      "unit": "kg/cm²",
+      "timestamp": "2026-06-10T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0342",
+      "metric": "FLOW_RATE",
+      "sourceId": "EQP-0023",
+      "value": 694,
+      "unit": "m³/h",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0343",
+      "metric": "FLOW_RATE",
+      "sourceId": "EQP-0027",
+      "value": 1443,
+      "unit": "m³/h",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0344",
+      "metric": "FLOW_RATE",
+      "sourceId": "EQP-0028",
+      "value": 559,
+      "unit": "m³/h",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0345",
+      "metric": "FLOW_RATE",
+      "sourceId": "EQP-0040",
+      "value": 398,
+      "unit": "m³/h",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0346",
+      "metric": "FLOW_RATE",
+      "sourceId": "EQP-0045",
+      "value": 1299,
+      "unit": "m³/h",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0347",
+      "metric": "FLOW_RATE",
+      "sourceId": "EQP-0046",
+      "value": 1446,
+      "unit": "m³/h",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0348",
+      "metric": "FLOW_RATE",
+      "sourceId": "EQP-0049",
+      "value": 1208,
+      "unit": "m³/h",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0349",
+      "metric": "FLOW_RATE",
+      "sourceId": "EQP-0058",
+      "value": 860,
+      "unit": "m³/h",
+      "timestamp": "2026-06-12T12:00:00.000Z"
+    }
+  ]
+}

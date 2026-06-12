@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"*.{ts,tsx,mjs,mts,cjs}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"*.{ts,tsx,mjs,mts,cjs}\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"*.{ts,tsx,mjs,mts,cjs}\"",
+    "generate:seed": "tsx scripts/generate-seed.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",

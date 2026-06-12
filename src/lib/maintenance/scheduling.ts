@@ -8,10 +8,16 @@ import { MaintenanceFrequency, Criticality, CRITICALITY_WEIGHTS } from "@/lib/do
 import type { MaintenanceTask, Equipment } from "@/lib/domain";
 
 /** Task status classification. */
-export type TaskStatus = "OVERDUE" | "UPCOMING" | "OK";
+export const TaskStatus = {
+  OVERDUE: "OVERDUE",
+  UPCOMING: "UPCOMING",
+  OK: "OK",
+} as const;
+
+export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus];
 
 /** Criticality numeric weights for priority scoring. §4.4 */
-const CRITICALITY_LEVEL: Record<string, number> = {
+const CRITICALITY_LEVEL: Record<Criticality, number> = {
   [Criticality.LOW]: 1,
   [Criticality.MEDIUM]: 2,
   [Criticality.HIGH]: 3,
@@ -130,7 +136,7 @@ export function taskStatus(task: MaintenanceTask, now: string, currentHours?: nu
   const daysDiff = Math.floor((dueDate.getTime() - nowDate.getTime()) / (1000 * 60 * 60 * 24));
 
   if (daysDiff <= 0) {
-    return "OVERDUE";
+    return TaskStatus.OVERDUE;
   }
 
   // BY_HOURS check when hours are available
@@ -142,20 +148,20 @@ export function taskStatus(task: MaintenanceTask, now: string, currentHours?: nu
   ) {
     const remainingHours = task.nextDueAtHours - currentHours;
     if (remainingHours < 0) {
-      return "OVERDUE";
+      return TaskStatus.OVERDUE;
     }
     const threshold = task.intervalHours * 0.1; // 10% of interval
     if (remainingHours <= threshold) {
-      return "UPCOMING";
+      return TaskStatus.UPCOMING;
     }
-    return "OK";
+    return TaskStatus.OK;
   }
 
   if (daysDiff <= 7) {
-    return "UPCOMING";
+    return TaskStatus.UPCOMING;
   }
 
-  return "OK";
+  return TaskStatus.OK;
 }
 
 /**
@@ -175,7 +181,7 @@ export function maintenancePriorityScore(
 ): number {
   const status = taskStatus(task, now, equipment.operatingHours);
   const urgency = URGENCY_WEIGHT[status];
-  const criticalityLevel = CRITICALITY_LEVEL[equipment.criticality] ?? 1;
+  const criticalityLevel = CRITICALITY_LEVEL[equipment.criticality];
 
   return CRITICALITY_WEIGHTS.overdue * urgency + CRITICALITY_WEIGHTS.criticality * criticalityLevel;
 }

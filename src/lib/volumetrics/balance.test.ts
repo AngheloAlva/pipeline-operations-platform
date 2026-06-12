@@ -129,6 +129,33 @@ describe("Volumetric balance", () => {
       expect(result.difference).toBeLessThan(0);
       expect(result.level).toBe(AlertLevel.CRITICAL);
     });
+
+    // Zero-denominator guard: calculated=0, measured≠0 → CRITICAL (hidden surplus/deficit)
+    it("returns CRITICAL when calculated is 0 but measured is non-zero (zero-stock surplus)", () => {
+      const result = computeBalance({
+        initial: 0,
+        inputs: [],
+        outputs: [],
+        measured: 500,
+      });
+      expect(result.calculated).toBe(0);
+      expect(result.measured).toBe(500);
+      expect(result.level).toBe(AlertLevel.CRITICAL);
+    });
+
+    // Zero-denominator guard: calculated=0, measured=0 → OK with percentage 0 (empty tank, no discrepancy)
+    it("returns OK with percentage 0 when both calculated and measured are 0 (empty tank)", () => {
+      const result = computeBalance({
+        initial: 0,
+        inputs: [],
+        outputs: [],
+        measured: 0,
+      });
+      expect(result.calculated).toBe(0);
+      expect(result.measured).toBe(0);
+      expect(result.percentage).toBe(0);
+      expect(result.level).toBe(AlertLevel.OK);
+    });
   });
 
   describe("tankHeightToVolume", () => {

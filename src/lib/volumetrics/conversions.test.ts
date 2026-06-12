@@ -68,6 +68,12 @@ describe("Volumetric conversions", () => {
       const result = vcf(1000, 32, 15);
       expect(result).toBeGreaterThan(1000);
     });
+
+    it("numeric anchor: 1000 m³ at 86°F corrected to 15°C reference ≈ 989.61 m³", () => {
+      // tObsC = (86-32)*(5/9) = 30°C; delta = 30-15 = 15; alpha = 0.0007
+      // vcf = 1000 / (1 + 0.0007 * 15) = 1000 / 1.0105 ≈ 989.61
+      expect(vcf(1000, 86, 15)).toBeCloseTo(989.61, 1);
+    });
   });
 
   describe("toVolume15C", () => {

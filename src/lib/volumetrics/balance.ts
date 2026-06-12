@@ -45,7 +45,14 @@ export function computeBalance(params: BalanceParams): BalanceResult {
   const calculated = initial + totalIn - totalOut;
 
   const difference = measured - calculated;
-  // Percentage relative to calculated stock; guard against division by zero
+
+  // When calculated stock is zero but measured is non-zero, the discrepancy
+  // is undefined as a percentage — classify as CRITICAL to surface the anomaly.
+  if (calculated === 0 && measured !== 0) {
+    return { calculated, measured, difference, percentage: 0, level: AlertLevel.CRITICAL };
+  }
+
+  // Percentage relative to calculated stock; guard against 0/0 (both zero = OK, 0%)
   const percentage = calculated !== 0 ? Math.abs(difference / calculated) * 100 : 0;
 
   let level: AlertLevel;

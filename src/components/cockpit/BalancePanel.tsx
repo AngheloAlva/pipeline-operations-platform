@@ -107,7 +107,6 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 
 export interface BalancePanelProps {
   movements: Movement[];
-  tankIds: ReadonlySet<string>;
 }
 
 // ============================================================================
@@ -116,15 +115,14 @@ export interface BalancePanelProps {
 
 /**
  * BalancePanel renders a grouped bar chart with hourly inflow / outflow / net stock change.
- * Data is memoized on `movements` and `tankIds` — does not recompute on every render cycle.
+ * Data is memoized on `movements` — does not recompute on every render cycle.
  * SR-009.
  */
-export function BalancePanel({ movements, tankIds }: BalancePanelProps) {
+export function BalancePanel({ movements }: BalancePanelProps) {
   // Memoized hourly data — SR-009 req 3
   const hourlyData: HourlyBalance[] = useMemo(
-    () => groupBalanceByHour(movements, tankIds),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [movements, tankIds],
+    () => groupBalanceByHour(movements),
+    [movements],
   );
 
   const isEmpty = hourlyData.length === 0;

@@ -200,17 +200,21 @@ describe("Volumetric balance", () => {
   });
 
   // ---------------------------------------------------------------------------
-  // groupBalanceByHour — SR-009 Scenario 1
+  // groupBalanceByHour — SR-009
+  // New contract (station-to-station movements):
+  //   salidas  = bucketed by UTC hour of startedAt (dispatch)
+  //   entradas = bucketed by UTC hour of endedAt   (receipt; skip if endedAt is null)
+  //   tankIds param removed — call site no longer passes it
   // ---------------------------------------------------------------------------
   describe("groupBalanceByHour", () => {
     function makeMovement(
-      partial: Partial<Movement> & { startedAt: string; endedAt: string },
+      partial: Partial<Movement> & { startedAt: string },
     ): Movement {
       return {
         id: partial.id ?? "m1",
         type: "PIPELINE",
-        fromNodeId: partial.fromNodeId ?? "src",
-        toNodeId: partial.toNodeId ?? "dst",
+        fromNodeId: partial.fromNodeId ?? "STA-0001",
+        toNodeId: partial.toNodeId ?? "STA-0002",
         volumeGsvM3: partial.volumeGsvM3 ?? 100,
         volume15CM3: partial.volume15CM3 ?? 100,
         volume60FM3: partial.volume60FM3 ?? 100,
@@ -220,9 +224,8 @@ describe("Volumetric balance", () => {
       };
     }
 
-    // SR-009 Scenario 1: 3 movements in hour 14 and 2 in hour 15 → 2 groups
-    it("produces exactly 2 hour groups for movements in 2 distinct hours", () => {
-      const tankIds = new Set<string>(["dst"]);
+    // SR-009 Scenario 1: movements starting in 2 distinct hours → at least 2 salida groups
+    it("produces at least 2 hour groups for movements starting in 2 distinct hours", () => {
       const movements: Movement[] = [
         makeMovement({
           id: "a",
@@ -255,168 +258,133 @@ describe("Volumetric balance", () => {
           endedAt: "2026-06-01T15:50:00Z",
         }),
       ];
-      const groups = groupBalanceByHour(movements, tankIds);
-      expect(groups).toHaveLength(2);
+      const groups = groupBalanceByHour(movements);
+      expect(groups.length).toBeGreaterThanOrEqual(2);
     });
 
-    it("sums entradas and salidas per hour group", () => {
-      // Movement from "external" to "T-101": inflow for T-101 (entrada)
-      // Movement from "T-101" to "refinery": outflow from T-101 (salida)
-      const tankIds = new Set(["T-101"]);
+    it("buckets salidas by startedAt hour and entradas by endedAt hour", () => {
+      // Movement dispatched at hour 10, received at hour 11 (crosses hour boundary)
+      const movements: Movement[] = [
+        makeMovement({
+          id: "cross-hour",
+          volumeGsvM3: 500,
+          startedAt: "2026-06-01T10:30:00Z",
+          endedAt: "2026-06-01T11:30:00Z",
+        }),
+      ];
+      const groups = groupBalanceByHour(movements);
+      // Hour 10: salida = 500, entradas = 0
+      const h10 = groups.find((g) => g.hour === 10);
+      expect(h10).toBeDefined();
+      expect(h10!.salidas).toBeCloseTo(500, 2);
+      expect(h10!.entradas).toBeCloseTo(0, 2);
+      // Hour 11: entradas = 500, salidas = 0
+      const h11 = groups.find((g) => g.hour === 11);
+      expect(h11).toBeDefined();
+      expect(h11!.entradas).toBeCloseTo(500, 2);
+      expect(h11!.salidas).toBeCloseTo(0, 2);
+    });
+
+    it("sums salidas and entradas when multiple movements share the same hour", () => {
       const movements: Movement[] = [
         makeMovement({
           id: "x",
-          fromNodeId: "external",
-          toNodeId: "T-101",
           volumeGsvM3: 400,
           startedAt: "2026-06-01T10:00:00Z",
           endedAt: "2026-06-01T10:30:00Z",
         }),
         makeMovement({
           id: "y",
-          fromNodeId: "T-101",
-          toNodeId: "refinery",
           volumeGsvM3: 200,
           startedAt: "2026-06-01T10:10:00Z",
           endedAt: "2026-06-01T10:40:00Z",
         }),
       ];
-      const groups = groupBalanceByHour(movements, tankIds);
-      expect(groups).toHaveLength(1);
-      expect(groups[0].hour).toBe(10);
-      // entradas = 400, salidas = 200
-      expect(groups[0].entradas).toBeCloseTo(400, 2);
-      expect(groups[0].salidas).toBeCloseTo(200, 2);
-      // deltaStock = entradas - salidas = 200
-      expect(groups[0].deltaStock).toBeCloseTo(200, 2);
+      const groups = groupBalanceByHour(movements);
+      const h10 = groups.find((g) => g.hour === 10);
+      expect(h10).toBeDefined();
+      // salidas: both movements start at hour 10
+      expect(h10!.salidas).toBeCloseTo(600, 2);
+      // entradas: both movements end at hour 10
+      expect(h10!.entradas).toBeCloseTo(600, 2);
+      // deltaStock = entradas - salidas = 0
+      expect(h10!.deltaStock).toBeCloseTo(0, 2);
     });
 
     it("returns empty array for empty movements", () => {
-      const groups = groupBalanceByHour([], new Set<string>());
+      const groups = groupBalanceByHour([]);
       expect(groups).toHaveLength(0);
     });
 
-    // ---------------------------------------------------------------------------
-    // Tests with generator-shaped IDs (STA-XXXX / TNK-XXXX)
-    // The old T-* heuristic fails for these — new implementation uses tankIds set
-    // ---------------------------------------------------------------------------
-
-    it("classifies inbound using tankIds set with TNK- shaped IDs", () => {
-      const tankIds = new Set(["TNK-0010", "TNK-0011"]);
+    it("skips entradas for movements with null endedAt", () => {
       const movements: Movement[] = [
         makeMovement({
-          id: "gen-a",
-          fromNodeId: "STA-0005",
-          toNodeId: "TNK-0010",
-          volumeGsvM3: 500,
-          startedAt: "2026-06-01T08:00:00Z",
-          endedAt: "2026-06-01T08:30:00Z",
-        }),
-        makeMovement({
-          id: "gen-b",
-          fromNodeId: "TNK-0010",
-          toNodeId: "STA-0009",
-          volumeGsvM3: 200,
-          startedAt: "2026-06-01T08:10:00Z",
-          endedAt: "2026-06-01T08:40:00Z",
-        }),
-      ];
-      const groups = groupBalanceByHour(movements, tankIds);
-      expect(groups).toHaveLength(1);
-      expect(groups[0].entradas).toBeCloseTo(500, 2);
-      expect(groups[0].salidas).toBeCloseTo(200, 2);
-    });
-
-    it("entradas=0 and salidas>0 when old T- heuristic would have assigned both to salidas with TNK- IDs", () => {
-      // With the old heuristic, toNodeId="TNK-0010" does NOT start with "T-",
-      // so it would be classified as salidas — wrong. This test fails RED without the fix.
-      const tankIds = new Set(["TNK-0010"]);
-      const movements: Movement[] = [
-        makeMovement({
-          id: "regression",
-          fromNodeId: "STA-0005",
-          toNodeId: "TNK-0010",
-          volumeGsvM3: 300,
+          id: "in-progress",
+          volumeGsvM3: 800,
           startedAt: "2026-06-01T09:00:00Z",
-          endedAt: "2026-06-01T09:30:00Z",
+          endedAt: null as unknown as string, // in-progress: no receipt yet
         }),
       ];
-      const groups = groupBalanceByHour(movements, tankIds);
-      expect(groups[0].entradas).toBeCloseTo(300, 2);
-      expect(groups[0].salidas).toBeCloseTo(0, 2);
+      const groups = groupBalanceByHour(movements);
+      // salida still counted at dispatch hour
+      const h9 = groups.find((g) => g.hour === 9);
+      expect(h9).toBeDefined();
+      expect(h9!.salidas).toBeCloseTo(800, 2);
+      // entradas must be 0 (no receipt)
+      const totalEntradas = groups.reduce((sum, g) => sum + g.entradas, 0);
+      expect(totalEntradas).toBeCloseTo(0, 2);
+    });
+
+    it("deltaStock = entradas - salidas per hour", () => {
+      // 3 movements starting at hour 6 (600 m³ each dispatch)
+      // 2 of them ending at hour 7 (receipt), 1 still in progress
+      const movements: Movement[] = [
+        makeMovement({ id: "a", volumeGsvM3: 600, startedAt: "2026-06-01T06:00:00Z", endedAt: "2026-06-01T07:00:00Z" }),
+        makeMovement({ id: "b", volumeGsvM3: 600, startedAt: "2026-06-01T06:15:00Z", endedAt: "2026-06-01T07:20:00Z" }),
+        makeMovement({ id: "c", volumeGsvM3: 600, startedAt: "2026-06-01T06:30:00Z", endedAt: null as unknown as string }),
+      ];
+      const groups = groupBalanceByHour(movements);
+      const h6 = groups.find((g) => g.hour === 6);
+      expect(h6).toBeDefined();
+      expect(h6!.salidas).toBeCloseTo(1800, 2);
+      expect(h6!.entradas).toBeCloseTo(0, 2);
+      expect(h6!.deltaStock).toBeCloseTo(-1800, 2);
+      const h7 = groups.find((g) => g.hour === 7);
+      expect(h7).toBeDefined();
+      expect(h7!.entradas).toBeCloseTo(1200, 2);
+      expect(h7!.deltaStock).toBeCloseTo(1200, 2);
     });
 
     // ---------------------------------------------------------------------------
-    // Regression test: seed.json movements with generator-shaped tank IDs.
-    // The seed movements are station-to-station (STA-XXXX), so neither node
-    // appears in the tank IDs set (TNK-XXXX). With the old T-* heuristic,
-    // every movement was classified as salida because toNodeId "STA-XXXX" does
-    // not start with "T-". With the correct tankIds-set approach, station-to-
-    // station movements produce zero entradas and zero salidas — correct, because
-    // no tank stock changes in a pure pipeline transit.
-    // The key regression: calling groupBalanceByHour with real seed data and
-    // real tank IDs must not throw, must return at least one hour bucket, and
-    // the entradas/salidas must both be exactly 0 (no phantom salidas from the
-    // broken T-* heuristic). If someone passes a TNK-based tankIds set with
-    // movement data that does reference tanks, entradas > 0 works correctly
-    // (proven by the generator-shaped IDs tests above).
+    // Regression: seed.json movements are STA→STA. The new implementation
+    // always produces non-zero bars because salidas = startedAt buckets
+    // and entradas = endedAt buckets, independent of node IDs.
     // ---------------------------------------------------------------------------
-    it("seed.json station-to-station movements produce zero entradas and zero salidas when tankIds=tank-id set", () => {
+    it("seed.json STA→STA movements produce non-zero salidas AND non-zero entradas", () => {
       const world = seedJson as import("@/lib/domain").PipelineWorld;
-      const tankIds = new Set(world.tanks.map((t) => t.id));
-      const groups = groupBalanceByHour(world.movements, tankIds);
+      const groups = groupBalanceByHour(world.movements);
 
-      // Seed movements go between STA-* nodes, not TNK-* nodes
-      // Correct behavior: no tank stock change → both buckets are 0
-      const totalEntradas = groups.reduce((sum, g) => sum + g.entradas, 0);
       const totalSalidas = groups.reduce((sum, g) => sum + g.salidas, 0);
-      expect(totalEntradas).toBe(0);
-      expect(totalSalidas).toBe(0);
+      const totalEntradas = groups.reduce((sum, g) => sum + g.entradas, 0);
+      // All 90 seed movements have startedAt → salidas must be > 0
+      expect(totalSalidas).toBeGreaterThan(0);
+      // All 90 seed movements have endedAt → entradas must be > 0
+      expect(totalEntradas).toBeGreaterThan(0);
+      // Total salidas == total entradas (conservation: every dispatched m³ arrives)
+      expect(totalSalidas).toBeCloseTo(totalEntradas, 0);
       expect(groups.length).toBeGreaterThan(0);
     });
 
-    it("seed.json with tank-tag-based tankIds set produces entradas > 0 (simulated real data)", () => {
-      // Simulate the scenario where movement data uses tank TAGs ("T-6010") as node IDs.
-      // This is what the old heuristic assumed. We verify that groupBalanceByHour
-      // works correctly in this case too — the caller just passes the right set.
-      const world = seedJson as import("@/lib/domain").PipelineWorld;
-      // Build fake movements that go from STA to TNK (the common operational pattern)
-      const tankId = world.tanks[0].id; // "TNK-0010"
-      const fakeMovements: Movement[] = [
-        {
-          id: "fake-in",
-          type: "PIPELINE",
-          fromNodeId: "STA-0005",
-          toNodeId: tankId,
-          volumeGsvM3: 1000,
-          volume15CM3: 1000,
-          volume60FM3: 1000,
-          temperatureF: 77,
-          apiGravity: 34,
-          startedAt: "2026-06-01T06:00:00Z",
-          endedAt: "2026-06-01T07:00:00Z",
-        },
-        {
-          id: "fake-out",
-          type: "PIPELINE",
-          fromNodeId: tankId,
-          toNodeId: "STA-0009",
-          volumeGsvM3: 400,
-          volume15CM3: 400,
-          volume60FM3: 400,
-          temperatureF: 77,
-          apiGravity: 34,
-          startedAt: "2026-06-01T06:30:00Z",
-          endedAt: "2026-06-01T07:30:00Z",
-        },
+    it("sorted ascending by hour", () => {
+      const movements: Movement[] = [
+        makeMovement({ id: "late", volumeGsvM3: 100, startedAt: "2026-06-01T22:00:00Z", endedAt: "2026-06-01T23:00:00Z" }),
+        makeMovement({ id: "early", volumeGsvM3: 100, startedAt: "2026-06-01T05:00:00Z", endedAt: "2026-06-01T06:00:00Z" }),
       ];
-      const tankIds = new Set(world.tanks.map((t) => t.id));
-      const groups = groupBalanceByHour(fakeMovements, tankIds);
-
-      const totalEntradas = groups.reduce((sum, g) => sum + g.entradas, 0);
-      const totalSalidas = groups.reduce((sum, g) => sum + g.salidas, 0);
-      expect(totalEntradas).toBeGreaterThan(0);
-      expect(totalSalidas).toBeGreaterThan(0);
+      const groups = groupBalanceByHour(movements);
+      const hours = groups.map((g) => g.hour);
+      for (let i = 1; i < hours.length; i++) {
+        expect(hours[i]).toBeGreaterThanOrEqual(hours[i - 1]);
+      }
     });
   });
 });

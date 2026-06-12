@@ -47,11 +47,7 @@ export default function CockpitPage() {
     if (world) init(world);
   }, [world, init]);
 
-  // Derive BalancePanel props from world movements
-  const tankIds = useMemo(() => {
-    if (!world) return new Set<string>();
-    return new Set(world.tanks.map((t) => t.id));
-  }, [world]);
+  // No tankIds needed — groupBalanceByHour now uses startedAt/endedAt timestamps
 
   // Derive WaterfallChart inputs from volumeTargets + shippers
   const waterfallInputs = useMemo(() => {
@@ -95,7 +91,7 @@ export default function CockpitPage() {
 
           {/* 4. Side-by-side: BalancePanel + (ContextPanel + ConversionWidget) — SR-013 req 1 */}
           <div className="grid grid-cols-1 gap-px md:grid-cols-[1fr_320px]">
-            <BalancePanel movements={world.movements} tankIds={tankIds} />
+            <BalancePanel movements={world.movements} />
             <div className="flex flex-col gap-px">
               <ContextPanel world={world} />
               <ConversionWidget selectedNodeId={selectedEntityId} />

@@ -98,7 +98,8 @@ export function tankVolumeToHeight(volumeM3: number, gaugeFactor: number): numbe
 
 /** One hour bucket in the hourly balance series. SR-009. */
 export interface HourlyBalance {
-  /** UTC hour (0–23) from the movement's startedAt. */
+  /** UTC hour (0–23). Derived from startedAt for outbound movements (salidas)
+   *  and from endedAt for inbound movements (entradas). */
   hour: number;
   /** Total inbound volume in m³ for this hour. */
   entradas: number;
@@ -110,49 +111,40 @@ export interface HourlyBalance {
 
 /**
  * Group historical movements by UTC hour and compute per-hour balance.
- * Movements are bucketed by the hour of their `startedAt` timestamp.
  *
- * Classification rule (domain choice — documented):
- *   - entradas: movement whose `toNodeId` is in `tankIds` (fluid entering a tank).
- *   - salidas:  movement whose `fromNodeId` is in `tankIds` (fluid leaving a tank).
- *   - Tank-to-tank: counted as both entrada and salida — the receiving tank
- *     records an entrada and the sending tank records a salida. This preserves
- *     per-tank conservation without double-counting at system level when the
- *     caller filters to a single tank's tankIds set.
- *   - Station-to-station (neither node is a tank): volume is not attributed to
- *     either bucket (transit-only movement, no tank stock change).
+ * Classification rule (station-to-station transfer model — SR-009):
+ *   - salidas:  volume bucketed by the UTC hour of `startedAt` (dispatch hour).
+ *               Every movement contributes a salida when it departs.
+ *   - entradas: volume bucketed by the UTC hour of `endedAt` (receipt hour).
+ *               Movements with a null/missing `endedAt` are still in transit —
+ *               their volume is not yet received, so no entrada is recorded.
  *
- * The former `toNodeId.startsWith("T-")` heuristic only matched tank TAGs
- * (e.g. "T-6010") but the generator uses tank IDs ("TNK-XXXX"), making all
- * entradas zero with real data. SR-009.
+ * This model works for the seed data where fromNodeId/toNodeId are station IDs
+ * (STA-XXXX), not tank IDs. The old tankIds-based classification produced all-zero
+ * bars because no movement node matched a TNK-XXXX ID. SR-009.
  *
  * @param movements - Historical movements to group.
- * @param tankIds   - Set of tank node IDs (e.g. "TNK-0010") used for classification.
  * @returns Sorted ascending array of hourly balance buckets.
  */
-export function groupBalanceByHour(
-  movements: Movement[],
-  tankIds: ReadonlySet<string>,
-): HourlyBalance[] {
+export function groupBalanceByHour(movements: Movement[]): HourlyBalance[] {
   const buckets = new Map<number, { entradas: number; salidas: number }>();
 
-  for (const movement of movements) {
-    const hour = new Date(movement.startedAt).getUTCHours();
-
+  function ensureBucket(hour: number): { entradas: number; salidas: number } {
     if (!buckets.has(hour)) {
       buckets.set(hour, { entradas: 0, salidas: 0 });
     }
+    return buckets.get(hour)!;
+  }
 
-    const bucket = buckets.get(hour)!;
+  for (const movement of movements) {
+    // Salida: always at the dispatch hour
+    const dispatchHour = new Date(movement.startedAt).getUTCHours();
+    ensureBucket(dispatchHour).salidas += movement.volumeGsvM3;
 
-    const toIsTank = tankIds.has(movement.toNodeId);
-    const fromIsTank = tankIds.has(movement.fromNodeId);
-
-    if (toIsTank) {
-      bucket.entradas += movement.volumeGsvM3;
-    }
-    if (fromIsTank) {
-      bucket.salidas += movement.volumeGsvM3;
+    // Entrada: only when the movement has completed (endedAt is present)
+    if (movement.endedAt) {
+      const receiptHour = new Date(movement.endedAt).getUTCHours();
+      ensureBucket(receiptHour).entradas += movement.volumeGsvM3;
     }
   }
 

@@ -46,3 +46,13 @@ export const TELEMETRY_BLUE = "#60a5fa";
 
 /** Tertiary ink — used for axis labels and secondary annotations. */
 export const INK_TERTIARY = "#6b7280";
+
+// ============================================================================
+// TYPOGRAPHY
+// ============================================================================
+
+/**
+ * Resolved monospace font stack for Recharts tick/axis props.
+ * Do NOT use var(--font-mono) here — SVG attribute context does not resolve CSS vars.
+ */
+export const CHART_FONT_MONO = "'Geist Mono', monospace";

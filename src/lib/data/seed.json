@@ -2371,408 +2371,390 @@
   "workOrders": [
     {
       "id": "WO-0213",
-      "otNumber": "OT-NEU-0001",
+      "otNumber": "OT-MED-0001",
       "type": "PREVENTIVE",
-      "status": "COMPLETED",
+      "status": "IN_PROGRESS",
       "priority": "MEDIUM",
-      "progress": 100,
+      "progress": 28,
       "description": "Mantenimiento preventivo — Actuador Neumático Medanito — Mantenimiento 2",
-      "equipmentId": "EQP-0043",
-      "stationId": "STA-0007",
+      "equipmentId": "EQP-0023",
+      "stationId": "STA-0005",
       "taskId": "TSK-0160",
       "programDate": "2026-05-22",
       "estimatedHours": 11.500170798972249,
-      "startedAt": "2026-05-15",
-      "endedAt": "2026-05-24"
+      "startedAt": "2026-05-15"
     },
     {
       "id": "WO-0214",
-      "otNumber": "OT-MED-0001",
+      "otNumber": "OT-MED-0002",
       "type": "PREVENTIVE",
       "status": "COMPLETED",
-      "priority": "URGENT",
+      "priority": "MEDIUM",
       "progress": 100,
-      "description": "Mantenimiento preventivo — Medidor de Flujo Medanito — Mantenimiento 2",
+      "description": "Mantenimiento preventivo — Medidor de Flujo Medanito — Mantenimiento 3",
       "equipmentId": "EQP-0027",
       "stationId": "STA-0005",
-      "taskId": "TSK-0167",
-      "programDate": "2026-05-15",
-      "estimatedHours": 3.9751468067988753,
+      "taskId": "TSK-0168",
+      "programDate": "2026-07-08",
+      "estimatedHours": 2.5894930586218834,
       "startedAt": "2026-06-07",
-      "endedAt": "2026-05-28"
+      "endedAt": "2026-06-09"
     },
     {
       "id": "WO-0215",
-      "otNumber": "OT-CIP-0001",
+      "otNumber": "OT-MED-0003",
       "type": "PREVENTIVE",
-      "status": "IN_PROGRESS",
-      "priority": "HIGH",
-      "progress": 54,
-      "description": "Mantenimiento preventivo — Medidor de Flujo Medanito — Mantenimiento 3",
-      "equipmentId": "EQP-0047",
-      "stationId": "STA-0008",
-      "taskId": "TSK-0168",
-      "programDate": "2026-06-10",
-      "estimatedHours": 10.537485507316887,
-      "startedAt": "2026-06-05"
+      "status": "PLANNED",
+      "priority": "MEDIUM",
+      "progress": 0,
+      "description": "Mantenimiento preventivo — Agitador de Tanque Medanito — Mantenimiento 2",
+      "equipmentId": "EQP-0028",
+      "stationId": "STA-0005",
+      "taskId": "TSK-0171",
+      "programDate": "2026-06-15",
+      "estimatedHours": 11.320947611238807
     },
     {
       "id": "WO-0216",
-      "otNumber": "OT-CIP-0002",
+      "otNumber": "OT-MED-0004",
       "type": "PREVENTIVE",
       "status": "PLANNED",
-      "priority": "HIGH",
+      "priority": "LOW",
       "progress": 0,
-      "description": "Mantenimiento preventivo — Agitador de Tanque Medanito — Mantenimiento 2",
-      "equipmentId": "EQP-0050",
-      "stationId": "STA-0008",
-      "taskId": "TSK-0171",
-      "programDate": "2026-06-14",
-      "estimatedHours": 7.554077927954495
+      "description": "Mantenimiento preventivo — Agitador de Tanque Medanito — Mantenimiento 3",
+      "equipmentId": "EQP-0028",
+      "stationId": "STA-0005",
+      "taskId": "TSK-0172",
+      "programDate": "2026-06-15",
+      "estimatedHours": 3.6261292374692857
     },
     {
       "id": "WO-0217",
-      "otNumber": "OT-CIP-0003",
+      "otNumber": "OT-CON-0001",
       "type": "PREVENTIVE",
       "status": "IN_PROGRESS",
-      "priority": "HIGH",
-      "progress": 59,
-      "description": "Mantenimiento preventivo — Agitador de Tanque Medanito — Mantenimiento 3",
-      "equipmentId": "EQP-0048",
-      "stationId": "STA-0008",
-      "taskId": "TSK-0172",
-      "programDate": "2026-06-15",
-      "estimatedHours": 3.085516864899546,
-      "startedAt": "2026-06-01"
+      "priority": "MEDIUM",
+      "progress": 67,
+      "description": "Mantenimiento preventivo — Bomba de Reserva Confluencia — Mantenimiento 2",
+      "equipmentId": "EQP-0034",
+      "stationId": "STA-0006",
+      "taskId": "TSK-0180",
+      "programDate": "2026-06-19",
+      "estimatedHours": 12.160123424604535,
+      "startedAt": "2026-05-26"
     },
     {
       "id": "WO-0218",
-      "otNumber": "OT-EL-0001",
+      "otNumber": "OT-CON-0002",
       "type": "PREVENTIVE",
-      "status": "ON_HOLD",
-      "priority": "MEDIUM",
-      "progress": 10,
-      "description": "Mantenimiento preventivo — Válvula de Bloqueo Confluencia — Mantenimiento 1",
-      "equipmentId": "EQP-0054",
-      "stationId": "STA-0009",
-      "taskId": "TSK-0176",
-      "programDate": "2026-05-17",
-      "estimatedHours": 3.921420972328633,
-      "startedAt": "2026-05-27"
+      "status": "IN_PROGRESS",
+      "priority": "LOW",
+      "progress": 71,
+      "description": "Mantenimiento preventivo — Bomba de Reserva Confluencia — Mantenimiento 3",
+      "equipmentId": "EQP-0034",
+      "stationId": "STA-0006",
+      "taskId": "TSK-0181",
+      "programDate": "2026-07-05",
+      "estimatedHours": 13.42138321371749,
+      "startedAt": "2026-06-05"
     },
     {
       "id": "WO-0219",
-      "otNumber": "OT-MED-0002",
+      "otNumber": "OT-CON-0003",
       "type": "PREVENTIVE",
-      "status": "IN_PROGRESS",
-      "priority": "HIGH",
-      "progress": 35,
-      "description": "Mantenimiento preventivo — Válvula de Bloqueo Confluencia — Mantenimiento 2",
-      "equipmentId": "EQP-0026",
-      "stationId": "STA-0005",
-      "taskId": "TSK-0177",
-      "programDate": "2026-05-17",
-      "estimatedHours": 13.11365562910214,
-      "startedAt": "2026-06-11"
+      "status": "COMPLETED",
+      "priority": "LOW",
+      "progress": 100,
+      "description": "Mantenimiento preventivo — Transformador Confluencia — Mantenimiento 1",
+      "equipmentId": "EQP-0036",
+      "stationId": "STA-0006",
+      "taskId": "TSK-0183",
+      "programDate": "2026-06-13",
+      "estimatedHours": 5.97645079344511,
+      "startedAt": "2026-06-08",
+      "endedAt": "2026-05-31"
     },
     {
       "id": "WO-0220",
-      "otNumber": "OT-CIP-0004",
+      "otNumber": "OT-CON-0004",
       "type": "PREVENTIVE",
-      "status": "IN_PROGRESS",
-      "priority": "MEDIUM",
-      "progress": 90,
-      "description": "Mantenimiento preventivo — Bomba de Reserva Confluencia — Mantenimiento 1",
-      "equipmentId": "EQP-0045",
-      "stationId": "STA-0008",
-      "taskId": "TSK-0186",
-      "programDate": "2026-06-20",
-      "estimatedHours": 11.112789599690586,
-      "startedAt": "2026-06-07"
+      "status": "PLANNED",
+      "priority": "LOW",
+      "progress": 0,
+      "description": "Mantenimiento preventivo — Transformador Confluencia — Mantenimiento 2",
+      "equipmentId": "EQP-0036",
+      "stationId": "STA-0006",
+      "taskId": "TSK-0184",
+      "programDate": "2026-06-30",
+      "estimatedHours": 2.325748029630631
     },
     {
       "id": "WO-0221",
-      "otNumber": "OT-EL-0002",
-      "type": "PREVENTIVE",
-      "status": "PLANNED",
-      "priority": "LOW",
-      "progress": 0,
-      "description": "Mantenimiento preventivo — Bomba de Reserva Confluencia — Mantenimiento 2",
-      "equipmentId": "EQP-0058",
-      "stationId": "STA-0009",
-      "taskId": "TSK-0187",
-      "programDate": "2026-06-28",
-      "estimatedHours": 8.004598828963935
-    },
-    {
-      "id": "WO-0222",
-      "otNumber": "OT-NEU-0002",
-      "type": "PREVENTIVE",
-      "status": "PLANNED",
-      "priority": "LOW",
-      "progress": 0,
-      "description": "Mantenimiento preventivo — Medidor de Flujo Neuquén Terminal — Mantenimiento 1",
-      "equipmentId": "EQP-0038",
-      "stationId": "STA-0007",
-      "taskId": "TSK-0189",
-      "programDate": "2026-06-15",
-      "estimatedHours": 7.307158911600709
-    },
-    {
-      "id": "WO-0223",
-      "otNumber": "OT-CIP-0005",
-      "type": "PREVENTIVE",
-      "status": "IN_PROGRESS",
-      "priority": "URGENT",
-      "progress": 10,
-      "description": "Mantenimiento preventivo — Medidor de Flujo Neuquén Terminal — Mantenimiento 2",
-      "equipmentId": "EQP-0047",
-      "stationId": "STA-0008",
-      "taskId": "TSK-0190",
-      "programDate": "2026-06-01",
-      "estimatedHours": 9.743084094952792,
-      "startedAt": "2026-05-28"
-    },
-    {
-      "id": "WO-0224",
-      "otNumber": "OT-CON-0001",
+      "otNumber": "OT-NEU-0001",
       "type": "PREVENTIVE",
       "status": "PLANNED",
       "priority": "MEDIUM",
       "progress": 0,
-      "description": "Mantenimiento preventivo — Sensor de Presión Neuquén Terminal — Mantenimiento 1",
-      "equipmentId": "EQP-0031",
-      "stationId": "STA-0006",
-      "taskId": "TSK-0192",
-      "programDate": "2026-07-03",
-      "estimatedHours": 15.374234265647829
+      "description": "Mantenimiento preventivo — Sensor de Presión Neuquén Terminal — Mantenimiento 2",
+      "equipmentId": "EQP-0043",
+      "stationId": "STA-0007",
+      "taskId": "TSK-0193",
+      "programDate": "2026-07-12",
+      "estimatedHours": 7.3101901058107615
+    },
+    {
+      "id": "WO-0222",
+      "otNumber": "OT-CIP-0001",
+      "type": "PREVENTIVE",
+      "status": "COMPLETED",
+      "priority": "URGENT",
+      "progress": 100,
+      "description": "Mantenimiento preventivo — Motor Eléctrico Cipolletti — Mantenimiento 3",
+      "equipmentId": "EQP-0045",
+      "stationId": "STA-0008",
+      "taskId": "TSK-0197",
+      "programDate": "2026-06-24",
+      "estimatedHours": 3.5973497154191136,
+      "startedAt": "2026-05-20",
+      "endedAt": "2026-06-03"
+    },
+    {
+      "id": "WO-0223",
+      "otNumber": "OT-CIP-0002",
+      "type": "PREVENTIVE",
+      "status": "IN_PROGRESS",
+      "priority": "LOW",
+      "progress": 65,
+      "description": "Mantenimiento preventivo — Actuador Neumático Cipolletti — Mantenimiento 1",
+      "equipmentId": "EQP-0046",
+      "stationId": "STA-0008",
+      "taskId": "TSK-0199",
+      "programDate": "2026-06-15",
+      "estimatedHours": 7.307158911600709,
+      "startedAt": "2026-05-30"
+    },
+    {
+      "id": "WO-0224",
+      "otNumber": "OT-CIP-0003",
+      "type": "PREVENTIVE",
+      "status": "ON_HOLD",
+      "priority": "HIGH",
+      "progress": 16,
+      "description": "Mantenimiento preventivo — Compresor Cipolletti — Mantenimiento 3",
+      "equipmentId": "EQP-0047",
+      "stationId": "STA-0008",
+      "taskId": "TSK-0203",
+      "programDate": "2026-06-11",
+      "estimatedHours": 6.567883494310081,
+      "startedAt": "2026-06-04"
     },
     {
       "id": "WO-0225",
-      "otNumber": "OT-NEU-0003",
+      "otNumber": "OT-CIP-0004",
       "type": "PREVENTIVE",
-      "status": "PLANNED",
-      "priority": "URGENT",
-      "progress": 0,
-      "description": "Mantenimiento preventivo — Sensor de Presión Neuquén Terminal — Mantenimiento 2",
-      "equipmentId": "EQP-0040",
-      "stationId": "STA-0007",
-      "taskId": "TSK-0193",
-      "programDate": "2026-07-01",
-      "estimatedHours": 6.1687381765805185
+      "status": "ON_HOLD",
+      "priority": "MEDIUM",
+      "progress": 48,
+      "description": "Mantenimiento preventivo — Transformador Cipolletti — Mantenimiento 2",
+      "equipmentId": "EQP-0049",
+      "stationId": "STA-0008",
+      "taskId": "TSK-0206",
+      "programDate": "2026-06-12",
+      "estimatedHours": 12.946674229111522,
+      "startedAt": "2026-05-13"
     },
     {
       "id": "WO-0226",
-      "otNumber": "OT-CIP-0006",
+      "otNumber": "OT-EL-0001",
       "type": "PREVENTIVE",
-      "status": "PLANNED",
-      "priority": "LOW",
-      "progress": 0,
-      "description": "Mantenimiento preventivo — Motor Eléctrico Cipolletti — Mantenimiento 2",
-      "equipmentId": "EQP-0048",
-      "stationId": "STA-0008",
-      "taskId": "TSK-0196",
-      "programDate": "2026-07-06",
-      "estimatedHours": 11.077035915572196
+      "status": "IN_PROGRESS",
+      "priority": "HIGH",
+      "progress": 25,
+      "description": "Mantenimiento preventivo — Bomba Principal El Porton — Mantenimiento 1",
+      "equipmentId": "EQP-0053",
+      "stationId": "STA-0009",
+      "taskId": "TSK-0209",
+      "programDate": "2026-06-24",
+      "estimatedHours": 3.511464250739664,
+      "startedAt": "2026-05-16"
     },
     {
       "id": "WO-0227",
-      "otNumber": "OT-MED-0003",
-      "type": "PREVENTIVE",
-      "status": "COMPLETED",
-      "priority": "URGENT",
-      "progress": 100,
-      "description": "Mantenimiento preventivo — Compresor Cipolletti — Mantenimiento 3",
-      "equipmentId": "EQP-0028",
-      "stationId": "STA-0005",
-      "taskId": "TSK-0203",
-      "programDate": "2026-05-13",
-      "estimatedHours": 6.888924772851169,
-      "startedAt": "2026-06-03",
-      "endedAt": "2026-05-30"
-    },
-    {
-      "id": "WO-0228",
-      "otNumber": "OT-CON-0002",
-      "type": "PREVENTIVE",
-      "status": "COMPLETED",
-      "priority": "LOW",
-      "progress": 100,
-      "description": "Mantenimiento preventivo — Transformador Cipolletti — Mantenimiento 1",
-      "equipmentId": "EQP-0032",
-      "stationId": "STA-0006",
-      "taskId": "TSK-0205",
-      "programDate": "2026-07-02",
-      "estimatedHours": 6.683274667710066,
-      "startedAt": "2026-06-11",
-      "endedAt": "2026-05-26"
-    },
-    {
-      "id": "WO-0229",
-      "otNumber": "OT-CIP-0007",
-      "type": "PREVENTIVE",
-      "status": "COMPLETED",
-      "priority": "URGENT",
-      "progress": 100,
-      "description": "Mantenimiento preventivo — Transformador Cipolletti — Mantenimiento 3",
-      "equipmentId": "EQP-0049",
-      "stationId": "STA-0008",
-      "taskId": "TSK-0207",
-      "programDate": "2026-06-08",
-      "estimatedHours": 6.628417966887355,
-      "startedAt": "2026-06-10",
-      "endedAt": "2026-05-26"
-    },
-    {
-      "id": "WO-0230",
-      "otNumber": "OT-CON-0003",
+      "otNumber": "OT-CON-0005",
       "type": "CORRECTIVE",
       "status": "IN_PROGRESS",
       "priority": "URGENT",
-      "progress": 73,
+      "progress": 65,
       "description": "Reparación correctiva — Válvula de Bloqueo Confluencia",
       "equipmentId": "EQP-0031",
       "stationId": "STA-0006",
-      "programDate": "2026-06-11",
-      "estimatedHours": 11.525404910556972,
+      "programDate": "2026-06-05",
+      "estimatedHours": 19.501848720014095,
       "startedAt": "2026-06-10"
     },
     {
-      "id": "WO-0231",
-      "otNumber": "OT-CIP-0008",
+      "id": "WO-0228",
+      "otNumber": "OT-CIP-0005",
       "type": "CORRECTIVE",
       "status": "IN_PROGRESS",
       "priority": "URGENT",
-      "progress": 76,
+      "progress": 22,
       "description": "Reparación correctiva — Motor Eléctrico Cipolletti",
       "equipmentId": "EQP-0048",
       "stationId": "STA-0008",
-      "programDate": "2026-06-03",
-      "estimatedHours": 15.940584257245064,
-      "startedAt": "2026-06-10"
+      "programDate": "2026-06-11",
+      "estimatedHours": 23.226881777867675,
+      "startedAt": "2026-06-11"
     },
     {
-      "id": "WO-0232",
-      "otNumber": "OT-CIP-0009",
+      "id": "WO-0229",
+      "otNumber": "OT-CIP-0006",
       "type": "CORRECTIVE",
       "status": "IN_PROGRESS",
       "priority": "URGENT",
-      "progress": 77,
+      "progress": 34,
       "description": "Reparación correctiva — Transformador Cipolletti",
       "equipmentId": "EQP-0049",
       "stationId": "STA-0008",
-      "programDate": "2026-06-02",
-      "estimatedHours": 14.814641769975424,
-      "startedAt": "2026-06-07"
+      "programDate": "2026-06-09",
+      "estimatedHours": 16.97960435040295,
+      "startedAt": "2026-06-11"
     }
   ],
   "cathodicReadings": [
     {
-      "id": "CAT-0233",
+      "id": "CAT-0230",
       "segmentId": "SEG-0002",
       "stationId": "STA-0005",
       "km": 0,
-      "potentialV": -1.123,
-      "takenAt": "2026-05-18T12:00:00.000Z",
+      "potentialV": -1.254,
+      "takenAt": "2026-06-02T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0231",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -0.372,
+      "takenAt": "2026-05-22T12:00:00.000Z",
+      "level": "CRITICAL"
+    },
+    {
+      "id": "CAT-0232",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 64.5,
+      "potentialV": -0.835,
+      "takenAt": "2026-05-15T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0233",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -1.084,
+      "takenAt": "2026-06-11T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0234",
-      "segmentId": "SEG-0002",
-      "stationId": "STA-0005",
-      "km": 24.2,
-      "potentialV": -1.058,
-      "takenAt": "2026-06-08T12:00:00.000Z",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.946,
+      "takenAt": "2026-05-20T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0235",
-      "segmentId": "SEG-0002",
-      "stationId": "STA-0006",
-      "km": 48.4,
-      "potentialV": -0.866,
-      "takenAt": "2026-05-24T12:00:00.000Z",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 114.7,
+      "potentialV": -1.198,
+      "takenAt": "2026-06-01T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0236",
-      "segmentId": "SEG-0002",
-      "stationId": "STA-0006",
-      "km": 72.6,
-      "potentialV": -1.18,
-      "takenAt": "2026-06-04T12:00:00.000Z",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 132.6,
+      "potentialV": -0.872,
+      "takenAt": "2026-05-19T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0237",
-      "segmentId": "SEG-0002",
-      "stationId": "STA-0006",
-      "km": 96.8,
-      "potentialV": -1.183,
-      "takenAt": "2026-06-12T12:00:00.000Z",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 150.6,
+      "potentialV": -1.06,
+      "takenAt": "2026-05-15T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0238",
       "segmentId": "SEG-0003",
-      "stationId": "STA-0006",
-      "km": 96.8,
-      "potentialV": -1.032,
-      "takenAt": "2026-05-16T12:00:00.000Z",
+      "stationId": "STA-0007",
+      "km": 168.5,
+      "potentialV": -1.011,
+      "takenAt": "2026-05-18T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0239",
       "segmentId": "SEG-0003",
-      "stationId": "STA-0007",
-      "km": 126.7,
-      "potentialV": -1.093,
-      "takenAt": "2026-05-22T12:00:00.000Z",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.043,
+      "takenAt": "2026-06-06T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0240",
-      "segmentId": "SEG-0003",
-      "stationId": "STA-0007",
-      "km": 156.5,
-      "potentialV": -1.069,
-      "takenAt": "2026-05-17T12:00:00.000Z",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.058,
+      "takenAt": "2026-06-08T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0241",
-      "segmentId": "SEG-0003",
+      "segmentId": "SEG-0004",
       "stationId": "STA-0008",
-      "km": 186.4,
-      "potentialV": -1.443,
-      "takenAt": "2026-06-04T12:00:00.000Z",
-      "level": "WARNING"
+      "km": 203.1,
+      "potentialV": -0.866,
+      "takenAt": "2026-05-24T12:00:00.000Z",
+      "level": "OK"
     },
     {
       "id": "CAT-0242",
       "segmentId": "SEG-0004",
       "stationId": "STA-0008",
-      "km": 186.4,
-      "potentialV": -0.943,
-      "takenAt": "2026-05-15T12:00:00.000Z",
+      "km": 219.8,
+      "potentialV": -1.18,
+      "takenAt": "2026-06-04T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0243",
       "segmentId": "SEG-0004",
       "stationId": "STA-0008",
-      "km": 214.3,
-      "potentialV": -1.15,
-      "takenAt": "2026-06-10T12:00:00.000Z",
+      "km": 236.6,
+      "potentialV": -1.183,
+      "takenAt": "2026-06-12T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0244",
       "segmentId": "SEG-0004",
       "stationId": "STA-0009",
-      "km": 242.1,
-      "potentialV": -1.108,
-      "takenAt": "2026-06-12T12:00:00.000Z",
+      "km": 253.3,
+      "potentialV": -0.991,
+      "takenAt": "2026-05-29T12:00:00.000Z",
       "level": "OK"
     },
     {
@@ -2780,8 +2762,8 @@
       "segmentId": "SEG-0004",
       "stationId": "STA-0009",
       "km": 270,
-      "potentialV": -1.118,
-      "takenAt": "2026-05-27T12:00:00.000Z",
+      "potentialV": -1.117,
+      "takenAt": "2026-06-03T12:00:00.000Z",
       "level": "OK"
     },
     {
@@ -2817,375 +2799,375 @@
       "id": "TEL-0249",
       "metric": "LEVEL",
       "sourceId": "TNK-0010",
-      "value": 25437,
+      "value": 25015,
       "unit": "mm",
-      "timestamp": "2026-06-12T17:00:00.000Z"
+      "timestamp": "2026-06-12T21:00:00.000Z"
     },
     {
       "id": "TEL-0250",
       "metric": "LEVEL",
       "sourceId": "TNK-0010",
-      "value": 24997,
+      "value": 25355,
       "unit": "mm",
-      "timestamp": "2026-06-11T22:00:00.000Z"
+      "timestamp": "2026-06-11T12:00:00.000Z"
     },
     {
       "id": "TEL-0251",
       "metric": "LEVEL",
       "sourceId": "TNK-0010",
-      "value": 24626,
+      "value": 24857,
       "unit": "mm",
-      "timestamp": "2026-06-10T12:00:00.000Z"
+      "timestamp": "2026-06-10T05:00:00.000Z"
     },
     {
       "id": "TEL-0252",
       "metric": "LEVEL",
       "sourceId": "TNK-0010",
-      "value": 24500,
+      "value": 24731,
       "unit": "mm",
-      "timestamp": "2026-06-09T15:00:00.000Z"
+      "timestamp": "2026-06-09T08:00:00.000Z"
     },
     {
       "id": "TEL-0253",
       "metric": "LEVEL",
       "sourceId": "TNK-0010",
-      "value": 25114,
+      "value": 25123,
       "unit": "mm",
-      "timestamp": "2026-06-08T15:00:00.000Z"
+      "timestamp": "2026-06-08T14:00:00.000Z"
     },
     {
       "id": "TEL-0254",
       "metric": "LEVEL",
       "sourceId": "TNK-0010",
-      "value": 25029,
+      "value": 25415,
       "unit": "mm",
-      "timestamp": "2026-06-07T09:00:00.000Z"
+      "timestamp": "2026-06-07T21:00:00.000Z"
     },
     {
       "id": "TEL-0255",
       "metric": "LEVEL",
       "sourceId": "TNK-0010",
-      "value": 24963,
+      "value": 24606,
       "unit": "mm",
-      "timestamp": "2026-06-06T19:00:00.000Z"
+      "timestamp": "2026-06-07T00:00:00.000Z"
     },
     {
       "id": "TEL-0256",
       "metric": "LEVEL",
       "sourceId": "TNK-0011",
-      "value": 10614,
+      "value": 10579,
       "unit": "mm",
-      "timestamp": "2026-06-12T19:00:00.000Z"
+      "timestamp": "2026-06-12T06:00:00.000Z"
     },
     {
       "id": "TEL-0257",
       "metric": "LEVEL",
       "sourceId": "TNK-0011",
-      "value": 10433,
+      "value": 10241,
       "unit": "mm",
-      "timestamp": "2026-06-11T17:00:00.000Z"
+      "timestamp": "2026-06-11T10:00:00.000Z"
     },
     {
       "id": "TEL-0258",
       "metric": "LEVEL",
       "sourceId": "TNK-0011",
-      "value": 10343,
+      "value": 10335,
       "unit": "mm",
-      "timestamp": "2026-06-10T09:00:00.000Z"
+      "timestamp": "2026-06-10T11:00:00.000Z"
     },
     {
       "id": "TEL-0259",
       "metric": "LEVEL",
       "sourceId": "TNK-0011",
-      "value": 10619,
+      "value": 10470,
       "unit": "mm",
-      "timestamp": "2026-06-09T10:00:00.000Z"
+      "timestamp": "2026-06-09T17:00:00.000Z"
     },
     {
       "id": "TEL-0260",
       "metric": "LEVEL",
       "sourceId": "TNK-0011",
-      "value": 10554,
+      "value": 10569,
       "unit": "mm",
-      "timestamp": "2026-06-08T12:00:00.000Z"
+      "timestamp": "2026-06-09T03:00:00.000Z"
     },
     {
       "id": "TEL-0261",
       "metric": "LEVEL",
       "sourceId": "TNK-0011",
-      "value": 10564,
+      "value": 10393,
       "unit": "mm",
-      "timestamp": "2026-06-07T11:00:00.000Z"
+      "timestamp": "2026-06-07T16:00:00.000Z"
     },
     {
       "id": "TEL-0262",
       "metric": "LEVEL",
       "sourceId": "TNK-0011",
-      "value": 10263,
+      "value": 10436,
       "unit": "mm",
-      "timestamp": "2026-06-06T17:00:00.000Z"
+      "timestamp": "2026-06-06T07:00:00.000Z"
     },
     {
       "id": "TEL-0263",
       "metric": "LEVEL",
       "sourceId": "TNK-0012",
-      "value": 17187,
+      "value": 17131,
       "unit": "mm",
-      "timestamp": "2026-06-12T17:00:00.000Z"
+      "timestamp": "2026-06-12T04:00:00.000Z"
     },
     {
       "id": "TEL-0264",
       "metric": "LEVEL",
       "sourceId": "TNK-0012",
-      "value": 17070,
+      "value": 16963,
       "unit": "mm",
-      "timestamp": "2026-06-11T11:00:00.000Z"
+      "timestamp": "2026-06-11T19:00:00.000Z"
     },
     {
       "id": "TEL-0265",
       "metric": "LEVEL",
       "sourceId": "TNK-0012",
-      "value": 16811,
+      "value": 17248,
       "unit": "mm",
-      "timestamp": "2026-06-10T20:00:00.000Z"
+      "timestamp": "2026-06-10T17:00:00.000Z"
     },
     {
       "id": "TEL-0266",
       "metric": "LEVEL",
       "sourceId": "TNK-0012",
-      "value": 17111,
+      "value": 17251,
       "unit": "mm",
-      "timestamp": "2026-06-09T14:00:00.000Z"
+      "timestamp": "2026-06-09T15:00:00.000Z"
     },
     {
       "id": "TEL-0267",
       "metric": "LEVEL",
       "sourceId": "TNK-0012",
-      "value": 17457,
+      "value": 17187,
       "unit": "mm",
-      "timestamp": "2026-06-08T07:00:00.000Z"
+      "timestamp": "2026-06-09T01:00:00.000Z"
     },
     {
       "id": "TEL-0268",
       "metric": "LEVEL",
       "sourceId": "TNK-0012",
-      "value": 17426,
+      "value": 16948,
       "unit": "mm",
-      "timestamp": "2026-06-07T09:00:00.000Z"
+      "timestamp": "2026-06-07T15:00:00.000Z"
     },
     {
       "id": "TEL-0269",
       "metric": "LEVEL",
       "sourceId": "TNK-0012",
-      "value": 16931,
+      "value": 16978,
       "unit": "mm",
-      "timestamp": "2026-06-07T03:00:00.000Z"
+      "timestamp": "2026-06-06T10:00:00.000Z"
     },
     {
       "id": "TEL-0270",
       "metric": "LEVEL",
       "sourceId": "TNK-0013",
-      "value": 32316,
+      "value": 32290,
       "unit": "mm",
-      "timestamp": "2026-06-12T14:00:00.000Z"
+      "timestamp": "2026-06-13T01:00:00.000Z"
     },
     {
       "id": "TEL-0271",
       "metric": "LEVEL",
       "sourceId": "TNK-0013",
-      "value": 32118,
+      "value": 32237,
       "unit": "mm",
-      "timestamp": "2026-06-11T10:00:00.000Z"
+      "timestamp": "2026-06-11T22:00:00.000Z"
     },
     {
       "id": "TEL-0272",
       "metric": "LEVEL",
       "sourceId": "TNK-0013",
-      "value": 32400,
+      "value": 32572,
       "unit": "mm",
-      "timestamp": "2026-06-10T17:00:00.000Z"
+      "timestamp": "2026-06-10T22:00:00.000Z"
     },
     {
       "id": "TEL-0273",
       "metric": "LEVEL",
       "sourceId": "TNK-0013",
-      "value": 32285,
+      "value": 32540,
       "unit": "mm",
-      "timestamp": "2026-06-09T14:00:00.000Z"
+      "timestamp": "2026-06-09T05:00:00.000Z"
     },
     {
       "id": "TEL-0274",
       "metric": "LEVEL",
       "sourceId": "TNK-0013",
-      "value": 32098,
+      "value": 32263,
       "unit": "mm",
-      "timestamp": "2026-06-08T15:00:00.000Z"
+      "timestamp": "2026-06-08T17:00:00.000Z"
     },
     {
       "id": "TEL-0275",
       "metric": "LEVEL",
       "sourceId": "TNK-0013",
-      "value": 32526,
+      "value": 32724,
       "unit": "mm",
-      "timestamp": "2026-06-08T00:00:00.000Z"
+      "timestamp": "2026-06-07T13:00:00.000Z"
     },
     {
       "id": "TEL-0276",
       "metric": "LEVEL",
       "sourceId": "TNK-0013",
-      "value": 32145,
+      "value": 32400,
       "unit": "mm",
-      "timestamp": "2026-06-06T08:00:00.000Z"
+      "timestamp": "2026-06-06T04:00:00.000Z"
     },
     {
       "id": "TEL-0277",
       "metric": "LEVEL",
       "sourceId": "TNK-0014",
-      "value": 59254,
+      "value": 58689,
       "unit": "mm",
-      "timestamp": "2026-06-13T00:00:00.000Z"
+      "timestamp": "2026-06-12T14:00:00.000Z"
     },
     {
       "id": "TEL-0278",
       "metric": "LEVEL",
       "sourceId": "TNK-0014",
-      "value": 59747,
+      "value": 58882,
       "unit": "mm",
-      "timestamp": "2026-06-11T10:00:00.000Z"
+      "timestamp": "2026-06-12T02:00:00.000Z"
     },
     {
       "id": "TEL-0279",
       "metric": "LEVEL",
       "sourceId": "TNK-0014",
-      "value": 60176,
+      "value": 60765,
       "unit": "mm",
-      "timestamp": "2026-06-10T08:00:00.000Z"
+      "timestamp": "2026-06-11T01:00:00.000Z"
     },
     {
       "id": "TEL-0280",
       "metric": "LEVEL",
       "sourceId": "TNK-0014",
-      "value": 60667,
+      "value": 59392,
       "unit": "mm",
-      "timestamp": "2026-06-09T14:00:00.000Z"
+      "timestamp": "2026-06-09T08:00:00.000Z"
     },
     {
       "id": "TEL-0281",
       "metric": "LEVEL",
       "sourceId": "TNK-0014",
-      "value": 60196,
+      "value": 59056,
       "unit": "mm",
-      "timestamp": "2026-06-08T21:00:00.000Z"
+      "timestamp": "2026-06-08T12:00:00.000Z"
     },
     {
       "id": "TEL-0282",
       "metric": "LEVEL",
       "sourceId": "TNK-0014",
-      "value": 60503,
+      "value": 59759,
       "unit": "mm",
-      "timestamp": "2026-06-07T04:00:00.000Z"
+      "timestamp": "2026-06-07T09:00:00.000Z"
     },
     {
       "id": "TEL-0283",
       "metric": "LEVEL",
       "sourceId": "TNK-0014",
-      "value": 58404,
+      "value": 59406,
       "unit": "mm",
-      "timestamp": "2026-06-06T04:00:00.000Z"
+      "timestamp": "2026-06-06T14:00:00.000Z"
     },
     {
       "id": "TEL-0284",
       "metric": "LEVEL",
       "sourceId": "TNK-0015",
-      "value": 42126,
+      "value": 42668,
       "unit": "mm",
-      "timestamp": "2026-06-12T21:00:00.000Z"
+      "timestamp": "2026-06-12T12:00:00.000Z"
     },
     {
       "id": "TEL-0285",
       "metric": "LEVEL",
       "sourceId": "TNK-0015",
-      "value": 42137,
+      "value": 43358,
       "unit": "mm",
-      "timestamp": "2026-06-11T18:00:00.000Z"
+      "timestamp": "2026-06-11T08:00:00.000Z"
     },
     {
       "id": "TEL-0286",
       "metric": "LEVEL",
       "sourceId": "TNK-0015",
-      "value": 43019,
+      "value": 42172,
       "unit": "mm",
-      "timestamp": "2026-06-10T18:00:00.000Z"
+      "timestamp": "2026-06-10T16:00:00.000Z"
     },
     {
       "id": "TEL-0287",
       "metric": "LEVEL",
       "sourceId": "TNK-0015",
-      "value": 43123,
+      "value": 43294,
       "unit": "mm",
-      "timestamp": "2026-06-09T15:00:00.000Z"
+      "timestamp": "2026-06-09T09:00:00.000Z"
     },
     {
       "id": "TEL-0288",
       "metric": "LEVEL",
       "sourceId": "TNK-0015",
-      "value": 43532,
+      "value": 42300,
       "unit": "mm",
-      "timestamp": "2026-06-08T13:00:00.000Z"
+      "timestamp": "2026-06-08T12:00:00.000Z"
     },
     {
       "id": "TEL-0289",
       "metric": "LEVEL",
       "sourceId": "TNK-0015",
-      "value": 42950,
+      "value": 42205,
       "unit": "mm",
-      "timestamp": "2026-06-07T21:00:00.000Z"
+      "timestamp": "2026-06-07T17:00:00.000Z"
     },
     {
       "id": "TEL-0290",
       "metric": "LEVEL",
       "sourceId": "TNK-0015",
-      "value": 41958,
+      "value": 42613,
       "unit": "mm",
-      "timestamp": "2026-06-06T18:00:00.000Z"
+      "timestamp": "2026-06-06T22:00:00.000Z"
     },
     {
       "id": "TEL-0291",
       "metric": "LEVEL",
       "sourceId": "TNK-0016",
-      "value": 37627,
+      "value": 38566,
       "unit": "mm",
-      "timestamp": "2026-06-12T14:00:00.000Z"
+      "timestamp": "2026-06-13T02:00:00.000Z"
     },
     {
       "id": "TEL-0292",
       "metric": "LEVEL",
       "sourceId": "TNK-0016",
-      "value": 38435,
+      "value": 37487,
       "unit": "mm",
-      "timestamp": "2026-06-11T07:00:00.000Z"
+      "timestamp": "2026-06-11T22:00:00.000Z"
     },
     {
       "id": "TEL-0293",
       "metric": "LEVEL",
       "sourceId": "TNK-0016",
-      "value": 38091,
+      "value": 37536,
       "unit": "mm",
-      "timestamp": "2026-06-10T07:00:00.000Z"
+      "timestamp": "2026-06-11T01:00:00.000Z"
     },
     {
       "id": "TEL-0294",
       "metric": "LEVEL",
       "sourceId": "TNK-0016",
-      "value": 38233,
+      "value": 38597,
       "unit": "mm",
-      "timestamp": "2026-06-09T20:00:00.000Z"
+      "timestamp": "2026-06-09T04:00:00.000Z"
     },
     {
       "id": "TEL-0295",
       "metric": "LEVEL",
       "sourceId": "TNK-0016",
-      "value": 38375,
+      "value": 38414,
       "unit": "mm",
       "timestamp": "2026-06-08T07:00:00.000Z"
     },
@@ -3193,183 +3175,183 @@
       "id": "TEL-0296",
       "metric": "LEVEL",
       "sourceId": "TNK-0016",
-      "value": 39005,
+      "value": 38417,
       "unit": "mm",
-      "timestamp": "2026-06-08T00:00:00.000Z"
+      "timestamp": "2026-06-07T07:00:00.000Z"
     },
     {
       "id": "TEL-0297",
       "metric": "LEVEL",
       "sourceId": "TNK-0016",
-      "value": 37547,
+      "value": 38226,
       "unit": "mm",
-      "timestamp": "2026-06-06T10:00:00.000Z"
+      "timestamp": "2026-06-06T20:00:00.000Z"
     },
     {
       "id": "TEL-0298",
       "metric": "LEVEL",
       "sourceId": "TNK-0017",
-      "value": 41572,
+      "value": 40946,
       "unit": "mm",
-      "timestamp": "2026-06-12T22:00:00.000Z"
+      "timestamp": "2026-06-12T21:00:00.000Z"
     },
     {
       "id": "TEL-0299",
       "metric": "LEVEL",
       "sourceId": "TNK-0017",
-      "value": 41907,
+      "value": 41489,
       "unit": "mm",
-      "timestamp": "2026-06-12T00:00:00.000Z"
+      "timestamp": "2026-06-12T03:00:00.000Z"
     },
     {
       "id": "TEL-0300",
       "metric": "LEVEL",
       "sourceId": "TNK-0017",
-      "value": 41160,
+      "value": 41297,
       "unit": "mm",
-      "timestamp": "2026-06-11T03:00:00.000Z"
+      "timestamp": "2026-06-10T19:00:00.000Z"
     },
     {
       "id": "TEL-0301",
       "metric": "LEVEL",
       "sourceId": "TNK-0017",
-      "value": 40850,
+      "value": 40972,
       "unit": "mm",
-      "timestamp": "2026-06-09T22:00:00.000Z"
+      "timestamp": "2026-06-09T05:00:00.000Z"
     },
     {
       "id": "TEL-0302",
       "metric": "LEVEL",
       "sourceId": "TNK-0017",
-      "value": 41713,
+      "value": 40540,
       "unit": "mm",
-      "timestamp": "2026-06-08T16:00:00.000Z"
+      "timestamp": "2026-06-08T06:00:00.000Z"
     },
     {
       "id": "TEL-0303",
       "metric": "LEVEL",
       "sourceId": "TNK-0017",
-      "value": 41434,
+      "value": 40511,
       "unit": "mm",
-      "timestamp": "2026-06-07T16:00:00.000Z"
+      "timestamp": "2026-06-07T19:00:00.000Z"
     },
     {
       "id": "TEL-0304",
       "metric": "LEVEL",
       "sourceId": "TNK-0017",
-      "value": 41712,
+      "value": 41426,
       "unit": "mm",
-      "timestamp": "2026-06-06T11:00:00.000Z"
+      "timestamp": "2026-06-06T13:00:00.000Z"
     },
     {
       "id": "TEL-0305",
       "metric": "LEVEL",
       "sourceId": "TNK-0018",
-      "value": 30007,
+      "value": 29117,
       "unit": "mm",
-      "timestamp": "2026-06-12T14:00:00.000Z"
+      "timestamp": "2026-06-12T15:00:00.000Z"
     },
     {
       "id": "TEL-0306",
       "metric": "LEVEL",
       "sourceId": "TNK-0018",
-      "value": 29125,
+      "value": 29963,
       "unit": "mm",
-      "timestamp": "2026-06-11T12:00:00.000Z"
+      "timestamp": "2026-06-11T18:00:00.000Z"
     },
     {
       "id": "TEL-0307",
       "metric": "LEVEL",
       "sourceId": "TNK-0018",
-      "value": 29495,
+      "value": 29259,
       "unit": "mm",
-      "timestamp": "2026-06-11T00:00:00.000Z"
+      "timestamp": "2026-06-11T03:00:00.000Z"
     },
     {
       "id": "TEL-0308",
       "metric": "LEVEL",
       "sourceId": "TNK-0018",
-      "value": 29903,
+      "value": 29885,
       "unit": "mm",
-      "timestamp": "2026-06-09T13:00:00.000Z"
+      "timestamp": "2026-06-09T05:00:00.000Z"
     },
     {
       "id": "TEL-0309",
       "metric": "LEVEL",
       "sourceId": "TNK-0018",
-      "value": 29603,
+      "value": 29975,
       "unit": "mm",
-      "timestamp": "2026-06-08T15:00:00.000Z"
+      "timestamp": "2026-06-08T22:00:00.000Z"
     },
     {
       "id": "TEL-0310",
       "metric": "LEVEL",
       "sourceId": "TNK-0018",
-      "value": 29045,
+      "value": 30120,
       "unit": "mm",
-      "timestamp": "2026-06-07T13:00:00.000Z"
+      "timestamp": "2026-06-08T03:00:00.000Z"
     },
     {
       "id": "TEL-0311",
       "metric": "LEVEL",
       "sourceId": "TNK-0018",
-      "value": 29534,
+      "value": 29873,
       "unit": "mm",
-      "timestamp": "2026-06-06T05:00:00.000Z"
+      "timestamp": "2026-06-06T16:00:00.000Z"
     },
     {
       "id": "TEL-0312",
       "metric": "LEVEL",
       "sourceId": "TNK-0019",
-      "value": 42550,
+      "value": 43121,
       "unit": "mm",
-      "timestamp": "2026-06-12T21:00:00.000Z"
+      "timestamp": "2026-06-12T12:00:00.000Z"
     },
     {
       "id": "TEL-0313",
       "metric": "LEVEL",
       "sourceId": "TNK-0019",
-      "value": 42751,
+      "value": 43125,
       "unit": "mm",
-      "timestamp": "2026-06-11T10:00:00.000Z"
+      "timestamp": "2026-06-12T00:00:00.000Z"
     },
     {
       "id": "TEL-0314",
       "metric": "LEVEL",
       "sourceId": "TNK-0019",
-      "value": 42531,
+      "value": 42712,
       "unit": "mm",
-      "timestamp": "2026-06-10T11:00:00.000Z"
+      "timestamp": "2026-06-10T20:00:00.000Z"
     },
     {
       "id": "TEL-0315",
       "metric": "LEVEL",
       "sourceId": "TNK-0019",
-      "value": 42297,
+      "value": 42943,
       "unit": "mm",
-      "timestamp": "2026-06-09T14:00:00.000Z"
+      "timestamp": "2026-06-10T00:00:00.000Z"
     },
     {
       "id": "TEL-0316",
       "metric": "LEVEL",
       "sourceId": "TNK-0019",
-      "value": 43127,
+      "value": 42830,
       "unit": "mm",
-      "timestamp": "2026-06-08T09:00:00.000Z"
+      "timestamp": "2026-06-09T01:00:00.000Z"
     },
     {
       "id": "TEL-0317",
       "metric": "LEVEL",
       "sourceId": "TNK-0019",
-      "value": 42778,
+      "value": 43691,
       "unit": "mm",
-      "timestamp": "2026-06-08T01:00:00.000Z"
+      "timestamp": "2026-06-07T07:00:00.000Z"
     },
     {
       "id": "TEL-0318",
       "metric": "LEVEL",
       "sourceId": "TNK-0019",
-      "value": 43877,
+      "value": 42867,
       "unit": "mm",
       "timestamp": "2026-06-06T15:00:00.000Z"
     },
@@ -3377,47 +3359,47 @@
       "id": "TEL-0319",
       "metric": "LEVEL",
       "sourceId": "TNK-0020",
-      "value": 80621,
+      "value": 82186,
       "unit": "mm",
-      "timestamp": "2026-06-12T19:00:00.000Z"
+      "timestamp": "2026-06-12T23:00:00.000Z"
     },
     {
       "id": "TEL-0320",
       "metric": "LEVEL",
       "sourceId": "TNK-0020",
-      "value": 80699,
+      "value": 81908,
       "unit": "mm",
-      "timestamp": "2026-06-11T07:00:00.000Z"
+      "timestamp": "2026-06-11T17:00:00.000Z"
     },
     {
       "id": "TEL-0321",
       "metric": "LEVEL",
       "sourceId": "TNK-0020",
-      "value": 82106,
+      "value": 80762,
       "unit": "mm",
-      "timestamp": "2026-06-10T21:00:00.000Z"
+      "timestamp": "2026-06-10T05:00:00.000Z"
     },
     {
       "id": "TEL-0322",
       "metric": "LEVEL",
       "sourceId": "TNK-0020",
-      "value": 81531,
+      "value": 82956,
       "unit": "mm",
-      "timestamp": "2026-06-09T04:00:00.000Z"
+      "timestamp": "2026-06-09T15:00:00.000Z"
     },
     {
       "id": "TEL-0323",
       "metric": "LEVEL",
       "sourceId": "TNK-0020",
-      "value": 83518,
+      "value": 81439,
       "unit": "mm",
-      "timestamp": "2026-06-08T17:00:00.000Z"
+      "timestamp": "2026-06-08T08:00:00.000Z"
     },
     {
       "id": "TEL-0324",
       "metric": "LEVEL",
       "sourceId": "TNK-0020",
-      "value": 81068,
+      "value": 81621,
       "unit": "mm",
       "timestamp": "2026-06-07T11:00:00.000Z"
     },
@@ -3425,71 +3407,71 @@
       "id": "TEL-0325",
       "metric": "LEVEL",
       "sourceId": "TNK-0020",
-      "value": 82330,
+      "value": 82038,
       "unit": "mm",
-      "timestamp": "2026-06-06T20:00:00.000Z"
+      "timestamp": "2026-06-06T08:00:00.000Z"
     },
     {
       "id": "TEL-0326",
       "metric": "LEVEL",
       "sourceId": "TNK-0021",
-      "value": 19307,
+      "value": 19222,
       "unit": "mm",
-      "timestamp": "2026-06-13T00:00:00.000Z"
+      "timestamp": "2026-06-12T05:00:00.000Z"
     },
     {
       "id": "TEL-0327",
       "metric": "LEVEL",
       "sourceId": "TNK-0021",
-      "value": 19796,
+      "value": 19746,
       "unit": "mm",
-      "timestamp": "2026-06-11T11:00:00.000Z"
+      "timestamp": "2026-06-11T16:00:00.000Z"
     },
     {
       "id": "TEL-0328",
       "metric": "LEVEL",
       "sourceId": "TNK-0021",
-      "value": 19119,
+      "value": 19413,
       "unit": "mm",
-      "timestamp": "2026-06-10T09:00:00.000Z"
+      "timestamp": "2026-06-10T11:00:00.000Z"
     },
     {
       "id": "TEL-0329",
       "metric": "LEVEL",
       "sourceId": "TNK-0021",
-      "value": 19798,
+      "value": 19567,
       "unit": "mm",
-      "timestamp": "2026-06-09T23:00:00.000Z"
+      "timestamp": "2026-06-10T03:00:00.000Z"
     },
     {
       "id": "TEL-0330",
       "metric": "LEVEL",
       "sourceId": "TNK-0021",
-      "value": 19418,
+      "value": 19163,
       "unit": "mm",
-      "timestamp": "2026-06-08T22:00:00.000Z"
+      "timestamp": "2026-06-08T04:00:00.000Z"
     },
     {
       "id": "TEL-0331",
       "metric": "LEVEL",
       "sourceId": "TNK-0021",
-      "value": 19333,
+      "value": 19632,
       "unit": "mm",
-      "timestamp": "2026-06-08T00:00:00.000Z"
+      "timestamp": "2026-06-07T04:00:00.000Z"
     },
     {
       "id": "TEL-0332",
       "metric": "LEVEL",
       "sourceId": "TNK-0021",
-      "value": 19194,
+      "value": 19074,
       "unit": "mm",
-      "timestamp": "2026-06-07T00:00:00.000Z"
+      "timestamp": "2026-06-06T15:00:00.000Z"
     },
     {
       "id": "TEL-0333",
       "metric": "PRESSURE",
       "sourceId": "SEG-0002",
-      "value": 33.2,
+      "value": 25.9,
       "unit": "kg/cm²",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
@@ -3497,7 +3479,7 @@
       "id": "TEL-0334",
       "metric": "PRESSURE",
       "sourceId": "SEG-0002",
-      "value": 31.7,
+      "value": 31.2,
       "unit": "kg/cm²",
       "timestamp": "2026-06-11T12:00:00.000Z"
     },
@@ -3505,7 +3487,7 @@
       "id": "TEL-0335",
       "metric": "PRESSURE",
       "sourceId": "SEG-0002",
-      "value": 38.6,
+      "value": 38,
       "unit": "kg/cm²",
       "timestamp": "2026-06-10T12:00:00.000Z"
     },
@@ -3513,7 +3495,7 @@
       "id": "TEL-0336",
       "metric": "PRESSURE",
       "sourceId": "SEG-0003",
-      "value": 39.8,
+      "value": 26.3,
       "unit": "kg/cm²",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
@@ -3521,7 +3503,7 @@
       "id": "TEL-0337",
       "metric": "PRESSURE",
       "sourceId": "SEG-0003",
-      "value": 34.9,
+      "value": 23.1,
       "unit": "kg/cm²",
       "timestamp": "2026-06-11T12:00:00.000Z"
     },
@@ -3529,7 +3511,7 @@
       "id": "TEL-0338",
       "metric": "PRESSURE",
       "sourceId": "SEG-0003",
-      "value": 33,
+      "value": 33.8,
       "unit": "kg/cm²",
       "timestamp": "2026-06-10T12:00:00.000Z"
     },
@@ -3537,7 +3519,7 @@
       "id": "TEL-0339",
       "metric": "PRESSURE",
       "sourceId": "SEG-0004",
-      "value": 32.7,
+      "value": 30.8,
       "unit": "kg/cm²",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
@@ -3545,7 +3527,7 @@
       "id": "TEL-0340",
       "metric": "PRESSURE",
       "sourceId": "SEG-0004",
-      "value": 30.8,
+      "value": 37.3,
       "unit": "kg/cm²",
       "timestamp": "2026-06-11T12:00:00.000Z"
     },
@@ -3553,7 +3535,7 @@
       "id": "TEL-0341",
       "metric": "PRESSURE",
       "sourceId": "SEG-0004",
-      "value": 36.9,
+      "value": 26.5,
       "unit": "kg/cm²",
       "timestamp": "2026-06-10T12:00:00.000Z"
     },
@@ -3561,7 +3543,7 @@
       "id": "TEL-0342",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0023",
-      "value": 1085,
+      "value": 694,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
@@ -3569,7 +3551,7 @@
       "id": "TEL-0343",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0027",
-      "value": 415,
+      "value": 1443,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
@@ -3577,7 +3559,7 @@
       "id": "TEL-0344",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0028",
-      "value": 1446,
+      "value": 559,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
@@ -3585,7 +3567,7 @@
       "id": "TEL-0345",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0040",
-      "value": 1058,
+      "value": 398,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
@@ -3593,7 +3575,7 @@
       "id": "TEL-0346",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0045",
-      "value": 501,
+      "value": 1299,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
@@ -3601,7 +3583,7 @@
       "id": "TEL-0347",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0046",
-      "value": 417,
+      "value": 1446,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
@@ -3609,7 +3591,7 @@
       "id": "TEL-0348",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0049",
-      "value": 446,
+      "value": 1208,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
@@ -3617,7 +3599,7 @@
       "id": "TEL-0349",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0058",
-      "value": 597,
+      "value": 860,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     }

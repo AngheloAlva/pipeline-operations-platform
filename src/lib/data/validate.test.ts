@@ -6,7 +6,7 @@
 import { describe, it, expect } from "vitest";
 import { validateWorld } from "./validate";
 import { generateWorld } from "./generate";
-import type { PipelineWorld } from "@/lib/domain";
+import type { PipelineWorld, VolumeTarget, TelemetryPoint } from "@/lib/domain";
 import { WorkOrderStatus } from "@/lib/domain";
 
 describe("validateWorld", () => {
@@ -179,5 +179,92 @@ describe("validateWorld", () => {
     const result = validateWorld(tampered);
     expect(result.valid).toBe(false);
     expect(result.errors.length).toBeGreaterThanOrEqual(2);
+  });
+
+  // ------------------------------------------------------------------
+  // Rule: VolumeTarget.shipperId FK against known shipper IDs
+  // ------------------------------------------------------------------
+  describe("VolumeTarget.shipperId FK validation", () => {
+    it("valid world (generated) passes — shipperId FK is satisfied", () => {
+      const world = generateWorld({ seed: 42 });
+      const result = validateWorld(world);
+      expect(result.valid).toBe(true);
+    });
+
+    it("VolumeTarget with unknown shipperId is detected", () => {
+      const world = generateWorld({ seed: 42 });
+      const badTarget: VolumeTarget = {
+        ...world.volumeTargets[0],
+        shipperId: "nonexistent-shipper-id",
+      };
+      const tampered: PipelineWorld = {
+        ...world,
+        volumeTargets: [badTarget, ...world.volumeTargets.slice(1)],
+      };
+      const result = validateWorld(tampered);
+      expect(result.valid).toBe(false);
+      expect(
+        result.errors.some(
+          (e) => e.toLowerCase().includes("shipper") || e.includes("nonexistent-shipper-id"),
+        ),
+      ).toBe(true);
+    });
+  });
+
+  // ------------------------------------------------------------------
+  // Rule: Tank balance closure (§6 from DATA_GENERATOR_SPEC.md)
+  // ------------------------------------------------------------------
+  describe("Tank balance closure validation", () => {
+    it("valid generated world passes balance closure check", () => {
+      const world = generateWorld({ seed: 42 });
+      const result = validateWorld(world);
+      expect(result.valid).toBe(true);
+    });
+
+    it("tank with structurally negative closing stock is detected", () => {
+      const world = generateWorld({ seed: 42 });
+      // Force a tank to have a clearly negative currentLevelM3 to simulate structural breakage
+      const tampered: PipelineWorld = {
+        ...world,
+        tanks: [{ ...world.tanks[0], currentLevelM3: -500 }, ...world.tanks.slice(1)],
+      };
+      const result = validateWorld(tampered);
+      expect(result.valid).toBe(false);
+      expect(
+        result.errors.some(
+          (e) => e.toLowerCase().includes("negative") || e.toLowerCase().includes("currentlevel"),
+        ),
+      ).toBe(true);
+    });
+  });
+
+  // ------------------------------------------------------------------
+  // Rule: TelemetryPoint.sourceId against tank ∪ segment ∪ equipment IDs
+  // ------------------------------------------------------------------
+  describe("TelemetryPoint.sourceId FK validation", () => {
+    it("valid generated world passes — all telemetry sourceIds resolve", () => {
+      const world = generateWorld({ seed: 42 });
+      const result = validateWorld(world);
+      expect(result.valid).toBe(true);
+    });
+
+    it("TelemetryPoint with unknown sourceId is detected", () => {
+      const world = generateWorld({ seed: 42 });
+      const badPoint: TelemetryPoint = {
+        ...world.telemetry[0],
+        sourceId: "nonexistent-source-id",
+      };
+      const tampered: PipelineWorld = {
+        ...world,
+        telemetry: [badPoint, ...world.telemetry.slice(1)],
+      };
+      const result = validateWorld(tampered);
+      expect(result.valid).toBe(false);
+      expect(
+        result.errors.some(
+          (e) => e.toLowerCase().includes("telemetry") || e.includes("nonexistent-source-id"),
+        ),
+      ).toBe(true);
+    });
   });
 });

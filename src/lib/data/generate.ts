@@ -155,12 +155,14 @@ function generateStations(pipeline: Pipeline, cfg: GeneratorConfig, rng: Rng): S
 // ============================================================================
 
 function generateTanks(stations: Station[], cfg: GeneratorConfig, rng: Rng): Tank[] {
-  // All station kinds can have tanks (pump stations also have surge/slop tanks)
-  const storageKinds = new Set<string>(Object.values(NodeKind));
+  // All station kinds get tanks — pump stations have surge/slop tanks;
+  // guarantees the ≥10 tank minimum. Deliberate deviation from DATA_GENERATOR_SPEC.md §4.3
+  // which restricts tanks to storage/terminal stations only.
+  const tankEligibleKinds = new Set<string>(Object.values(NodeKind));
   const tanks: Tank[] = [];
 
   for (const station of stations) {
-    if (!storageKinds.has(station.kind)) continue;
+    if (!tankEligibleKinds.has(station.kind)) continue;
     const count = pickInt(rng, cfg.tanksPerStation.min, cfg.tanksPerStation.max);
     for (let i = 0; i < count; i++) {
       const capacity = pickInt(rng, 15000, 100000);
@@ -570,6 +572,7 @@ function generateMaintenancePlans(
 
 function generateWorkOrders(
   tasks: MaintenanceTask[],
+  plans: MaintenancePlan[],
   equipment: Equipment[],
   stations: Station[],
   rng: Rng,
@@ -578,6 +581,12 @@ function generateWorkOrders(
   const today = todayString();
   const stationIds = stations.map((s) => s.id);
   const equipById = new Map(equipment.map((e) => [e.id, e]));
+  // Build map from planId -> plan.equipmentId for task → plan → equipment resolution
+  const planEquipmentId = new Map<string, string | undefined>(
+    plans.map((p) => [p.id, p.equipmentId]),
+  );
+  // Build map from taskId -> planId
+  const taskPlanId = new Map<string, string>(tasks.map((t) => [t.id, t.planId]));
 
   // OT counter per station abbreviation
   const otCounters = new Map<string, number>();
@@ -593,13 +602,14 @@ function generateWorkOrders(
   // Create WOs from tasks (preventive) — about 50% of tasks become WOs
   for (const task of tasks) {
     if (rng() > 0.5) continue;
-    const equip = [...equipById.values()].find((e) => {
-      // Find equipment via plan → task relationship
-      return true; // simplified: pick a random equipment from same station
-    });
-    // Pick an equipment
-    const randomEquip = equipment[pickInt(rng, 0, equipment.length - 1)];
-    const stationId = randomEquip.stationId;
+    // Resolve equipment via task → plan → plan.equipmentId chain
+    const planId = taskPlanId.get(task.id);
+    const resolvedEquipId = planId ? planEquipmentId.get(planId) : undefined;
+    const resolvedEquip = resolvedEquipId ? equipById.get(resolvedEquipId) : undefined;
+    // Fall back to random equipment only when the chain cannot resolve
+    // (e.g. plan has no equipmentId), to guarantee a valid FK reference
+    const targetEquip = resolvedEquip ?? equipment[pickInt(rng, 0, equipment.length - 1)];
+    const stationId = targetEquip.stationId;
     const statusRoll = rng();
     let status: string;
     let progress: number;
@@ -626,7 +636,7 @@ function generateWorkOrders(
       priority: pickOne(rng, Object.values(WorkOrderPriority)),
       progress,
       description: `Mantenimiento preventivo — ${task.name}`,
-      equipmentId: randomEquip.id,
+      equipmentId: targetEquip.id,
       stationId,
       taskId: task.id,
       programDate: offsetDate(today, pickInt(rng, -30, 30)),
@@ -841,7 +851,7 @@ export function generateWorld(config?: Partial<GeneratorConfig>): PipelineWorld 
   const movements = generateMovements(pipeline, stations, tanks, shippers, cfg, rng);
   const volumeTargets = generateVolumeTargets(movements, shippers, cfg, rng);
   const { plans: maintenancePlans, tasks } = generateMaintenancePlans(equipment, rng);
-  const workOrders = generateWorkOrders(tasks, equipment, stations, rng);
+  const workOrders = generateWorkOrders(tasks, maintenancePlans, equipment, stations, rng);
   const cathodicReadings = generateCathodicReadings(pipeline, stations, rng);
   const telemetry = generateTelemetry(tanks, pipeline, equipment, cfg, rng);
 

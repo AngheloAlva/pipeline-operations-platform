@@ -6,6 +6,7 @@
 import { describe, it, expect } from "vitest";
 import { generateWorld } from "./generate";
 import { DEFAULT_CONFIG } from "./config";
+import seedJson from "./seed.json";
 
 // ---------------------------------------------------------------------------
 // REQ-011-A: Same seed produces same world
@@ -191,5 +192,40 @@ describe("generateWorld — minimum entity counts", () => {
 
   it("has telemetry points", () => {
     expect(world.telemetry.length).toBeGreaterThan(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// REQ-WO-TRACEABILITY: WorkOrder equipmentId traces back to plan's equipmentId
+// ---------------------------------------------------------------------------
+describe("generateWorld — WorkOrder equipment traceability", () => {
+  const world = generateWorld({ seed: 100 });
+
+  it("every WO with a taskId has equipmentId matching the parent plan's equipmentId", () => {
+    // Build a map from taskId -> plan.equipmentId
+    const taskToPlanEquipment = new Map<string, string>();
+    for (const plan of world.maintenancePlans) {
+      if (!plan.equipmentId) continue;
+      for (const task of plan.tasks) {
+        taskToPlanEquipment.set(task.id, plan.equipmentId);
+      }
+    }
+
+    for (const wo of world.workOrders) {
+      if (!wo.taskId) continue;
+      const expectedEquipId = taskToPlanEquipment.get(wo.taskId);
+      if (expectedEquipId === undefined) continue; // task not from a plan with equipment
+      expect(wo.equipmentId).toBe(expectedEquipId);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// REQ-SEED-STALENESS: committed seed.json matches generateWorld with FIXED_SEED
+// ---------------------------------------------------------------------------
+describe("generateWorld — seed.json staleness guard", () => {
+  it("seed.json matches generateWorld({ ...DEFAULT_CONFIG, seed: 2026 })", () => {
+    const generated = generateWorld({ ...DEFAULT_CONFIG, seed: 2026 });
+    expect(JSON.stringify(generated)).toBe(JSON.stringify(seedJson));
   });
 });

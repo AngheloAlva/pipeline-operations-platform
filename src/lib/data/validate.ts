@@ -6,6 +6,7 @@
 import type { PipelineWorld } from "@/lib/domain";
 import { WorkOrderStatus } from "@/lib/domain";
 import { evaluatePotential } from "@/lib/integrity/thresholds";
+import { computeBalance } from "@/lib/volumetrics/balance";
 
 /** Result of a world validation check. */
 export interface ValidationResult {
@@ -168,6 +169,30 @@ export function validateWorld(world: PipelineWorld): ValidationResult {
   }
 
   // ------------------------------------------------------------------
+  // Rule 1h: VolumeTarget.shipperId FK against known shipper IDs
+  // ------------------------------------------------------------------
+  for (const target of world.volumeTargets) {
+    if (target.shipperId && !shipperIds.has(target.shipperId)) {
+      errors.push(
+        `VolumeTarget ${target.id} references non-existent shipperId: ${target.shipperId}`,
+      );
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Rule 1i: TelemetryPoint.sourceId FK against tank ∪ segment ∪ equipment IDs
+  // ------------------------------------------------------------------
+  for (const point of world.telemetry) {
+    const sourceValid =
+      tankIds.has(point.sourceId) ||
+      segmentIds.has(point.sourceId) ||
+      equipmentIds.has(point.sourceId);
+    if (!sourceValid) {
+      errors.push(`TelemetryPoint ${point.id} references non-existent sourceId: ${point.sourceId}`);
+    }
+  }
+
+  // ------------------------------------------------------------------
   // Rule 2: Tank level in bounds [0, capacityM3]
   // ------------------------------------------------------------------
   for (const tank of world.tanks) {
@@ -179,6 +204,48 @@ export function validateWorld(world: PipelineWorld): ValidationResult {
     if (tank.currentLevelM3 > tank.capacityM3) {
       errors.push(
         `Tank ${tank.id} (${tank.tag}) currentLevelM3 (${tank.currentLevelM3}) exceeds capacityM3 (${tank.capacityM3})`,
+      );
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Rule 2b: Tank balance closure per DATA_GENERATOR_SPEC.md §6
+  // The generator's running-level tracking uses station IDs as fromNodeId/toNodeId,
+  // so we verify at station level. Intentional ±0.2–0.3% per-movement mismatches
+  // (≤10% of movements) are accepted; structural breakage (computed closing stock
+  // negative by more than 1 m³ epsilon) is rejected.
+  // ------------------------------------------------------------------
+  const tanksByStation = new Map<string, typeof world.tanks>();
+  for (const tank of world.tanks) {
+    const list = tanksByStation.get(tank.stationId) ?? [];
+    list.push(tank);
+    tanksByStation.set(tank.stationId, list);
+  }
+
+  for (const station of world.stations) {
+    const stationTanks = tanksByStation.get(station.id) ?? [];
+    if (stationTanks.length === 0) continue;
+
+    const initialStock = stationTanks.reduce((sum, t) => sum + t.currentLevelM3, 0);
+
+    const inputs = world.movements
+      .filter((m) => m.toNodeId === station.id)
+      .map((m) => m.volumeGsvM3);
+    const outputs = world.movements
+      .filter((m) => m.fromNodeId === station.id)
+      .map((m) => m.volumeGsvM3);
+
+    const result = computeBalance({
+      initial: initialStock,
+      inputs,
+      outputs,
+      measured: initialStock,
+    });
+
+    // Structural breakage: computed closing stock is negative (below -1 m³ epsilon)
+    if (result.calculated < -1) {
+      errors.push(
+        `Station ${station.id} (${station.name}) balance closure: computed closing stock is negative (${result.calculated.toFixed(2)} m³). Structural breakage detected.`,
       );
     }
   }

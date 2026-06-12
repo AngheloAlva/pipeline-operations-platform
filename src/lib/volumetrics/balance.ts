@@ -111,14 +111,29 @@ export interface HourlyBalance {
 /**
  * Group historical movements by UTC hour and compute per-hour balance.
  * Movements are bucketed by the hour of their `startedAt` timestamp.
- * A movement is counted as "entradas" when its `toNodeId` starts with "T-"
- * (i.e., it fills a tank); otherwise it is counted as "salidas".
- * SR-009.
+ *
+ * Classification rule (domain choice — documented):
+ *   - entradas: movement whose `toNodeId` is in `tankIds` (fluid entering a tank).
+ *   - salidas:  movement whose `fromNodeId` is in `tankIds` (fluid leaving a tank).
+ *   - Tank-to-tank: counted as both entrada and salida — the receiving tank
+ *     records an entrada and the sending tank records a salida. This preserves
+ *     per-tank conservation without double-counting at system level when the
+ *     caller filters to a single tank's tankIds set.
+ *   - Station-to-station (neither node is a tank): volume is not attributed to
+ *     either bucket (transit-only movement, no tank stock change).
+ *
+ * The former `toNodeId.startsWith("T-")` heuristic only matched tank TAGs
+ * (e.g. "T-6010") but the generator uses tank IDs ("TNK-XXXX"), making all
+ * entradas zero with real data. SR-009.
  *
  * @param movements - Historical movements to group.
+ * @param tankIds   - Set of tank node IDs (e.g. "TNK-0010") used for classification.
  * @returns Sorted ascending array of hourly balance buckets.
  */
-export function groupBalanceByHour(movements: Movement[]): HourlyBalance[] {
+export function groupBalanceByHour(
+  movements: Movement[],
+  tankIds: ReadonlySet<string>,
+): HourlyBalance[] {
   const buckets = new Map<number, { entradas: number; salidas: number }>();
 
   for (const movement of movements) {
@@ -130,11 +145,13 @@ export function groupBalanceByHour(movements: Movement[]): HourlyBalance[] {
 
     const bucket = buckets.get(hour)!;
 
-    // Heuristic: movement into a tank id (T-*) is an entrada;
-    // movement out of a tank or into a non-tank node is a salida.
-    if (movement.toNodeId.startsWith("T-")) {
+    const toIsTank = tankIds.has(movement.toNodeId);
+    const fromIsTank = tankIds.has(movement.fromNodeId);
+
+    if (toIsTank) {
       bucket.entradas += movement.volumeGsvM3;
-    } else {
+    }
+    if (fromIsTank) {
       bucket.salidas += movement.volumeGsvM3;
     }
   }

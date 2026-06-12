@@ -135,10 +135,27 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
 
     const result = tickSimulation(state, deltaMs, state.speedMultiplier, state._tankCapacities);
 
-    // Refresh active flows at the new simulated time
-    const activeFlows = state._world
-      ? deriveFlowSchedule(state._world, result.simulatedTime, result.tankLevels)
-      : state.activeFlows;
+    // Refresh active flows at the new simulated time — but reuse the existing
+    // reference when the schedule is structurally identical. deriveFlowSchedule
+    // allocates new objects every call, so without this guard useShallow still
+    // bails but FlowDiagram memo re-renders at 60fps.
+    let activeFlows = state.activeFlows;
+    if (state._world) {
+      const nextFlows = deriveFlowSchedule(state._world, result.simulatedTime, result.tankLevels);
+      // Structural comparison: same length AND every flow's identity fields match.
+      const sameSchedule =
+        nextFlows.length === state.activeFlows.length &&
+        nextFlows.every((f, i) => {
+          const prev = state.activeFlows[i];
+          return (
+            f.fromNodeId === prev.fromNodeId &&
+            f.toNodeId === prev.toNodeId &&
+            f.flowRateM3h === prev.flowRateM3h &&
+            f.shipperId === prev.shipperId
+          );
+        });
+      if (!sameSchedule) activeFlows = nextFlows;
+    }
 
     // Avoid rebuilding tankLevels when nothing changed (no active flows).
     // Subscribers that select individual tanks re-render only when their value
@@ -192,4 +209,19 @@ export function useSpeedMultiplier(): (typeof SIM_SPEEDS)[number] {
 /** Fine-grained selector for the current simulated time (epoch ms). */
 export function useSimulatedTime(): number {
   return useSimulationStore((state) => state.simulatedTime);
+}
+
+/**
+ * Fine-grained selector for the current simulated time floored to whole seconds.
+ *
+ * Floors simulatedTime to the nearest whole second before exposing to
+ * subscribers. Because Zustand uses Object.is comparison, sub-second ticks
+ * (60fps rAF loop) do not trigger a re-render as long as the integer second
+ * is unchanged. This suppresses ~59 out of 60 re-renders for components that
+ * only display HH:MM:SS (e.g. SimClock).
+ *
+ * SimClock must use this hook instead of useSimulatedTime().
+ */
+export function useSimulatedTimeSeconds(): number {
+  return useSimulationStore((state) => Math.floor(state.simulatedTime / 1000));
 }

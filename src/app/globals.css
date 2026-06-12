@@ -169,6 +169,15 @@
 }
 
 /* ---------------------------------------------------------------------------
+ * Pipe flow animation — used by FlowDiagram PipeEdge component.
+ * Defined here (not inline) to avoid re-injecting the @keyframes rule on
+ * every render cycle, which causes style churn at 60fps.
+ * --------------------------------------------------------------------------- */
+@keyframes flow-dash {
+  to { stroke-dashoffset: -100; }
+}
+
+/* ---------------------------------------------------------------------------
  * Base body styles
  * --------------------------------------------------------------------------- */
 body {

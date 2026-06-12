@@ -136,8 +136,11 @@ export function deriveFlowSchedule(
     // Domain constraint: flow rates within 300–1500 m³/h (SR-001 req 8)
     rateM3h = clampLevel(rateM3h, 300, 1500);
 
-    // Deterministic active-hour check — use a simple hash of the movement id
-    // and the world so the schedule is identical for the same inputs.
+    // Deterministic active-hour check — idSum % 24 is intentionally simple.
+    // It is not a real scheduling algorithm: it produces burst-and-idle patterns
+    // where many movements share the same active hour and others have none.
+    // The value is deterministic given a fixed movement ID, which is the only
+    // requirement here (reproducibility across ticks for the same world).
     const idSum = movement.id.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
     const activeHour = idSum % 24;
 
@@ -151,10 +154,20 @@ export function deriveFlowSchedule(
     });
   }
 
-  // Feasibility filter: remove flows that would drain an empty tank or
-  // that originate from a tank with no remaining volume. This ensures
-  // the invariant (no overdrain) holds without relying solely on the clamp.
+  // Feasibility filter: account for projected volume over 1 simulated hour
+  // AND concurrent flows. This prevents the schedule from collectively
+  // over-filling a destination or over-draining a source.
+  //
+  // Pass 1: exclude flows that are already infeasible at current state.
+  // Pass 2: among remaining candidates, accumulate projected deltas per tank
+  //         and drop flows that would exceed headroom or exhaust availability
+  //         when combined with previously accepted flows.
   const feasible: ActiveFlow[] = [];
+
+  // Accumulate how much volume is projected to arrive at / leave each tank
+  const projectedIn: Record<string, number> = {};
+  const projectedOut: Record<string, number> = {};
+
   for (const flow of candidates) {
     const fromLevel = levels[flow.fromNodeId];
     const toLevel = levels[flow.toNodeId];
@@ -166,6 +179,25 @@ export function deriveFlowSchedule(
     // Skip if destination tank is already at capacity
     if (toLevel !== undefined && toCap !== undefined && toLevel >= toCap) continue;
 
+    // Projected delta for this flow over 1 simulated hour
+    const deltaM3 = flow.flowRateM3h;
+
+    // Check combined projected outflow against source availability
+    if (fromLevel !== undefined) {
+      const alreadyOut = projectedOut[flow.fromNodeId] ?? 0;
+      if (alreadyOut + deltaM3 > fromLevel) continue;
+    }
+
+    // Check combined projected inflow against destination headroom
+    if (toLevel !== undefined && toCap !== undefined) {
+      const alreadyIn = projectedIn[flow.toNodeId] ?? 0;
+      const headroom = toCap - toLevel;
+      if (alreadyIn + deltaM3 > headroom) continue;
+    }
+
+    // Flow is feasible — record its projected contribution
+    projectedOut[flow.fromNodeId] = (projectedOut[flow.fromNodeId] ?? 0) + deltaM3;
+    projectedIn[flow.toNodeId] = (projectedIn[flow.toNodeId] ?? 0) + deltaM3;
     feasible.push(flow);
   }
 
@@ -199,11 +231,15 @@ export interface FillEmptyTimeResult {
  *
  * hoursToFull  = (capacity − level) / incomingRate
  * hoursToEmpty = level / outgoingRate
+ *
+ * @param now - Current epoch ms. Callers must supply this value (e.g. Date.now()
+ *              at the call site) to keep this function pure and testable.
  */
 export function estimateFillEmptyTime(
   tank: TankEstimateInput,
   incomingRateM3h: number,
   outgoingRateM3h: number,
+  now: number,
 ): FillEmptyTimeResult {
   const hoursToFull =
     incomingRateM3h > 0 ? (tank.capacity - tank.level) / incomingRateM3h : Infinity;
@@ -213,6 +249,6 @@ export function estimateFillEmptyTime(
   return {
     hoursToFull,
     hoursToEmpty,
-    estimatedAt: Date.now(),
+    estimatedAt: now,
   };
 }

@@ -249,6 +249,193 @@ describe("deriveFlowSchedule", () => {
     const drainsEmptyTank = schedule.some((f) => f.fromNodeId === "T-A" && f.flowRateM3h > 0);
     expect(drainsEmptyTank).toBe(false);
   });
+
+  // -------------------------------------------------------------------------
+  // Projected-volume feasibility tests (concurrent flows, near-full/near-empty)
+  // -------------------------------------------------------------------------
+
+  /** Build a world with multiple movements that all share the same activeHour.
+   * We force the hash to land on a specific hour by crafting movement IDs whose
+   * charCode sum % 24 equals the desired hour. */
+  function makeWorldWithMovements(
+    tanks: ReturnType<typeof makeTank>[],
+    moves: Array<{ from: string; to: string; rateM3h: number; id: string }>,
+    targetHour: number,
+  ): PipelineWorld {
+    return {
+      pipeline: {
+        id: "p1",
+        name: "Test pipeline",
+        diameterInches: 16,
+        totalLengthKm: 100,
+        segments: [],
+      },
+      stations: [{ id: "s1", name: "Station 1", kind: "PUMP_STATION", km: 0, pipelineId: "p1" }],
+      tanks,
+      shippers: [{ id: "sh1", name: "Shipper 1" }],
+      equipment: [],
+      movements: moves.map((m) => {
+        // Pad the id so charCodeSum % 24 == targetHour
+        const base = m.id.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+        const remainder = (targetHour - (base % 24) + 24) % 24;
+        // Append remainder null chars (charCode 0) or spaces (32) to shift sum
+        // Use a deterministic padding: append remainder ASCII chars that each contribute 1
+        // Use char \x01 (charCode 1) repeated `remainder` times
+        const paddedId = m.id + "\x01".repeat(remainder);
+        return {
+          id: paddedId,
+          type: "PIPELINE" as const,
+          fromNodeId: m.from,
+          toNodeId: m.to,
+          shipperId: "sh1",
+          volumeGsvM3: m.rateM3h * 1,
+          volume15CM3: m.rateM3h * 1,
+          volume60FM3: m.rateM3h * 1,
+          temperatureF: 77,
+          apiGravity: 30,
+          startedAt: "2026-06-01T00:00:00Z",
+          endedAt: "2026-06-01T01:00:00Z",
+        };
+      }),
+      volumeTargets: [],
+      maintenancePlans: [],
+      workOrders: [],
+      cathodicReadings: [],
+      telemetry: [],
+    };
+  }
+
+  it("excludes/trims concurrent inflows that would collectively overfill a near-full tank (≥99%)", () => {
+    // T-DEST is at 99% of capacity (9900/10000). Two inflows each at 500 m³/h.
+    // Over 1 simulated hour, combined delta = 1000 m³, but headroom = 100 m³.
+    // The feasibility check must ensure combined projected delta ≤ headroom.
+    const destCap = 10_000;
+    const destLevel = 9_900; // 99% full
+    const tanks = [
+      makeTank("T-SRC1", 5000, 10_000),
+      makeTank("T-SRC2", 5000, 10_000),
+      makeTank("T-DEST", destLevel, destCap),
+    ];
+
+    // Force both movements to the same hour by using a fixed simulatedTime
+    // corresponding to hour 0 (epoch start is hour 0 UTC)
+    const targetHour = 0;
+    const simulatedTime = 0; // epoch ms → hour 0
+
+    const world = makeWorldWithMovements(
+      tanks,
+      [
+        { from: "T-SRC1", to: "T-DEST", rateM3h: 500, id: "flow1" },
+        { from: "T-SRC2", to: "T-DEST", rateM3h: 500, id: "flow2" },
+      ],
+      targetHour,
+    );
+
+    const schedule = deriveFlowSchedule(world, simulatedTime, {
+      "T-SRC1": 5000,
+      "T-SRC2": 5000,
+      "T-DEST": destLevel,
+    });
+
+    // Combined projected fill over 1h = sum of rates × 1h
+    const inflows = schedule.filter((f) => f.toNodeId === "T-DEST");
+    const combinedDeltaM3 = inflows.reduce((sum, f) => sum + f.flowRateM3h * 1, 0);
+    const headroom = destCap - destLevel;
+
+    // The schedule must not project more volume than headroom
+    expect(combinedDeltaM3).toBeLessThanOrEqual(headroom);
+  });
+
+  it("excludes/trims concurrent outflows from a near-empty source tank", () => {
+    // T-SRC is at 1% of capacity (100/10000). Two outflows each at 100 m³/h.
+    // Over 1h, combined drain = 200 m³, but availability = 100 m³.
+    const srcCap = 10_000;
+    const srcLevel = 100; // ~1% full
+    const tanks = [
+      makeTank("T-SRC", srcLevel, srcCap),
+      makeTank("T-DEST1", 5000, 10_000),
+      makeTank("T-DEST2", 5000, 10_000),
+    ];
+
+    const targetHour = 0;
+    const simulatedTime = 0;
+
+    const world = makeWorldWithMovements(
+      tanks,
+      [
+        { from: "T-SRC", to: "T-DEST1", rateM3h: 100, id: "out1" },
+        { from: "T-SRC", to: "T-DEST2", rateM3h: 100, id: "out2" },
+      ],
+      targetHour,
+    );
+
+    const schedule = deriveFlowSchedule(world, simulatedTime, {
+      "T-SRC": srcLevel,
+      "T-DEST1": 5000,
+      "T-DEST2": 5000,
+    });
+
+    const outflows = schedule.filter((f) => f.fromNodeId === "T-SRC");
+    const combinedDrainM3 = outflows.reduce((sum, f) => sum + f.flowRateM3h * 1, 0);
+    const available = srcLevel;
+
+    expect(combinedDrainM3).toBeLessThanOrEqual(available);
+  });
+
+  // Strengthened long-run invariant: 24h at 600× near-boundary tanks
+  // Asserts (a) levels in [0, cap] and (b) clamp never engaged
+  it("24h at 600× with tanks near boundaries: levels stay in [0,cap] and clamping never engages", () => {
+    // Start T-A near-full and T-B near-empty to maximize boundary pressure
+    const tanks = [makeTank("T-A", 9_500, 10_000), makeTank("T-B", 500, 10_000)];
+    const world = makeWorld(tanks, "T-A", "T-B", 500);
+
+    const stepMs = 10;
+    const simDuration = 24 * 3600 * 1000;
+    const speed = 600;
+
+    let tankLevels: Record<string, number> = { "T-A": 9_500, "T-B": 500 };
+    let simulatedTime = Date.now();
+    let elapsed = 0;
+    const capacities: Record<string, { capacityM3: number }> = {
+      "T-A": { capacityM3: 10_000 },
+      "T-B": { capacityM3: 10_000 },
+    };
+
+    let prevLevels = { ...tankLevels };
+    let clampEngaged = false;
+
+    while (elapsed < simDuration) {
+      const activeFlows = deriveFlowSchedule(world, simulatedTime, tankLevels);
+      const state = makeState({ tankLevels, activeFlows, speedMultiplier: speed, simulatedTime });
+      const result = tickSimulation(state, stepMs, speed, capacities);
+
+      // Detect if clamping engaged: a level pinned at exactly 0 or cap while a flow is active
+      if (activeFlows.length > 0) {
+        for (const [id, level] of Object.entries(result.tankLevels)) {
+          const cap = capacities[id]?.capacityM3;
+          const prevLevel = prevLevels[id] ?? level;
+          if (cap !== undefined) {
+            // Clamping engaged if level sits at boundary AND it was already at boundary last tick
+            if (level === 0 && prevLevel === 0) clampEngaged = true;
+            if (level === cap && prevLevel === cap) clampEngaged = true;
+          }
+        }
+      }
+
+      prevLevels = { ...result.tankLevels };
+      tankLevels = result.tankLevels;
+      simulatedTime = result.simulatedTime;
+      elapsed += stepMs * speed;
+
+      for (const [id, level] of Object.entries(tankLevels)) {
+        const cap = capacities[id]?.capacityM3;
+        expect(level).toBeGreaterThanOrEqual(0);
+        if (cap !== undefined) expect(level).toBeLessThanOrEqual(cap);
+      }
+    }
+
+    expect(clampEngaged).toBe(false);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -256,29 +443,55 @@ describe("deriveFlowSchedule", () => {
 // ---------------------------------------------------------------------------
 
 describe("estimateFillEmptyTime", () => {
+  const FIXED_NOW = 1_700_000_000_000; // deterministic epoch for testing
+
   it("computes hoursToFull = (capacity - level) / incomingRate", () => {
-    const result = estimateFillEmptyTime({ id: "T-1", level: 5000, capacity: 10_000 }, 1000, 0);
+    const result = estimateFillEmptyTime(
+      { id: "T-1", level: 5000, capacity: 10_000 },
+      1000,
+      0,
+      FIXED_NOW,
+    );
     expect(result.hoursToFull).toBeCloseTo(5, 5);
   });
 
   it("computes hoursToEmpty = level / outgoingRate", () => {
-    const result = estimateFillEmptyTime({ id: "T-1", level: 5000, capacity: 10_000 }, 0, 500);
+    const result = estimateFillEmptyTime(
+      { id: "T-1", level: 5000, capacity: 10_000 },
+      0,
+      500,
+      FIXED_NOW,
+    );
     expect(result.hoursToEmpty).toBeCloseTo(10, 5);
   });
 
   it("returns Infinity for hoursToFull when incomingRate is 0", () => {
-    const result = estimateFillEmptyTime({ id: "T-1", level: 5000, capacity: 10_000 }, 0, 500);
+    const result = estimateFillEmptyTime(
+      { id: "T-1", level: 5000, capacity: 10_000 },
+      0,
+      500,
+      FIXED_NOW,
+    );
     expect(result.hoursToFull).toBe(Infinity);
   });
 
   it("returns Infinity for hoursToEmpty when outgoingRate is 0", () => {
-    const result = estimateFillEmptyTime({ id: "T-1", level: 5000, capacity: 10_000 }, 500, 0);
+    const result = estimateFillEmptyTime(
+      { id: "T-1", level: 5000, capacity: 10_000 },
+      500,
+      0,
+      FIXED_NOW,
+    );
     expect(result.hoursToEmpty).toBe(Infinity);
   });
 
-  it("includes estimatedAt as a number (epoch ms)", () => {
-    const result = estimateFillEmptyTime({ id: "T-1", level: 5000, capacity: 10_000 }, 1000, 1000);
-    expect(typeof result.estimatedAt).toBe("number");
-    expect(result.estimatedAt).toBeGreaterThan(0);
+  it("uses the provided now parameter as estimatedAt (pure — no Date.now() call)", () => {
+    const result = estimateFillEmptyTime(
+      { id: "T-1", level: 5000, capacity: 10_000 },
+      1000,
+      1000,
+      FIXED_NOW,
+    );
+    expect(result.estimatedAt).toBe(FIXED_NOW);
   });
 });

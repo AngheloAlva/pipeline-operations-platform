@@ -81,12 +81,18 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
         </span>
       </div>
 
-      {/* SVG ruler */}
+      {/* SVG ruler — constrained to max-w-[1080px] + mx-auto to eliminate dead side
+          space at viewports wider than the viewBox. aspect-ratio governs height.
+          At 2000px the ruler is 1080px wide (centered) with no letterboxing. */}
       <svg
         viewBox={`0 0 ${vbWidth} ${vbHeight}`}
-        preserveAspectRatio="none"
-        className="w-full"
-        style={{ height: `${vbHeight * 1.5}px`, display: "block" }}
+        preserveAspectRatio="xMidYMid meet"
+        className="mx-auto block w-full"
+        style={{
+          display: "block",
+          aspectRatio: `${vbWidth} / ${vbHeight}`,
+          maxWidth: `${vbWidth}px`,
+        }}
         aria-hidden="true"
       >
         {/* Segment tints */}

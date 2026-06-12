@@ -11,6 +11,7 @@ import {
   ComposedChart,
   Bar,
   Cell,
+  LabelList,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -174,7 +175,7 @@ export function WaterfallChart({ inputs }: WaterfallChartProps) {
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 4 }}>
+            <ComposedChart data={data} margin={{ top: 20, right: 8, left: 8, bottom: 4 }}>
               <CartesianGrid strokeDasharray="2 4" stroke={COLORS.grid} vertical={false} />
               <XAxis
                 dataKey="label"
@@ -196,6 +197,10 @@ export function WaterfallChart({ inputs }: WaterfallChartProps) {
                 tickLine={false}
                 width={64}
                 tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
+                domain={[
+                  (dataMin: number) => dataMin,
+                  (dataMax: number) => dataMax * 1.15,
+                ]}
               />
               <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(200,208,220,0.04)" }} />
               {/* Zero reference line */}
@@ -211,6 +216,19 @@ export function WaterfallChart({ inputs }: WaterfallChartProps) {
                     fillOpacity={0.85}
                   />
                 ))}
+                {/* Persistent signed label on each bar — same value as tooltip (SR-010) */}
+                <LabelList
+                  dataKey="waterfallDelta"
+                  position="top"
+                  formatter={(value: unknown) =>
+                    typeof value === "number" ? formatM3(value) : ""
+                  }
+                  style={{
+                    fill: INK_TERTIARY,
+                    fontSize: 10,
+                    fontFamily: CHART_FONT_MONO,
+                  }}
+                />
               </Bar>
             </ComposedChart>
           </ResponsiveContainer>

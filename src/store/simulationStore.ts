@@ -143,6 +143,7 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
     if (state._world) {
       const nextFlows = deriveFlowSchedule(state._world, result.simulatedTime, result.tankLevels);
       // Structural comparison: same length AND every flow's identity fields match.
+      // Includes fromTankId/toTankId since deriveFlowSchedule now resolves these.
       const sameSchedule =
         nextFlows.length === state.activeFlows.length &&
         nextFlows.every((f, i) => {
@@ -150,6 +151,8 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
           return (
             f.fromNodeId === prev.fromNodeId &&
             f.toNodeId === prev.toNodeId &&
+            f.fromTankId === prev.fromTankId &&
+            f.toTankId === prev.toTankId &&
             f.flowRateM3h === prev.flowRateM3h &&
             f.shipperId === prev.shipperId
           );

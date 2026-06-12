@@ -28,10 +28,22 @@ export const MAX_TICK_MS = 200;
 
 /** A flow currently active in the simulation (one direction, one shipper). */
 export interface ActiveFlow {
-  /** Source node (tank id, station id, or external node id). */
+  /** Source station node ID — used by FlowDiagram for edge routing. */
   fromNodeId: string;
-  /** Destination node. */
+  /** Destination station node ID — used by FlowDiagram for edge routing. */
   toNodeId: string;
+  /**
+   * Resolved source tank ID — the tank at the source station with the highest
+   * current level. Used by tickSimulation for actual volume transfer.
+   * Undefined if no tanks exist at the source station (edge/external nodes).
+   */
+  fromTankId?: string;
+  /**
+   * Resolved destination tank ID — the tank at the destination station with
+   * the lowest current level. Used by tickSimulation for actual volume transfer.
+   * Undefined if no tanks exist at the destination station.
+   */
+  toTankId?: string;
   /** Volumetric flow rate in m³/h. */
   flowRateM3h: number;
   /** Optional associated shipper. */

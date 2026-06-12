@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { kmToX, buildStationLayout, buildEdges } from "./layout";
+import { kmToX, buildStationLayout, buildEdges, flowRateToAnimDur } from "./layout";
 
 // ============================================================================
 // kmToX
@@ -130,5 +130,47 @@ describe("buildEdges", () => {
     expect(edges[0].y1).toBe(150);
     expect(edges[0].x2).toBe(400);
     expect(edges[0].y2).toBe(200);
+  });
+});
+
+// ============================================================================
+// flowRateToAnimDur — Fix 7 (animateMotion dur derived from flow rate)
+// RED: flowRateToAnimDur does not exist yet; tests written before implementation.
+// ============================================================================
+
+describe("flowRateToAnimDur", () => {
+  // Faster flow → shorter duration (snappier animation)
+  it("returns a shorter duration for a faster flow rate", () => {
+    const slowDur = flowRateToAnimDur(300);
+    const fastDur = flowRateToAnimDur(1500);
+    expect(fastDur).toBeLessThan(slowDur);
+  });
+
+  it("clamps output to minimum of 1s for very high flow rates", () => {
+    expect(flowRateToAnimDur(99999)).toBe(1);
+  });
+
+  it("clamps output to maximum of 6s for zero or very low flow rates", () => {
+    expect(flowRateToAnimDur(0)).toBe(6);
+    expect(flowRateToAnimDur(-100)).toBe(6);
+  });
+
+  it("returns a value within [1, 6] for the domain boundary rates (300 and 1500 m³/h)", () => {
+    const atMin = flowRateToAnimDur(300);
+    const atMax = flowRateToAnimDur(1500);
+    expect(atMin).toBeGreaterThanOrEqual(1);
+    expect(atMin).toBeLessThanOrEqual(6);
+    expect(atMax).toBeGreaterThanOrEqual(1);
+    expect(atMax).toBeLessThanOrEqual(6);
+  });
+
+  it("returns exactly 6 at the domain minimum rate (300 m³/h maps to slowest animation)", () => {
+    // 300 m³/h is the domain minimum — flow is slow so animation is slow (dur=6s)
+    expect(flowRateToAnimDur(300)).toBe(6);
+  });
+
+  it("returns exactly 1 at the domain maximum rate (1500 m³/h maps to fastest animation)", () => {
+    // 1500 m³/h is the domain maximum — flow is fast so animation is fast (dur=1s)
+    expect(flowRateToAnimDur(1500)).toBe(1);
   });
 });

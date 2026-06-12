@@ -100,6 +100,39 @@ interface ActiveFlowLike {
   flowRateM3h: number;
 }
 
+// ============================================================================
+// flowRateToAnimDur — map flow rate to animateMotion duration
+// ============================================================================
+
+/**
+ * Map a volumetric flow rate (m³/h) to an SVG animateMotion duration in seconds.
+ *
+ * Faster flow → shorter duration (snappier dot animation).
+ * Domain range: 300–1500 m³/h (SR-001 req 8).
+ * Output range: 1–6 s (clamped).
+ *
+ * Mapping: linear inverse — dur = 6 at rate=300, dur = 1 at rate=1500.
+ * Formula: dur = 6 - ((rate - 300) / (1500 - 300)) * (6 - 1)
+ *
+ * @param flowRateM3h  Volumetric flow rate in m³/h.
+ * @returns            Duration in seconds, clamped to [1, 6].
+ */
+export function flowRateToAnimDur(flowRateM3h: number): number {
+  const MIN_RATE = 300;
+  const MAX_RATE = 1500;
+  const MAX_DUR = 6;
+  const MIN_DUR = 1;
+
+  const clamped = Math.max(MIN_RATE, Math.min(MAX_RATE, flowRateM3h));
+  const ratio = (clamped - MIN_RATE) / (MAX_RATE - MIN_RATE);
+  const dur = MAX_DUR - ratio * (MAX_DUR - MIN_DUR);
+  return Math.round(dur * 10) / 10; // round to 1 decimal
+}
+
+// ============================================================================
+// buildEdges — compute edge entries from activeFlows and node positions
+// ============================================================================
+
 /**
  * Build edge render entries from activeFlows.
  * Deduplicates identical fromNodeId/toNodeId pairs.

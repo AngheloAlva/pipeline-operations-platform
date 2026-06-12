@@ -10,8 +10,14 @@ import { ThemeToggle } from "./ThemeToggle";
 interface HeaderProps {
   /**
    * Optional slot for client-island children rendered in the right section,
-   * before the theme toggle. Used by the cockpit page to inject SimClock.
-   * SR-008: Header remains a Server Component — clock arrives via children slot.
+   * before the theme toggle.
+   *
+   * The slot exists but the cockpit route does NOT use it directly — SimClock
+   * is injected via cockpit/layout.tsx's sub-header, keeping route-specific
+   * simulation state out of the root Header Server Component. This is a
+   * deliberate architectural choice (SR-008).
+   *
+   * Other routes may still pass children here for non-cockpit use cases.
    */
   children?: ReactNode;
 }

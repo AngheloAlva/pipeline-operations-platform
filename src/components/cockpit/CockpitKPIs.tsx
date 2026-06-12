@@ -68,7 +68,9 @@ function deriveCockpitKPIs(world: PipelineWorld) {
 
   // Entregado (m³): sum of delivery/pipeline-out movements
   const entregado = movements
-    .filter((m) => m.type === "REFINERY_DELIVERY" || m.type === "VESSEL_LOAD" || m.type === "PIPELINE")
+    .filter(
+      (m) => m.type === "REFINERY_DELIVERY" || m.type === "VESSEL_LOAD" || m.type === "PIPELINE",
+    )
     .reduce((sum, m) => sum + m.volumeGsvM3, 0);
 
   // Cumplimiento (%): aggregate real vs programa from volumeTargets
@@ -89,12 +91,8 @@ function deriveCockpitKPIs(world: PipelineWorld) {
   // Balance (%): aggregate volumetric balance across all tanks
   const tankIds = new Set(world.tanks.map((t) => t.id));
   const initialTotal = world.tanks.reduce((sum, t) => sum + t.currentLevelM3, 0);
-  const inputs = movements
-    .filter((m) => tankIds.has(m.toNodeId))
-    .map((m) => m.volumeGsvM3);
-  const outputs = movements
-    .filter((m) => tankIds.has(m.fromNodeId))
-    .map((m) => m.volumeGsvM3);
+  const inputs = movements.filter((m) => tankIds.has(m.toNodeId)).map((m) => m.volumeGsvM3);
+  const outputs = movements.filter((m) => tankIds.has(m.fromNodeId)).map((m) => m.volumeGsvM3);
   const measured = initialTotal; // seed measured == initial for fresh world
 
   const balance = computeBalance({

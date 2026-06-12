@@ -9,7 +9,14 @@
 
 import { useSelectionStore } from "@/store/selectionStore";
 import type { PipelineWorld, Tank, Station } from "@/lib/domain";
-import { TELEMETRY_BLUE, INK_TERTIARY, STATUS_OK, STATUS_WARNING, ALARM_RED, AMBER_SAFETY } from "@/lib/charts/palette";
+import {
+  TELEMETRY_BLUE,
+  INK_TERTIARY,
+  STATUS_OK,
+  STATUS_WARNING,
+  ALARM_RED,
+  AMBER_SAFETY,
+} from "@/lib/charts/palette";
 
 // ============================================================================
 // TYPES
@@ -55,7 +62,10 @@ function TankDetail({ tank }: TankDetailProps) {
     <div className="flex flex-col gap-3">
       {/* Tank identity */}
       <div>
-        <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary" style={monoStyle}>
+        <p
+          className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+          style={monoStyle}
+        >
           Tanque
         </p>
         <p className="text-sm font-medium text-ink-primary" style={monoStyle}>
@@ -69,7 +79,10 @@ function TankDetail({ tank }: TankDetailProps) {
       {/* Fill level bar */}
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] uppercase tracking-[0.12em] text-ink-tertiary" style={monoStyle}>
+          <span
+            className="text-[10px] uppercase tracking-[0.12em] text-ink-tertiary"
+            style={monoStyle}
+          >
             Nivel
           </span>
           <span className="text-[11px] tabular-nums" style={{ ...monoStyle, color: levelColor }}>
@@ -147,7 +160,10 @@ function StationDetail({ station, world }: StationDetailProps) {
     <div className="flex flex-col gap-3">
       {/* Station identity */}
       <div>
-        <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary" style={monoStyle}>
+        <p
+          className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+          style={monoStyle}
+        >
           Estación
         </p>
         <p className="text-sm font-medium text-ink-primary" style={monoStyle}>
@@ -205,12 +221,12 @@ export function ContextPanel({ world }: ContextPanelProps) {
   // Resolve selected entity
   const selectedTank =
     selectedEntityType === "tank"
-      ? world.tanks.find((t) => t.id === selectedEntityId) ?? null
+      ? (world.tanks.find((t) => t.id === selectedEntityId) ?? null)
       : null;
 
   const selectedStation =
     selectedEntityType === "station"
-      ? world.stations.find((s) => s.id === selectedEntityId) ?? null
+      ? (world.stations.find((s) => s.id === selectedEntityId) ?? null)
       : null;
 
   return (
@@ -232,7 +248,10 @@ export function ContextPanel({ world }: ContextPanelProps) {
       <div className="flex-1">
         {!selectedEntityId && (
           <div className="flex h-full items-center justify-center py-8">
-            <p className="text-center text-[10px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
+            <p
+              className="text-center text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+              style={monoStyle}
+            >
               Seleccione un nodo en el diagrama
             </p>
           </div>

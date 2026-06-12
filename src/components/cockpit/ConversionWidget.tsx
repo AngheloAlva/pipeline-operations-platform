@@ -95,8 +95,7 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
     setError(null);
   }
 
-  const labelClass =
-    "text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary";
+  const labelClass = "text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary";
   const inputClass =
     "w-full border border-border-subtle bg-surface-overlay px-2 py-1.5 text-[11px] text-ink-primary tabular-nums focus:border-border-mid focus:outline-none";
   const monoStyle = { fontFamily: "var(--font-mono), monospace" };
@@ -214,7 +213,10 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
           </p>
           <div className="flex flex-col gap-1.5">
             <div className="flex items-baseline justify-between">
-              <span className="text-[10px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
+              <span
+                className="text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+                style={monoStyle}
+              >
                 V@15°C
               </span>
               <span className="text-sm tabular-nums text-ink-primary" style={monoStyle}>
@@ -222,7 +224,10 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
               </span>
             </div>
             <div className="flex items-baseline justify-between">
-              <span className="text-[10px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
+              <span
+                className="text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+                style={monoStyle}
+              >
                 V@60°F
               </span>
               <span className="text-sm tabular-nums text-ink-primary" style={monoStyle}>

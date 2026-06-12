@@ -21,12 +21,7 @@ import {
 import { buildWaterfallData } from "@/lib/charts/waterfall";
 import type { WaterfallEntry, WaterfallInput } from "@/lib/charts/waterfall";
 import type { ComplianceBand } from "@/lib/volumetrics/compliance";
-import {
-  STATUS_OK,
-  ALARM_RED,
-  STATUS_WARNING,
-  INK_TERTIARY,
-} from "@/lib/charts/palette";
+import { STATUS_OK, ALARM_RED, STATUS_WARNING, INK_TERTIARY } from "@/lib/charts/palette";
 
 // ============================================================================
 // CHART COLORS
@@ -97,9 +92,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
       >
         {label}
       </p>
-      <p style={{ color }}>
-        Delta: {formatM3(data.waterfallDelta)}
-      </p>
+      <p style={{ color }}>Delta: {formatM3(data.waterfallDelta)}</p>
     </div>
   );
 }
@@ -175,15 +168,8 @@ export function WaterfallChart({ inputs }: WaterfallChartProps) {
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={data}
-              margin={{ top: 8, right: 8, left: 8, bottom: 4 }}
-            >
-              <CartesianGrid
-                strokeDasharray="2 4"
-                stroke={COLORS.grid}
-                vertical={false}
-              />
+            <ComposedChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 4 }}>
+              <CartesianGrid strokeDasharray="2 4" stroke={COLORS.grid} vertical={false} />
               <XAxis
                 dataKey="label"
                 tick={{

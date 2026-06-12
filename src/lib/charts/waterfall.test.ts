@@ -5,10 +5,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import {
-  buildWaterfallData,
-  buildWaterfallEntry,
-} from "./waterfall";
+import { buildWaterfallData, buildWaterfallEntry } from "./waterfall";
 import type { WaterfallEntry } from "./waterfall";
 
 describe("buildWaterfallEntry", () => {

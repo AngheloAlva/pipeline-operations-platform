@@ -156,11 +156,7 @@ export function BalancePanel({ movements, tankIds }: BalancePanelProps) {
             barGap={2}
             margin={{ top: 4, right: 8, left: 8, bottom: 4 }}
           >
-            <CartesianGrid
-              strokeDasharray="2 4"
-              stroke={COLORS.grid}
-              vertical={false}
-            />
+            <CartesianGrid strokeDasharray="2 4" stroke={COLORS.grid} vertical={false} />
             <XAxis
               dataKey="hour"
               tickFormatter={formatHour}
@@ -182,10 +178,7 @@ export function BalancePanel({ movements, tankIds }: BalancePanelProps) {
               width={60}
               tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
             />
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{ fill: "rgba(200,208,220,0.04)" }}
-            />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(200,208,220,0.04)" }} />
             <Legend
               wrapperStyle={{
                 fontSize: 10,

@@ -37,6 +37,12 @@ export function createSimulationLoopController(): LoopController {
         if (!isHidden()) {
           if (lastTimestamp !== null) {
             const raw = timestamp - lastTimestamp;
+            // MAX_TICK_MS clamping lives in tickSimulation (single source of truth).
+            // The controller passes raw wall delta here so tickSimulation remains
+            // the authoritative clamp. This clamp is a defensive guard only —
+            // it prevents pathological deltas (e.g. suspended worker) from ever
+            // reaching tickSimulation with values that would cause numerical issues
+            // before the internal clamp is applied.
             const deltaMs = Math.min(raw, MAX_TICK_MS);
             onTick(deltaMs);
           }

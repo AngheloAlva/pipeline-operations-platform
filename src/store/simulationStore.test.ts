@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach } from "vitest";
-import { useSimulationStore, selectTankLevel } from "./simulationStore";
+import { useSimulationStore, selectTankLevel, INITIAL_SLICE } from "./simulationStore";
 import { SIM_SPEEDS } from "@/lib/domain";
 import type { PipelineWorld } from "@/lib/domain";
 
@@ -75,14 +75,9 @@ function getStore() {
 
 describe("simulationStore", () => {
   beforeEach(() => {
-    // Reset store to initial empty state before each test
-    useSimulationStore.setState({
-      isRunning: false,
-      speedMultiplier: 1,
-      simulatedTime: 0,
-      tankLevels: {},
-      activeFlows: [],
-    });
+    // Reset the FULL store state (public + private fields) using INITIAL_SLICE.
+    // Do NOT pass true (replace) — that would strip actions from the store.
+    useSimulationStore.setState(INITIAL_SLICE);
   });
 
   // SR-003 Scenario 1 — Initial state (post-init)
@@ -168,6 +163,39 @@ describe("simulationStore", () => {
     expect(levelT101After).toBe(levelT101Before + 100);
     // T-6010 unchanged — selector returns the same value
     expect(levelT6010After).toBe(levelT6010Before);
+  });
+
+  // Fix 4 — tankLevels reference stability: tick with no active flows must not rebuild the map
+  it("tick with no active flows preserves the tankLevels reference (no spurious rebuild)", () => {
+    getStore().init(SEED_WORLD);
+    // Ensure no active flows
+    useSimulationStore.setState({ activeFlows: [] });
+    getStore().start();
+
+    const refBefore = getStore().tankLevels;
+    getStore().tick(50);
+    const refAfter = getStore().tankLevels;
+
+    expect(refAfter).toBe(refBefore);
+  });
+
+  // Fix 5 — private field isolation: private fields must be reset between tests
+  it("private fields (_seedLevels, _world, _seedTime, _tankCapacities) are reset by beforeEach", () => {
+    // After beforeEach, all private fields should match INITIAL_SLICE
+    const state = getStore();
+    expect(state._seedLevels).toEqual({});
+    expect(state._world).toBeNull();
+    expect(state._seedTime).toBe(0);
+    expect(state._tankCapacities).toEqual({});
+  });
+
+  it("init in one test does not leak _seedLevels to the next test", () => {
+    // This test verifies that the previous test's init (with SEED_WORLD) does not
+    // persist into this test — beforeEach must reset private fields.
+    const state = getStore();
+    // _seedLevels must be empty because beforeEach resets via INITIAL_SLICE
+    expect(Object.keys(state._seedLevels)).toHaveLength(0);
+    expect(state._world).toBeNull();
   });
 
   // start/pause

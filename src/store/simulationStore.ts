@@ -40,7 +40,7 @@ type SimulationStore = SimulationSlice & SimulationActions;
 // Initial state
 // ---------------------------------------------------------------------------
 
-const INITIAL_SLICE: SimulationSlice = {
+export const INITIAL_SLICE: SimulationSlice = {
   isRunning: false,
   speedMultiplier: 1,
   simulatedTime: 0,
@@ -140,8 +140,14 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
       ? deriveFlowSchedule(state._world, result.simulatedTime, result.tankLevels)
       : state.activeFlows;
 
+    // Avoid rebuilding tankLevels when nothing changed (no active flows).
+    // Subscribers that select individual tanks re-render only when their value
+    // changes; but a new map object on every tick causes whole-map subscribers
+    // to re-render even when all levels are identical.
+    const tankLevels = state.activeFlows.length === 0 ? state.tankLevels : result.tankLevels;
+
     set({
-      tankLevels: result.tankLevels,
+      tankLevels,
       simulatedTime: result.simulatedTime,
       activeFlows,
     });

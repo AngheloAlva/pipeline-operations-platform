@@ -224,7 +224,7 @@ export function ContextPanel({ world }: ContextPanelProps) {
 
   return (
     <aside
-      className="flex h-full flex-col gap-3 border border-border-mid bg-surface-raised p-4"
+      className="flex flex-col gap-3 border border-border-mid bg-surface-raised p-4"
       aria-label="Panel de Contexto"
     >
       {/* Panel header */}

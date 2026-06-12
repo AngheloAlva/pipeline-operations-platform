@@ -21,6 +21,11 @@ type WorldStore = WorldState & WorldActions;
 // ---------------------------------------------------------------------------
 // Store — initialized with bundled seed so the world is available on first
 // render (both SSR and client) without any async step.
+//
+// Deliberate divergence from spec scenario S-015-A (world starts null until
+// loadWorld): eager seed initialization lets the static prerender contain
+// real KPI values instead of a loading state. The null branch remains in the
+// type for future non-seed worlds (e.g., regenerated or fetched data).
 // ---------------------------------------------------------------------------
 
 export const useWorldStore = create<WorldStore>((set) => ({

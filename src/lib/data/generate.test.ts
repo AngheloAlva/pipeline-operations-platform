@@ -35,9 +35,13 @@ describe("generateWorld — determinism", () => {
     expect(world.pipeline).toBeDefined();
     expect(world.pipeline.segments.length).toBeGreaterThanOrEqual(1);
     expect(world.stations.length).toBe(DEFAULT_CONFIG.stationCount);
-    expect(world.tanks.length).toBeGreaterThanOrEqual(DEFAULT_CONFIG.stationCount * DEFAULT_CONFIG.tanksPerStation.min);
+    expect(world.tanks.length).toBeGreaterThanOrEqual(
+      DEFAULT_CONFIG.stationCount * DEFAULT_CONFIG.tanksPerStation.min,
+    );
     expect(world.shippers.length).toBe(DEFAULT_CONFIG.shipperCount);
-    expect(world.equipment.length).toBeGreaterThanOrEqual(DEFAULT_CONFIG.stationCount * DEFAULT_CONFIG.equipmentPerStation.min);
+    expect(world.equipment.length).toBeGreaterThanOrEqual(
+      DEFAULT_CONFIG.stationCount * DEFAULT_CONFIG.equipmentPerStation.min,
+    );
     expect(world.movements.length).toBeGreaterThanOrEqual(DEFAULT_CONFIG.historyDays);
     expect(world.volumeTargets.length).toBeGreaterThan(0);
     expect(world.maintenancePlans.length).toBeGreaterThan(0);

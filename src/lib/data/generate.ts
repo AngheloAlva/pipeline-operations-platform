@@ -144,12 +144,7 @@ function generateStations(pipeline: Pipeline, cfg: GeneratorConfig, rng: Rng): S
   return kms.map((km, i) => ({
     id: nextId("STA"),
     name: usedNames[i],
-    kind:
-      i === 0
-        ? NodeKind.SOURCE
-        : i === count - 1
-          ? NodeKind.TERMINAL
-          : pickOne(rng, kinds),
+    kind: i === 0 ? NodeKind.SOURCE : i === count - 1 ? NodeKind.TERMINAL : pickOne(rng, kinds),
     km,
     pipelineId: pipeline.id,
   }));
@@ -416,7 +411,8 @@ function generateVolumeTargets(
     // Total target
     const realMovements = movements.filter((mv) => mv.startedAt.startsWith(period));
     const realM3 = realMovements.reduce((sum, mv) => sum + mv.volumeGsvM3, 0);
-    const programM3 = realM3 > 0 ? realM3 * pickFloat(rng, 0.95, 1.05) : pickFloat(rng, 50000, 150000);
+    const programM3 =
+      realM3 > 0 ? realM3 * pickFloat(rng, 0.95, 1.05) : pickFloat(rng, 50000, 150000);
     const budgetM3 = programM3 * pickFloat(rng, 0.9, 1.1);
 
     targets.push({
@@ -510,12 +506,16 @@ function generateMaintenancePlans(
       if (useHours) {
         frequency = MaintenanceFrequency.BY_HOURS;
         intervalHours = equip.type === EquipmentType.PUMP ? 2000 : 1500;
-        const lastInterventionHours = Math.max(0, equip.operatingHours - pickInt(rng, 100, intervalHours));
+        const lastInterventionHours = Math.max(
+          0,
+          equip.operatingHours - pickInt(rng, 100, intervalHours),
+        );
         nextDueAtHours = lastInterventionHours + intervalHours;
         // Derive a rough calendar date based on hours remaining
         const hoursRemaining = nextDueAtHours - equip.operatingHours;
         // Spread to yield ~15% OVERDUE, 25% UPCOMING, 60% OK
-        const daysOffset = hoursRemaining > 0 ? Math.round(hoursRemaining / 12) : pickInt(rng, -60, -1);
+        const daysOffset =
+          hoursRemaining > 0 ? Math.round(hoursRemaining / 12) : pickInt(rng, -60, -1);
         nextDueDate = offsetDate(today, daysOffset);
       } else {
         frequency = pickOne(rng, CALENDAR_FREQUENCIES);
@@ -631,8 +631,10 @@ function generateWorkOrders(
       taskId: task.id,
       programDate: offsetDate(today, pickInt(rng, -30, 30)),
       estimatedHours: pickFloat(rng, 2, 16),
-      startedAt: status !== WorkOrderStatus.PLANNED ? offsetDate(today, -pickInt(rng, 1, 30)) : undefined,
-      endedAt: status === WorkOrderStatus.COMPLETED ? offsetDate(today, -pickInt(rng, 1, 20)) : undefined,
+      startedAt:
+        status !== WorkOrderStatus.PLANNED ? offsetDate(today, -pickInt(rng, 1, 30)) : undefined,
+      endedAt:
+        status === WorkOrderStatus.COMPLETED ? offsetDate(today, -pickInt(rng, 1, 20)) : undefined,
     });
   }
 
@@ -722,7 +724,7 @@ function generateCathodicReadings(
   // Inject at least one monotonically degrading series of 3+ readings for trend detection
   const firstSegment = pipeline.segments[0];
   const baseKm = firstSegment.fromKm + 1;
-  const degradingPotentials = [-0.900, -0.870, -0.840]; // strictly increasing
+  const degradingPotentials = [-0.9, -0.87, -0.84]; // strictly increasing
   const baseTime = new Date(today);
   baseTime.setDate(baseTime.getDate() - 3);
 

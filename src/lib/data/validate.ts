@@ -90,18 +90,20 @@ export function validateWorld(world: PipelineWorld): ValidationResult {
   // Rule 1d: Movement FK integrity
   // ------------------------------------------------------------------
   for (const movement of world.movements) {
-    const fromValid =
-      stationIds.has(movement.fromNodeId) || tankIds.has(movement.fromNodeId);
-    const toValid =
-      stationIds.has(movement.toNodeId) || tankIds.has(movement.toNodeId);
+    const fromValid = stationIds.has(movement.fromNodeId) || tankIds.has(movement.fromNodeId);
+    const toValid = stationIds.has(movement.toNodeId) || tankIds.has(movement.toNodeId);
     if (!fromValid) {
-      errors.push(`Movement ${movement.id} references non-existent fromNodeId: ${movement.fromNodeId}`);
+      errors.push(
+        `Movement ${movement.id} references non-existent fromNodeId: ${movement.fromNodeId}`,
+      );
     }
     if (!toValid) {
       errors.push(`Movement ${movement.id} references non-existent toNodeId: ${movement.toNodeId}`);
     }
     if (movement.shipperId && !shipperIds.has(movement.shipperId)) {
-      errors.push(`Movement ${movement.id} references non-existent shipperId: ${movement.shipperId}`);
+      errors.push(
+        `Movement ${movement.id} references non-existent shipperId: ${movement.shipperId}`,
+      );
     }
   }
 
@@ -126,13 +128,19 @@ export function validateWorld(world: PipelineWorld): ValidationResult {
   // ------------------------------------------------------------------
   for (const wo of world.workOrders) {
     if (!equipmentIds.has(wo.equipmentId)) {
-      errors.push(`WorkOrder ${wo.id} (${wo.otNumber}) references non-existent equipmentId: ${wo.equipmentId}`);
+      errors.push(
+        `WorkOrder ${wo.id} (${wo.otNumber}) references non-existent equipmentId: ${wo.equipmentId}`,
+      );
     }
     if (!stationIds.has(wo.stationId)) {
-      errors.push(`WorkOrder ${wo.id} (${wo.otNumber}) references non-existent stationId: ${wo.stationId}`);
+      errors.push(
+        `WorkOrder ${wo.id} (${wo.otNumber}) references non-existent stationId: ${wo.stationId}`,
+      );
     }
     if (wo.taskId && !taskIds.has(wo.taskId)) {
-      errors.push(`WorkOrder ${wo.id} (${wo.otNumber}) references non-existent taskId: ${wo.taskId}`);
+      errors.push(
+        `WorkOrder ${wo.id} (${wo.otNumber}) references non-existent taskId: ${wo.taskId}`,
+      );
     }
   }
 
@@ -141,14 +149,20 @@ export function validateWorld(world: PipelineWorld): ValidationResult {
   // ------------------------------------------------------------------
   for (const plan of world.maintenancePlans) {
     if (plan.equipmentId && !equipmentIds.has(plan.equipmentId)) {
-      errors.push(`MaintenancePlan ${plan.id} references non-existent equipmentId: ${plan.equipmentId}`);
+      errors.push(
+        `MaintenancePlan ${plan.id} references non-existent equipmentId: ${plan.equipmentId}`,
+      );
     }
     if (plan.stationId && !stationIds.has(plan.stationId)) {
-      errors.push(`MaintenancePlan ${plan.id} references non-existent stationId: ${plan.stationId}`);
+      errors.push(
+        `MaintenancePlan ${plan.id} references non-existent stationId: ${plan.stationId}`,
+      );
     }
     for (const task of plan.tasks) {
       if (task.planId !== plan.id) {
-        errors.push(`MaintenanceTask ${task.id} planId ${task.planId} does not match plan ${plan.id}`);
+        errors.push(
+          `MaintenanceTask ${task.id} planId ${task.planId} does not match plan ${plan.id}`,
+        );
       }
     }
   }
@@ -158,7 +172,9 @@ export function validateWorld(world: PipelineWorld): ValidationResult {
   // ------------------------------------------------------------------
   for (const tank of world.tanks) {
     if (tank.currentLevelM3 < 0) {
-      errors.push(`Tank ${tank.id} (${tank.tag}) has negative currentLevelM3: ${tank.currentLevelM3}`);
+      errors.push(
+        `Tank ${tank.id} (${tank.tag}) has negative currentLevelM3: ${tank.currentLevelM3}`,
+      );
     }
     if (tank.currentLevelM3 > tank.capacityM3) {
       errors.push(

@@ -37,7 +37,11 @@ describe("validateWorld", () => {
     };
     const result = validateWorld(tampered);
     expect(result.valid).toBe(false);
-    expect(result.errors.some((e) => e.includes("nonexistent-station-id") || e.toLowerCase().includes("station"))).toBe(true);
+    expect(
+      result.errors.some(
+        (e) => e.includes("nonexistent-station-id") || e.toLowerCase().includes("station"),
+      ),
+    ).toBe(true);
   });
 
   it("FK violation on tank.stationId is detected", () => {
@@ -73,10 +77,7 @@ describe("validateWorld", () => {
     const badTank = world.tanks[0];
     const tampered: PipelineWorld = {
       ...world,
-      tanks: [
-        { ...badTank, currentLevelM3: badTank.capacityM3 + 1000 },
-        ...world.tanks.slice(1),
-      ],
+      tanks: [{ ...badTank, currentLevelM3: badTank.capacityM3 + 1000 }, ...world.tanks.slice(1)],
     };
     const result = validateWorld(tampered);
     expect(result.valid).toBe(false);
@@ -87,10 +88,7 @@ describe("validateWorld", () => {
     const world = generateWorld({ seed: 6 });
     const tampered: PipelineWorld = {
       ...world,
-      tanks: [
-        { ...world.tanks[0], currentLevelM3: -1 },
-        ...world.tanks.slice(1),
-      ],
+      tanks: [{ ...world.tanks[0], currentLevelM3: -1 }, ...world.tanks.slice(1)],
     };
     const result = validateWorld(tampered);
     expect(result.valid).toBe(false);
@@ -106,7 +104,11 @@ describe("validateWorld", () => {
     const tampered: PipelineWorld = { ...world, stations };
     const result = validateWorld(tampered);
     expect(result.valid).toBe(false);
-    expect(result.errors.some((e) => e.toLowerCase().includes("km") || e.toLowerCase().includes("station"))).toBe(true);
+    expect(
+      result.errors.some(
+        (e) => e.toLowerCase().includes("km") || e.toLowerCase().includes("station"),
+      ),
+    ).toBe(true);
   });
 
   it("cathodic reading level inconsistent with evaluatePotential is detected", async () => {
@@ -117,7 +119,7 @@ describe("validateWorld", () => {
       cathodicReadings: [
         {
           ...world.cathodicReadings[0],
-          potentialV: -0.900, // OK potential
+          potentialV: -0.9, // OK potential
           level: AlertLevel.CRITICAL, // wrong level
         },
         ...world.cathodicReadings.slice(1),
@@ -125,7 +127,11 @@ describe("validateWorld", () => {
     };
     const result = validateWorld(tampered);
     expect(result.valid).toBe(false);
-    expect(result.errors.some((e) => e.toLowerCase().includes("cathodic") || e.toLowerCase().includes("level"))).toBe(true);
+    expect(
+      result.errors.some(
+        (e) => e.toLowerCase().includes("cathodic") || e.toLowerCase().includes("level"),
+      ),
+    ).toBe(true);
   });
 
   it("WorkOrder with COMPLETED status and progress != 100 is detected", () => {
@@ -140,7 +146,11 @@ describe("validateWorld", () => {
     };
     const result = validateWorld(tampered);
     expect(result.valid).toBe(false);
-    expect(result.errors.some((e) => e.toLowerCase().includes("progress") || e.toLowerCase().includes("workorder"))).toBe(true);
+    expect(
+      result.errors.some(
+        (e) => e.toLowerCase().includes("progress") || e.toLowerCase().includes("workorder"),
+      ),
+    ).toBe(true);
   });
 
   it("WorkOrder with PLANNED status and progress != 0 is detected", () => {

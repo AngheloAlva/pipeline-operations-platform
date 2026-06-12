@@ -3,7 +3,16 @@
  * Written first (TDD RED) before implementation exists.
  */
 import { describe, it, expect } from "vitest";
-import { createRng, pickOne, pickInt, pickFloat, STATION_NAMES, SHIPPER_NAMES, PRODUCT_NAMES, EQUIPMENT_NAME_PREFIXES } from "./rng";
+import {
+  createRng,
+  pickOne,
+  pickInt,
+  pickFloat,
+  STATION_NAMES,
+  SHIPPER_NAMES,
+  PRODUCT_NAMES,
+  EQUIPMENT_NAME_PREFIXES,
+} from "./rng";
 
 describe("createRng — determinism", () => {
   it("returns the same sequence for the same seed", () => {

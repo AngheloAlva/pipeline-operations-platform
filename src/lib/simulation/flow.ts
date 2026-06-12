@@ -48,16 +48,21 @@ export function tickSimulation(
   for (const flow of state.activeFlows) {
     const deltaV = flow.flowRateM3h * simDeltaH;
 
+    // Use resolved tank IDs (fromTankId/toTankId) when available;
+    // fall back to fromNodeId/toNodeId for backward compatibility.
+    const destKey = flow.toTankId ?? flow.toNodeId;
+    const srcKey = flow.fromTankId ?? flow.fromNodeId;
+
     // Destination tank receives volume (inflow)
-    if (flow.toNodeId in newLevels) {
-      const cap = tankCapacities[flow.toNodeId]?.capacityM3 ?? Infinity;
-      newLevels[flow.toNodeId] = clampLevel(newLevels[flow.toNodeId] + deltaV, 0, cap);
+    if (destKey in newLevels) {
+      const cap = tankCapacities[destKey]?.capacityM3 ?? Infinity;
+      newLevels[destKey] = clampLevel(newLevels[destKey] + deltaV, 0, cap);
     }
 
     // Source tank loses volume (outflow)
-    if (flow.fromNodeId in newLevels) {
-      const cap = tankCapacities[flow.fromNodeId]?.capacityM3 ?? Infinity;
-      newLevels[flow.fromNodeId] = clampLevel(newLevels[flow.fromNodeId] - deltaV, 0, cap);
+    if (srcKey in newLevels) {
+      const cap = tankCapacities[srcKey]?.capacityM3 ?? Infinity;
+      newLevels[srcKey] = clampLevel(newLevels[srcKey] - deltaV, 0, cap);
     }
   }
 
@@ -83,6 +88,26 @@ export function tickSimulation(
 }
 
 // ============================================================================
+// deriveFlowSchedule — internal helpers
+// ============================================================================
+
+/**
+ * Returns true if `queryHour` falls within the daily-repeating window
+ * [startHour, endHour). Handles wrap-around (e.g. 22→03 spans midnight).
+ * A 1-hour window (startHour === endHour) matches only startHour.
+ *
+ * NOTE: This function only handles sub-24h windows expressed as hour-of-day pairs.
+ * Movements whose epoch duration is ≥ 24h are always active (all-day) and bypass
+ * this check entirely in deriveFlowSchedule — see the durationH guard there.
+ */
+function isHourInWindow(startHour: number, endHour: number, queryHour: number): boolean {
+  if (startHour === endHour) return queryHour === startHour;
+  if (endHour > startHour) return queryHour >= startHour && queryHour < endHour;
+  // Wrap-around: e.g. start=22, end=03 → active at 22,23,0,1,2
+  return queryHour >= startHour || queryHour < endHour;
+}
+
+// ============================================================================
 // deriveFlowSchedule
 // ============================================================================
 
@@ -93,9 +118,19 @@ export function tickSimulation(
  *
  * SR-001 requirements 5 and 6.
  *
+ * Bug A fix: uses real time-of-day replay — a movement is active when the
+ * current simulated UTC hour falls within [startedAt.hour, endedAt.hour)
+ * treated as a daily-repeating window. Movements with null endedAt use a
+ * 1-hour window starting at startedAt.hour.
+ *
+ * Bug B fix: resolves each movement's station IDs to concrete tank IDs.
+ *   - fromTankId = tank at the source station with the HIGHEST current level
+ *   - toTankId   = tank at the destination station with the LOWEST current level
+ * The station IDs are preserved in fromNodeId/toNodeId for FlowDiagram routing.
+ *
  * @param world           The pipeline world with historical movements.
  * @param simulatedTime   Current simulated time as epoch ms.
- * @param currentLevels   Optional current tank levels (used for feasibility).
+ * @param currentLevels   Optional current tank levels (used for feasibility and tank selection).
  *                        Falls back to `world.tanks` initial levels.
  */
 export function deriveFlowSchedule(
@@ -105,7 +140,7 @@ export function deriveFlowSchedule(
 ): ActiveFlow[] {
   if (world.movements.length === 0) return [];
 
-  // Build capacity map from world tanks
+  // Build capacity map and current levels from world tanks
   const capacities: Record<string, number> = {};
   const levels: Record<string, number> = {};
   for (const tank of world.tanks) {
@@ -113,15 +148,42 @@ export function deriveFlowSchedule(
     levels[tank.id] = currentLevels?.[tank.id] ?? tank.currentLevelM3;
   }
 
-  // Determine simulated hour of day (0–23) — drives which flows are active
-  const hour = Math.floor((simulatedTime / 3_600_000) % 24);
+  // Build station → sorted tank IDs map (for tank resolution per station)
+  const stationTanks = new Map<string, string[]>();
+  for (const tank of world.tanks) {
+    const list = stationTanks.get(tank.stationId) ?? [];
+    list.push(tank.id);
+    stationTanks.set(tank.stationId, list);
+  }
 
-  // Derive candidate flows from seed movements
-  // Each movement type generates a representative flow rate
+  // Determine simulated hour of day (0–23) — drives which flows are active
+  const simulatedDate = new Date(simulatedTime);
+  const hour = simulatedDate.getUTCHours();
+
+  // Derive candidate flows from seed movements using real time-of-day windows.
   const candidates: ActiveFlow[] = [];
   for (const movement of world.movements) {
-    const from = movement.fromNodeId;
-    const to = movement.toNodeId;
+    const startEpoch = new Date(movement.startedAt).getTime();
+    const startHour = new Date(movement.startedAt).getUTCHours();
+
+    if (movement.endedAt) {
+      const endEpoch = new Date(movement.endedAt).getTime();
+      const durationH = (endEpoch - startEpoch) / 3_600_000;
+      // Movements spanning ≥ 24h are active at every hour of the day.
+      // Same-UTC-hour start/end on different days (e.g. 08:00→08:00 next day)
+      // would produce startHour === endHour and would wrongly match only that
+      // single hour if passed to isHourInWindow — use epoch duration to detect
+      // the full-day case and skip the window check entirely.
+      if (durationH < 24) {
+        const endHour = new Date(movement.endedAt).getUTCHours();
+        if (!isHourInWindow(startHour, endHour, hour)) continue;
+      }
+      // durationH >= 24 → fall through (always active)
+    } else {
+      // null endedAt → synthetic 1-hour window starting at startHour
+      const endHour = (startHour + 1) % 24;
+      if (!isHourInWindow(startHour, endHour, hour)) continue;
+    }
 
     // Estimate hourly rate from total volume and duration
     let rateM3h: number;
@@ -136,19 +198,35 @@ export function deriveFlowSchedule(
     // Domain constraint: flow rates within 300–1500 m³/h (SR-001 req 8)
     rateM3h = clampLevel(rateM3h, 300, 1500);
 
-    // Deterministic active-hour check — idSum % 24 is intentionally simple.
-    // It is not a real scheduling algorithm: it produces burst-and-idle patterns
-    // where many movements share the same active hour and others have none.
-    // The value is deterministic given a fixed movement ID, which is the only
-    // requirement here (reproducibility across ticks for the same world).
-    const idSum = movement.id.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    const activeHour = idSum % 24;
+    // Resolve source tank: highest-level tank at the source station (Bug B fix)
+    const sourceTanks = stationTanks.get(movement.fromNodeId) ?? [];
+    let fromTankId: string | undefined;
+    let bestFromLevel = -Infinity;
+    for (const tid of sourceTanks) {
+      const lvl = levels[tid] ?? 0;
+      if (lvl > bestFromLevel) {
+        bestFromLevel = lvl;
+        fromTankId = tid;
+      }
+    }
 
-    if (activeHour !== hour) continue;
+    // Resolve destination tank: lowest-level tank at the destination station (Bug B fix)
+    const destTanks = stationTanks.get(movement.toNodeId) ?? [];
+    let toTankId: string | undefined;
+    let bestToLevel = Infinity;
+    for (const tid of destTanks) {
+      const lvl = levels[tid] ?? 0;
+      if (lvl < bestToLevel) {
+        bestToLevel = lvl;
+        toTankId = tid;
+      }
+    }
 
     candidates.push({
-      fromNodeId: from,
-      toNodeId: to,
+      fromNodeId: movement.fromNodeId, // station ID — for FlowDiagram routing
+      toNodeId: movement.toNodeId,     // station ID — for FlowDiagram routing
+      fromTankId,
+      toTankId,
       flowRateM3h: rateM3h,
       shipperId: movement.shipperId,
     });
@@ -169,9 +247,12 @@ export function deriveFlowSchedule(
   const projectedOut: Record<string, number> = {};
 
   for (const flow of candidates) {
-    const fromLevel = levels[flow.fromNodeId];
-    const toLevel = levels[flow.toNodeId];
-    const toCap = capacities[flow.toNodeId];
+    // Flows with undefined fromTankId (no source tank resolved for the station) intentionally
+    // skip projected-volume accounting — no tank means no conservation constraint to enforce.
+    // Use resolved tank IDs for feasibility checks (fromTankId/toTankId)
+    const fromLevel = flow.fromTankId !== undefined ? levels[flow.fromTankId] : undefined;
+    const toLevel = flow.toTankId !== undefined ? levels[flow.toTankId] : undefined;
+    const toCap = flow.toTankId !== undefined ? capacities[flow.toTankId] : undefined;
 
     // Skip if source tank is already at 0
     if (fromLevel !== undefined && fromLevel <= 0) continue;
@@ -183,21 +264,25 @@ export function deriveFlowSchedule(
     const deltaM3 = flow.flowRateM3h;
 
     // Check combined projected outflow against source availability
-    if (fromLevel !== undefined) {
-      const alreadyOut = projectedOut[flow.fromNodeId] ?? 0;
+    if (flow.fromTankId !== undefined && fromLevel !== undefined) {
+      const alreadyOut = projectedOut[flow.fromTankId] ?? 0;
       if (alreadyOut + deltaM3 > fromLevel) continue;
     }
 
     // Check combined projected inflow against destination headroom
-    if (toLevel !== undefined && toCap !== undefined) {
-      const alreadyIn = projectedIn[flow.toNodeId] ?? 0;
+    if (flow.toTankId !== undefined && toLevel !== undefined && toCap !== undefined) {
+      const alreadyIn = projectedIn[flow.toTankId] ?? 0;
       const headroom = toCap - toLevel;
       if (alreadyIn + deltaM3 > headroom) continue;
     }
 
     // Flow is feasible — record its projected contribution
-    projectedOut[flow.fromNodeId] = (projectedOut[flow.fromNodeId] ?? 0) + deltaM3;
-    projectedIn[flow.toNodeId] = (projectedIn[flow.toNodeId] ?? 0) + deltaM3;
+    if (flow.fromTankId !== undefined) {
+      projectedOut[flow.fromTankId] = (projectedOut[flow.fromTankId] ?? 0) + deltaM3;
+    }
+    if (flow.toTankId !== undefined) {
+      projectedIn[flow.toTankId] = (projectedIn[flow.toTankId] ?? 0) + deltaM3;
+    }
     feasible.push(flow);
   }
 

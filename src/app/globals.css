@@ -1,26 +1,123 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+ * Class-based dark mode — custom variant for Tailwind 4
+ * Applies when the .dark class is present on <html> or any ancestor.
+ * Theme toggle writes to localStorage("theme") + flips .dark on <html>.
+ * --------------------------------------------------------------------------- */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+ * Light mode — default token values
+ * --------------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surfaces — four-level elevation via lightness shifts, same hue */
+  --surface-base: #f8fafc; /* page canvas */
+  --surface-raised: #ffffff; /* cards, panels */
+  --surface-overlay: #f1f5f9; /* inputs, table rows */
+  --surface-interactive: #e2e8f0; /* hover states */
+
+  /* Borders */
+  --border-subtle: rgba(15, 23, 42, 0.1);
+  --border-strong: rgba(15, 23, 42, 0.2);
+
+  /* Text hierarchy — four levels */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-disabled: #94a3b8;
+
+  /* Brand accent */
+  --accent: #0ea5e9; /* sky-500 — pipe/flow blue */
+  --accent-hover: #0284c7;
+
+  /* Status — mapped to AlertLevel const values */
+  --status-ok: #16a34a; /* green-600 */
+  --status-ok-bg: #dcfce7; /* green-100 */
+  --status-warning: #d97706; /* amber-600 */
+  --status-warning-bg: #fef3c7; /* amber-100 */
+  --status-critical: #dc2626; /* red-600 */
+  --status-critical-bg: #fee2e2; /* red-100 */
+  --status-flow: #0284c7; /* sky-600 */
+  --status-flow-bg: #e0f2fe; /* sky-100 */
 }
 
+/* ---------------------------------------------------------------------------
+ * Dark mode overrides — same property names, industrial-dark values
+ * --------------------------------------------------------------------------- */
+.dark {
+  --surface-base: #0f172a; /* slate-900 */
+  --surface-raised: #1e293b; /* slate-800 */
+  --surface-overlay: #273549; /* slate-700 tinted */
+  --surface-interactive: #334155; /* slate-700 */
+
+  --border-subtle: rgba(226, 232, 240, 0.08);
+  --border-strong: rgba(226, 232, 240, 0.18);
+
+  --text-primary: #f1f5f9; /* slate-100 */
+  --text-secondary: #94a3b8; /* slate-400 */
+  --text-disabled: #475569; /* slate-600 */
+
+  --accent: #38bdf8; /* sky-400 */
+  --accent-hover: #7dd3fc;
+
+  /* Desaturated semantic colors for dark backgrounds */
+  --status-ok: #4ade80; /* green-400 */
+  --status-ok-bg: rgba(74, 222, 128, 0.12);
+  --status-warning: #fbbf24; /* amber-400 */
+  --status-warning-bg: rgba(251, 191, 36, 0.12);
+  --status-critical: #f87171; /* red-400 */
+  --status-critical-bg: rgba(248, 113, 113, 0.12);
+  --status-flow: #38bdf8; /* sky-400 */
+  --status-flow-bg: rgba(56, 189, 248, 0.12);
+}
+
+/* ---------------------------------------------------------------------------
+ * Tailwind 4 @theme inline — exposes CSS vars as Tailwind color utilities
+ * Authors use: bg-surface-raised, text-status-critical, border-border-subtle
+ * Never var() in className, never hex values (tailwind-4 skill).
+ * --------------------------------------------------------------------------- */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Surfaces */
+  --color-surface-base: var(--surface-base);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-interactive: var(--surface-interactive);
+
+  /* Borders */
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+
+  /* Text */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-disabled: var(--text-disabled);
+
+  /* Accent */
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+
+  /* Status — 1:1 with AlertLevel domain values */
+  --color-status-ok: var(--status-ok);
+  --color-status-ok-bg: var(--status-ok-bg);
+  --color-status-warning: var(--status-warning);
+  --color-status-warning-bg: var(--status-warning-bg);
+  --color-status-critical: var(--status-critical);
+  --color-status-critical-bg: var(--status-critical-bg);
+  --color-status-flow: var(--status-flow);
+  --color-status-flow-bg: var(--status-flow-bg);
+
+  /* Typography */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ---------------------------------------------------------------------------
+ * Base body styles
+ * --------------------------------------------------------------------------- */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--surface-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

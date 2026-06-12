@@ -7,7 +7,7 @@
  * The Header itself remains a Server Component — this is the ONLY client island inside it.
  */
 
-import { useSimulatedTime } from "@/store/simulationStore";
+import { useSimulatedTimeSeconds } from "@/store/simulationStore";
 
 // ============================================================================
 // HELPERS
@@ -56,11 +56,17 @@ function formatSimTime(epochMs: number): string {
 
 /**
  * SimClock renders the live simulated date/time in the Header.
- * Updates on every simulatedTime change from the rAF loop.
+ * Uses useSimulatedTimeSeconds() to floor simulatedTime to whole seconds before
+ * subscribing — Object.is on the integer suppresses ~59 of 60 rAF re-renders
+ * (the component only updates once per simulated second, not at 60fps).
  * SR-008.
  */
 export function SimClock() {
-  const simulatedTime = useSimulatedTime();
+  // useSimulatedTimeSeconds floors to seconds; sub-second ticks are invisible
+  // to this component so it never re-renders within the same second.
+  const simulatedTimeSeconds = useSimulatedTimeSeconds();
+  // Convert back to ms for formatSimTime (which uses fractional ms for UTC parts)
+  const simulatedTime = simulatedTimeSeconds * 1000;
   const display = formatSimTime(simulatedTime);
 
   return (

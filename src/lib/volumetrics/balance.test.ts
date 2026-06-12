@@ -1,6 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { computeBalance, tankHeightToVolume, tankVolumeToHeight } from "./balance";
+import {
+  computeBalance,
+  tankHeightToVolume,
+  tankVolumeToHeight,
+  groupBalanceByHour,
+} from "./balance";
 import { AlertLevel } from "@/lib/domain";
+import type { Movement } from "@/lib/domain";
 
 describe("Volumetric balance", () => {
   describe("computeBalance", () => {
@@ -189,6 +195,63 @@ describe("Volumetric balance", () => {
 
     it("returns 0 for 0 volume", () => {
       expect(tankVolumeToHeight(0, 8)).toBe(0);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // groupBalanceByHour — SR-009 Scenario 1
+  // ---------------------------------------------------------------------------
+  describe("groupBalanceByHour", () => {
+    function makeMovement(
+      partial: Partial<Movement> & { startedAt: string; endedAt: string }
+    ): Movement {
+      return {
+        id: partial.id ?? "m1",
+        type: "PIPELINE",
+        fromNodeId: partial.fromNodeId ?? "src",
+        toNodeId: partial.toNodeId ?? "dst",
+        volumeGsvM3: partial.volumeGsvM3 ?? 100,
+        volume15CM3: partial.volume15CM3 ?? 100,
+        volume60FM3: partial.volume60FM3 ?? 100,
+        temperatureF: 77,
+        apiGravity: 30,
+        ...partial,
+      };
+    }
+
+    // SR-009 Scenario 1: 3 movements in hour 14 and 2 in hour 15 → 2 groups
+    it("produces exactly 2 hour groups for movements in 2 distinct hours", () => {
+      const movements: Movement[] = [
+        makeMovement({ id: "a", volumeGsvM3: 100, startedAt: "2026-06-01T14:00:00Z", endedAt: "2026-06-01T14:30:00Z" }),
+        makeMovement({ id: "b", volumeGsvM3: 200, startedAt: "2026-06-01T14:15:00Z", endedAt: "2026-06-01T14:45:00Z" }),
+        makeMovement({ id: "c", volumeGsvM3: 150, startedAt: "2026-06-01T14:30:00Z", endedAt: "2026-06-01T14:59:00Z" }),
+        makeMovement({ id: "d", volumeGsvM3: 300, startedAt: "2026-06-01T15:00:00Z", endedAt: "2026-06-01T15:30:00Z" }),
+        makeMovement({ id: "e", volumeGsvM3: 250, startedAt: "2026-06-01T15:20:00Z", endedAt: "2026-06-01T15:50:00Z" }),
+      ];
+      const groups = groupBalanceByHour(movements);
+      expect(groups).toHaveLength(2);
+    });
+
+    it("sums entradas and salidas per hour group", () => {
+      // Movement from "src" to "T-101": inflow for T-101 (salida from src)
+      // We treat movements where toNodeId starts with "T-" as entradas
+      const movements: Movement[] = [
+        makeMovement({ id: "x", fromNodeId: "external", toNodeId: "T-101", volumeGsvM3: 400, startedAt: "2026-06-01T10:00:00Z", endedAt: "2026-06-01T10:30:00Z" }),
+        makeMovement({ id: "y", fromNodeId: "T-101", toNodeId: "refinery", volumeGsvM3: 200, startedAt: "2026-06-01T10:10:00Z", endedAt: "2026-06-01T10:40:00Z" }),
+      ];
+      const groups = groupBalanceByHour(movements);
+      expect(groups).toHaveLength(1);
+      expect(groups[0].hour).toBe(10);
+      // entradas = 400, salidas = 200
+      expect(groups[0].entradas).toBeCloseTo(400, 2);
+      expect(groups[0].salidas).toBeCloseTo(200, 2);
+      // deltaStock = entradas - salidas = 200
+      expect(groups[0].deltaStock).toBeCloseTo(200, 2);
+    });
+
+    it("returns empty array for empty movements", () => {
+      const groups = groupBalanceByHour([]);
+      expect(groups).toHaveLength(0);
     });
   });
 });

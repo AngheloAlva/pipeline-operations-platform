@@ -10,24 +10,29 @@ const NAV_ITEMS = [
   { href: "/integrity", label: "Integridad" },
 ] as const;
 
+/**
+ * Module selector — styled as a panel-selector row, not pill navigation.
+ * Active module: bottom accent underline + bright ink. Control room aesthetic.
+ */
 export function NavLinks() {
   const pathname = usePathname();
 
   return (
     <nav aria-label="Navegación principal">
-      <ul className="flex items-center gap-1">
+      <ul className="flex items-stretch h-12">
         {NAV_ITEMS.map(({ href, label }) => {
           const isActive = pathname === href || pathname.startsWith(href + "/");
           return (
-            <li key={href}>
+            <li key={href} className="flex items-stretch">
               <Link
                 href={href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
+                  "relative inline-flex items-center px-4 text-xs font-medium uppercase tracking-widest transition-colors",
+                  "border-b-2",
                   isActive
-                    ? "bg-surface-overlay text-text-primary"
-                    : "text-text-secondary hover:text-text-primary hover:bg-surface-overlay",
+                    ? "border-accent text-ink-primary"
+                    : "border-transparent text-ink-tertiary hover:text-ink-secondary hover:border-border-strong",
                 )}
               >
                 {label}

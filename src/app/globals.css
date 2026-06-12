@@ -8,103 +8,160 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ---------------------------------------------------------------------------
- * Light mode — default token values
+ * "Sala de Control" — Token Architecture
+ *
+ * Dark default (control room at night). Graphite base like powered-off panel
+ * steel. Phosphor-green single accent (CRT telemetry alive). Safety-amber for
+ * warnings. Alarm-red desaturated for dark bg. Light theme is daylight control
+ * room — light graphite, same accent discipline.
+ *
+ * Primitive layer: --graphite-*, --phosphor, --amber-safety, --alarm-*
+ * Semantic layer: --surface-*, --border-*, --text-*, --accent, --status-*
+ * Tailwind layer: @theme inline maps semantics → color utilities
+ * --------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------------
+ * Dark mode (default) — control room at night
  * --------------------------------------------------------------------------- */
 :root {
-  /* Surfaces — four-level elevation via lightness shifts, same hue */
-  --surface-base: #f8fafc; /* page canvas */
-  --surface-raised: #ffffff; /* cards, panels */
-  --surface-overlay: #f1f5f9; /* inputs, table rows */
-  --surface-interactive: #e2e8f0; /* hover states */
+  /* --- Graphite primitives --- */
+  --graphite-900: #0c0e12;  /* base canvas: powered-off panel steel */
+  --graphite-800: #13161c;  /* cards, instrument panels */
+  --graphite-750: #181b22;  /* inputs, table rows */
+  --graphite-700: #1e2229;  /* hover / interactive states */
+  --graphite-600: #252b34;  /* elevated overlays */
+  --graphite-400: #4a5260;  /* muted borders */
+  --graphite-300: #6b7585;  /* secondary text */
+  --graphite-200: #9ba6b5;  /* tertiary/disabled */
+  --graphite-100: #c8d0dc;  /* secondary readouts */
+  --graphite-50:  #e8ecf2;  /* primary readouts */
 
-  /* Borders */
-  --border-subtle: rgba(15, 23, 42, 0.1);
-  --border-strong: rgba(15, 23, 42, 0.2);
+  /* --- Signal primitives --- */
+  --phosphor:         #4ade80;  /* CRT telemetry green — system alive, OK */
+  --phosphor-dim:     rgba(74, 222, 128, 0.14);
+  --phosphor-glow:    rgba(74, 222, 128, 0.28);
+  --amber-safety:     #f59e0b;  /* WARNING — instrument amber */
+  --amber-safety-dim: rgba(245, 158, 11, 0.14);
+  --alarm-red:        #f87171;  /* CRITICAL — desaturated for dark bg */
+  --alarm-red-dim:    rgba(248, 113, 113, 0.14);
+  --telemetry-blue:   #38bdf8;  /* flow / telemetry channel */
+  --telemetry-blue-dim: rgba(56, 189, 248, 0.14);
 
-  /* Text hierarchy — four levels */
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-disabled: #94a3b8;
+  /* --- Ink hierarchy (4 levels) --- */
+  --ink-primary:   #e8ecf2;  /* level 1 — main readouts */
+  --ink-secondary: #9ba6b5;  /* level 2 — labels, secondary */
+  --ink-tertiary:  #6b7585;  /* level 3 — metadata, timestamps */
+  --ink-muted:     #4a5260;  /* level 4 — disabled, ghost */
 
-  /* Brand accent */
-  --accent: #0ea5e9; /* sky-500 — pipe/flow blue */
-  --accent-hover: #0284c7;
+  /* --- Surface elevation (hairline steps, same graphite hue) --- */
+  --surface-base:        var(--graphite-900);  /* page canvas */
+  --surface-raised:      var(--graphite-800);  /* instrument panels, cards */
+  --surface-overlay:     var(--graphite-750);  /* inputs, dropdowns */
+  --surface-interactive: var(--graphite-700);  /* hover, focus */
 
-  /* Status — mapped to AlertLevel const values */
-  --status-ok: #16a34a; /* green-600 */
-  --status-ok-bg: #dcfce7; /* green-100 */
-  --status-warning: #d97706; /* amber-600 */
-  --status-warning-bg: #fef3c7; /* amber-100 */
-  --status-critical: #dc2626; /* red-600 */
-  --status-critical-bg: #fee2e2; /* red-100 */
-  --status-flow: #0284c7; /* sky-600 */
-  --status-flow-bg: #e0f2fe; /* sky-100 */
+  /* --- Borders (low-opacity rgba — technical, not harsh) --- */
+  --border-subtle: rgba(200, 208, 220, 0.08);   /* structural separation */
+  --border-mid:    rgba(200, 208, 220, 0.14);   /* panel frames */
+  --border-strong: rgba(200, 208, 220, 0.24);   /* emphasis, focused */
+
+  /* --- Accent (phosphor-green as single brand channel) --- */
+  --accent:       var(--phosphor);
+  --accent-hover: #86efac;  /* green-300 — lighter on hover */
+  --accent-dim:   var(--phosphor-dim);
+
+  /* --- Status — 1:1 AlertLevel + panel-lamp bg --- */
+  --status-ok:          var(--phosphor);
+  --status-ok-bg:       var(--phosphor-dim);
+  --status-warning:     var(--amber-safety);
+  --status-warning-bg:  var(--amber-safety-dim);
+  --status-critical:    var(--alarm-red);
+  --status-critical-bg: var(--alarm-red-dim);
+  --status-flow:        var(--telemetry-blue);
+  --status-flow-bg:     var(--telemetry-blue-dim);
 }
 
 /* ---------------------------------------------------------------------------
- * Dark mode overrides — same property names, industrial-dark values
+ * Light mode override — daylight control room
+ * Same graphite discipline; phosphor accent survives on light bg at lower saturation.
  * --------------------------------------------------------------------------- */
-.dark {
-  --surface-base: #0f172a; /* slate-900 */
-  --surface-raised: #1e293b; /* slate-800 */
-  --surface-overlay: #273549; /* slate-700 tinted */
-  --surface-interactive: #334155; /* slate-700 */
+:root:not(.dark) {
+  /* --- Graphite inverted — cool light panel steel --- */
+  --graphite-900: #f0f2f5;
+  --graphite-800: #ffffff;
+  --graphite-750: #eaecf0;
+  --graphite-700: #dde0e6;
+  --graphite-600: #cfd3da;
+  --graphite-300: #5a6474;
+  --graphite-200: #7b8699;
+  --graphite-100: #374151;
+  --graphite-50:  #111827;
 
-  --border-subtle: rgba(226, 232, 240, 0.08);
-  --border-strong: rgba(226, 232, 240, 0.18);
+  --ink-primary:   #111827;
+  --ink-secondary: #374151;
+  --ink-tertiary:  #6b7280;
+  --ink-muted:     #9ca3af;
 
-  --text-primary: #f1f5f9; /* slate-100 */
-  --text-secondary: #94a3b8; /* slate-400 */
-  --text-disabled: #475569; /* slate-600 */
+  /* --- Signal colors adjusted for light bg --- */
+  --phosphor:         #16a34a;  /* green-600 — readable on light */
+  --phosphor-dim:     rgba(22, 163, 74, 0.10);
+  --phosphor-glow:    rgba(22, 163, 74, 0.20);
+  --amber-safety:     #d97706;  /* amber-600 */
+  --amber-safety-dim: rgba(217, 119, 6, 0.10);
+  --alarm-red:        #dc2626;  /* red-600 */
+  --alarm-red-dim:    rgba(220, 38, 38, 0.10);
+  --telemetry-blue:   #0284c7;  /* sky-600 */
+  --telemetry-blue-dim: rgba(2, 132, 199, 0.10);
 
-  --accent: #38bdf8; /* sky-400 */
-  --accent-hover: #7dd3fc;
+  --border-subtle: rgba(17, 24, 39, 0.08);
+  --border-mid:    rgba(17, 24, 39, 0.14);
+  --border-strong: rgba(17, 24, 39, 0.24);
 
-  /* Desaturated semantic colors for dark backgrounds */
-  --status-ok: #4ade80; /* green-400 */
-  --status-ok-bg: rgba(74, 222, 128, 0.12);
-  --status-warning: #fbbf24; /* amber-400 */
-  --status-warning-bg: rgba(251, 191, 36, 0.12);
-  --status-critical: #f87171; /* red-400 */
-  --status-critical-bg: rgba(248, 113, 113, 0.12);
-  --status-flow: #38bdf8; /* sky-400 */
-  --status-flow-bg: rgba(56, 189, 248, 0.12);
+  --accent:       var(--phosphor);
+  --accent-hover: #15803d;
 }
 
 /* ---------------------------------------------------------------------------
  * Tailwind 4 @theme inline — exposes CSS vars as Tailwind color utilities
- * Authors use: bg-surface-raised, text-status-critical, border-border-subtle
- * Never var() in className, never hex values (tailwind-4 skill).
+ * Use: bg-surface-raised, text-ink-primary, border-border-subtle
+ * NEVER var() in className, NEVER hex values (tailwind-4 skill).
  * --------------------------------------------------------------------------- */
 @theme inline {
   /* Surfaces */
-  --color-surface-base: var(--surface-base);
-  --color-surface-raised: var(--surface-raised);
-  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-base:        var(--surface-base);
+  --color-surface-raised:      var(--surface-raised);
+  --color-surface-overlay:     var(--surface-overlay);
   --color-surface-interactive: var(--surface-interactive);
 
   /* Borders */
   --color-border-subtle: var(--border-subtle);
+  --color-border-mid:    var(--border-mid);
   --color-border-strong: var(--border-strong);
 
-  /* Text */
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-disabled: var(--text-disabled);
+  /* Ink (text) hierarchy */
+  --color-ink-primary:   var(--ink-primary);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-ink-tertiary:  var(--ink-tertiary);
+  --color-ink-muted:     var(--ink-muted);
+
+  /* Legacy semantic aliases — keeps existing component classes working */
+  --color-text-primary:   var(--ink-primary);
+  --color-text-secondary: var(--ink-secondary);
+  --color-text-disabled:  var(--ink-muted);
 
   /* Accent */
-  --color-accent: var(--accent);
+  --color-accent:     var(--accent);
   --color-accent-hover: var(--accent-hover);
+  --color-accent-dim: var(--accent-dim);
 
   /* Status — 1:1 with AlertLevel domain values */
-  --color-status-ok: var(--status-ok);
-  --color-status-ok-bg: var(--status-ok-bg);
-  --color-status-warning: var(--status-warning);
-  --color-status-warning-bg: var(--status-warning-bg);
-  --color-status-critical: var(--status-critical);
+  --color-status-ok:          var(--status-ok);
+  --color-status-ok-bg:       var(--status-ok-bg);
+  --color-status-warning:     var(--status-warning);
+  --color-status-warning-bg:  var(--status-warning-bg);
+  --color-status-critical:    var(--status-critical);
   --color-status-critical-bg: var(--status-critical-bg);
-  --color-status-flow: var(--status-flow);
-  --color-status-flow-bg: var(--status-flow-bg);
+  --color-status-flow:        var(--status-flow);
+  --color-status-flow-bg:     var(--status-flow-bg);
 
   /* Typography */
   --font-sans: var(--font-geist-sans);
@@ -116,7 +173,7 @@
  * --------------------------------------------------------------------------- */
 body {
   background-color: var(--surface-base);
-  color: var(--text-primary);
+  color: var(--ink-primary);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

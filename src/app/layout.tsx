@@ -20,18 +20,23 @@ export const metadata: Metadata = {
 
 /**
  * Inline script that reads localStorage("theme") BEFORE first paint to avoid
- * a flash of unstyled content (FOUC). Falls back to "light" (the app default).
+ * a flash of unstyled content (FOUC). Default is now DARK (control room).
  * Runs synchronously — must have a stable id (Next.js Script requirement).
  */
 const themeScript = `
 (function () {
   try {
     var stored = localStorage.getItem('theme');
-    if (stored === 'dark') {
+    if (stored === 'light') {
+      // User explicitly chose light — honour it
+      document.documentElement.classList.remove('dark');
+    } else {
+      // Default: dark (sala de control — no class === dark via :root default)
       document.documentElement.classList.add('dark');
     }
-    // Default is light — no class needed when theme is absent or 'light'
-  } catch (e) {}
+  } catch (e) {
+    document.documentElement.classList.add('dark');
+  }
 })();
 `;
 

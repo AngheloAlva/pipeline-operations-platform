@@ -77,8 +77,7 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
       .filter((m) => m.endedAt)
       .map((m) => new Date(m.endedAt!).getTime());
 
-    const simulatedTime =
-      endedTimes.length > 0 ? Math.max(...endedTimes) : Date.now();
+    const simulatedTime = endedTimes.length > 0 ? Math.max(...endedTimes) : Date.now();
 
     const activeFlows = deriveFlowSchedule(world, simulatedTime, tankLevels);
 
@@ -116,9 +115,7 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
   reset: () => {
     const { _seedLevels, _seedTime, _world } = get();
     const tankLevels = { ..._seedLevels };
-    const activeFlows = _world
-      ? deriveFlowSchedule(_world, _seedTime, tankLevels)
-      : [];
+    const activeFlows = _world ? deriveFlowSchedule(_world, _seedTime, tankLevels) : [];
 
     set({
       isRunning: false,
@@ -136,20 +133,11 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
     const state = get();
     if (!state.isRunning) return;
 
-    const result = tickSimulation(
-      state,
-      deltaMs,
-      state.speedMultiplier,
-      state._tankCapacities
-    );
+    const result = tickSimulation(state, deltaMs, state.speedMultiplier, state._tankCapacities);
 
     // Refresh active flows at the new simulated time
     const activeFlows = state._world
-      ? deriveFlowSchedule(
-          state._world,
-          result.simulatedTime,
-          result.tankLevels
-        )
+      ? deriveFlowSchedule(state._world, result.simulatedTime, result.tankLevels)
       : state.activeFlows;
 
     set({
@@ -172,9 +160,7 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
  * @example
  *   const level = useSimulationStore(selectTankLevel("T-101"));
  */
-export function selectTankLevel(
-  tankId: string
-): (state: SimulationStore) => number {
+export function selectTankLevel(tankId: string): (state: SimulationStore) => number {
   return (state) => state.tankLevels[tankId] ?? 0;
 }
 
@@ -184,9 +170,7 @@ export function selectTankLevel(
 
 /** Fine-grained selector for activeFlows (uses shallow equality). */
 export function useActiveFlows(): ActiveFlow[] {
-  return useSimulationStore(
-    useShallow((state) => state.activeFlows)
-  );
+  return useSimulationStore(useShallow((state) => state.activeFlows));
 }
 
 /** Fine-grained selector for simulation running status. */

@@ -203,7 +203,7 @@ describe("Volumetric balance", () => {
   // ---------------------------------------------------------------------------
   describe("groupBalanceByHour", () => {
     function makeMovement(
-      partial: Partial<Movement> & { startedAt: string; endedAt: string }
+      partial: Partial<Movement> & { startedAt: string; endedAt: string },
     ): Movement {
       return {
         id: partial.id ?? "m1",
@@ -222,11 +222,36 @@ describe("Volumetric balance", () => {
     // SR-009 Scenario 1: 3 movements in hour 14 and 2 in hour 15 → 2 groups
     it("produces exactly 2 hour groups for movements in 2 distinct hours", () => {
       const movements: Movement[] = [
-        makeMovement({ id: "a", volumeGsvM3: 100, startedAt: "2026-06-01T14:00:00Z", endedAt: "2026-06-01T14:30:00Z" }),
-        makeMovement({ id: "b", volumeGsvM3: 200, startedAt: "2026-06-01T14:15:00Z", endedAt: "2026-06-01T14:45:00Z" }),
-        makeMovement({ id: "c", volumeGsvM3: 150, startedAt: "2026-06-01T14:30:00Z", endedAt: "2026-06-01T14:59:00Z" }),
-        makeMovement({ id: "d", volumeGsvM3: 300, startedAt: "2026-06-01T15:00:00Z", endedAt: "2026-06-01T15:30:00Z" }),
-        makeMovement({ id: "e", volumeGsvM3: 250, startedAt: "2026-06-01T15:20:00Z", endedAt: "2026-06-01T15:50:00Z" }),
+        makeMovement({
+          id: "a",
+          volumeGsvM3: 100,
+          startedAt: "2026-06-01T14:00:00Z",
+          endedAt: "2026-06-01T14:30:00Z",
+        }),
+        makeMovement({
+          id: "b",
+          volumeGsvM3: 200,
+          startedAt: "2026-06-01T14:15:00Z",
+          endedAt: "2026-06-01T14:45:00Z",
+        }),
+        makeMovement({
+          id: "c",
+          volumeGsvM3: 150,
+          startedAt: "2026-06-01T14:30:00Z",
+          endedAt: "2026-06-01T14:59:00Z",
+        }),
+        makeMovement({
+          id: "d",
+          volumeGsvM3: 300,
+          startedAt: "2026-06-01T15:00:00Z",
+          endedAt: "2026-06-01T15:30:00Z",
+        }),
+        makeMovement({
+          id: "e",
+          volumeGsvM3: 250,
+          startedAt: "2026-06-01T15:20:00Z",
+          endedAt: "2026-06-01T15:50:00Z",
+        }),
       ];
       const groups = groupBalanceByHour(movements);
       expect(groups).toHaveLength(2);
@@ -236,8 +261,22 @@ describe("Volumetric balance", () => {
       // Movement from "src" to "T-101": inflow for T-101 (salida from src)
       // We treat movements where toNodeId starts with "T-" as entradas
       const movements: Movement[] = [
-        makeMovement({ id: "x", fromNodeId: "external", toNodeId: "T-101", volumeGsvM3: 400, startedAt: "2026-06-01T10:00:00Z", endedAt: "2026-06-01T10:30:00Z" }),
-        makeMovement({ id: "y", fromNodeId: "T-101", toNodeId: "refinery", volumeGsvM3: 200, startedAt: "2026-06-01T10:10:00Z", endedAt: "2026-06-01T10:40:00Z" }),
+        makeMovement({
+          id: "x",
+          fromNodeId: "external",
+          toNodeId: "T-101",
+          volumeGsvM3: 400,
+          startedAt: "2026-06-01T10:00:00Z",
+          endedAt: "2026-06-01T10:30:00Z",
+        }),
+        makeMovement({
+          id: "y",
+          fromNodeId: "T-101",
+          toNodeId: "refinery",
+          volumeGsvM3: 200,
+          startedAt: "2026-06-01T10:10:00Z",
+          endedAt: "2026-06-01T10:40:00Z",
+        }),
       ];
       const groups = groupBalanceByHour(movements);
       expect(groups).toHaveLength(1);

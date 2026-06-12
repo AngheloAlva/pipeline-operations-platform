@@ -35,7 +35,7 @@ export function tickSimulation(
   state: SimulationState,
   deltaMs: number,
   speedMultiplier: number,
-  tankCapacities: Record<string, { capacityM3: number }>
+  tankCapacities: Record<string, { capacityM3: number }>,
 ): TickResult {
   // Cap effective wall-clock delta to avoid tunneling at high speed after tab wake.
   const effectiveDeltaMs = Math.min(deltaMs, MAX_TICK_MS);
@@ -51,21 +51,13 @@ export function tickSimulation(
     // Destination tank receives volume (inflow)
     if (flow.toNodeId in newLevels) {
       const cap = tankCapacities[flow.toNodeId]?.capacityM3 ?? Infinity;
-      newLevels[flow.toNodeId] = clampLevel(
-        newLevels[flow.toNodeId] + deltaV,
-        0,
-        cap
-      );
+      newLevels[flow.toNodeId] = clampLevel(newLevels[flow.toNodeId] + deltaV, 0, cap);
     }
 
     // Source tank loses volume (outflow)
     if (flow.fromNodeId in newLevels) {
       const cap = tankCapacities[flow.fromNodeId]?.capacityM3 ?? Infinity;
-      newLevels[flow.fromNodeId] = clampLevel(
-        newLevels[flow.fromNodeId] - deltaV,
-        0,
-        cap
-      );
+      newLevels[flow.fromNodeId] = clampLevel(newLevels[flow.fromNodeId] - deltaV, 0, cap);
     }
   }
 
@@ -109,7 +101,7 @@ export function tickSimulation(
 export function deriveFlowSchedule(
   world: PipelineWorld,
   simulatedTime: number,
-  currentLevels?: Record<string, number>
+  currentLevels?: Record<string, number>,
 ): ActiveFlow[] {
   if (world.movements.length === 0) return [];
 
@@ -135,9 +127,7 @@ export function deriveFlowSchedule(
     let rateM3h: number;
     if (movement.endedAt && movement.startedAt) {
       const durationH =
-        (new Date(movement.endedAt).getTime() -
-          new Date(movement.startedAt).getTime()) /
-        3_600_000;
+        (new Date(movement.endedAt).getTime() - new Date(movement.startedAt).getTime()) / 3_600_000;
       rateM3h = durationH > 0 ? movement.volumeGsvM3 / durationH : 0;
     } else {
       rateM3h = 500; // default when duration unknown
@@ -148,9 +138,7 @@ export function deriveFlowSchedule(
 
     // Deterministic active-hour check — use a simple hash of the movement id
     // and the world so the schedule is identical for the same inputs.
-    const idSum = movement.id
-      .split("")
-      .reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    const idSum = movement.id.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
     const activeHour = idSum % 24;
 
     if (activeHour !== hour) continue;
@@ -215,15 +203,12 @@ export interface FillEmptyTimeResult {
 export function estimateFillEmptyTime(
   tank: TankEstimateInput,
   incomingRateM3h: number,
-  outgoingRateM3h: number
+  outgoingRateM3h: number,
 ): FillEmptyTimeResult {
   const hoursToFull =
-    incomingRateM3h > 0
-      ? (tank.capacity - tank.level) / incomingRateM3h
-      : Infinity;
+    incomingRateM3h > 0 ? (tank.capacity - tank.level) / incomingRateM3h : Infinity;
 
-  const hoursToEmpty =
-    outgoingRateM3h > 0 ? tank.level / outgoingRateM3h : Infinity;
+  const hoursToEmpty = outgoingRateM3h > 0 ? tank.level / outgoingRateM3h : Infinity;
 
   return {
     hoursToFull,

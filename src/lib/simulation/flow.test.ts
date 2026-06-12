@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  tickSimulation,
-  deriveFlowSchedule,
-  estimateFillEmptyTime,
-} from "./flow";
+import { tickSimulation, deriveFlowSchedule, estimateFillEmptyTime } from "./flow";
 import type { SimulationState, ActiveFlow } from "./types";
 import type { PipelineWorld } from "@/lib/domain";
 
@@ -12,7 +8,7 @@ import type { PipelineWorld } from "@/lib/domain";
 // ---------------------------------------------------------------------------
 
 function makeState(
-  overrides: Partial<SimulationState> & { tankLevels: Record<string, number> }
+  overrides: Partial<SimulationState> & { tankLevels: Record<string, number> },
 ): SimulationState {
   return {
     isRunning: true,
@@ -42,7 +38,7 @@ function makeWorld(
   tanks: ReturnType<typeof makeTank>[],
   fromNodeId: string,
   toNodeId: string,
-  flowRateM3h: number
+  flowRateM3h: number,
 ): PipelineWorld {
   return {
     pipeline: {
@@ -96,9 +92,7 @@ describe("tickSimulation", () => {
   it("advances level by Δv = flowRate × min(deltaMs,MAX_TICK_MS) × speed / 3_600_000", () => {
     const state = makeState({
       tankLevels: { "T-1": 5000 },
-      activeFlows: [
-        { fromNodeId: "src", toNodeId: "T-1", flowRateM3h: 18_000_000 },
-      ],
+      activeFlows: [{ fromNodeId: "src", toNodeId: "T-1", flowRateM3h: 18_000_000 }],
     });
     // 200ms × 1× = 200ms sim → 200/3600000 h × 18_000_000 m³/h = 1000 m³
     const result = tickSimulation(state, 200, 1, {
@@ -111,9 +105,7 @@ describe("tickSimulation", () => {
   it("clamps level at capacityM3 (no overfill)", () => {
     const state = makeState({
       tankLevels: { "T-1": 9900 },
-      activeFlows: [
-        { fromNodeId: "src", toNodeId: "T-1", flowRateM3h: 18_000_000 },
-      ],
+      activeFlows: [{ fromNodeId: "src", toNodeId: "T-1", flowRateM3h: 18_000_000 }],
     });
     // Δv >> remaining space → must clamp at 10000
     const result = tickSimulation(state, 200, 1, {
@@ -128,9 +120,7 @@ describe("tickSimulation", () => {
     // Starting level 10 will go to -23.33 → must be clamped to 0
     const state = makeState({
       tankLevels: { "T-1": 10 },
-      activeFlows: [
-        { fromNodeId: "T-1", toNodeId: "dst", flowRateM3h: 1000 },
-      ],
+      activeFlows: [{ fromNodeId: "T-1", toNodeId: "dst", flowRateM3h: 1000 }],
       speedMultiplier: 600,
     });
     const result = tickSimulation(state, 200, 600, {
@@ -143,9 +133,7 @@ describe("tickSimulation", () => {
   it("applies speedMultiplier to the simulated Δv (within MAX_TICK_MS cap)", () => {
     const state = makeState({
       tankLevels: { "T-1": 5000 },
-      activeFlows: [
-        { fromNodeId: "src", toNodeId: "T-1", flowRateM3h: 1000 },
-      ],
+      activeFlows: [{ fromNodeId: "src", toNodeId: "T-1", flowRateM3h: 1000 }],
     });
     // deltaMs=200ms (at cap) × 60 = 12s sim = 12/3600 h × 1000 m³/h = 3.333 m³
     const expected = 5000 + 1000 * ((200 * 60) / 3_600_000);
@@ -160,9 +148,7 @@ describe("tickSimulation", () => {
     // Start at exactly 95% (9500/10000) — should trigger alarm immediately
     const state = makeState({
       tankLevels: { "T-1": 9500 },
-      activeFlows: [
-        { fromNodeId: "src", toNodeId: "T-1", flowRateM3h: 1000 },
-      ],
+      activeFlows: [{ fromNodeId: "src", toNodeId: "T-1", flowRateM3h: 1000 }],
     });
     const result = tickSimulation(state, 200, 1, {
       "T-1": { capacityM3: 10_000 },
@@ -184,9 +170,7 @@ describe("tickSimulation", () => {
   it("caps effective deltaMs at MAX_TICK_MS (200) before multiplying by speed", () => {
     const state = makeState({
       tankLevels: { "T-1": 0 },
-      activeFlows: [
-        { fromNodeId: "src", toNodeId: "T-1", flowRateM3h: 1000 },
-      ],
+      activeFlows: [{ fromNodeId: "src", toNodeId: "T-1", flowRateM3h: 1000 }],
     });
     // Provide deltaMs = 5000ms, but effective cap = 200ms
     const uncapped = tickSimulation(state, 5000, 1, {
@@ -195,10 +179,7 @@ describe("tickSimulation", () => {
     const capped = tickSimulation(state, 200, 1, {
       "T-1": { capacityM3: 100_000 },
     });
-    expect(uncapped.tankLevels["T-1"]).toBeCloseTo(
-      capped.tankLevels["T-1"],
-      5
-    );
+    expect(uncapped.tankLevels["T-1"]).toBeCloseTo(capped.tankLevels["T-1"], 5);
   });
 });
 
@@ -209,10 +190,7 @@ describe("tickSimulation", () => {
 describe("deriveFlowSchedule", () => {
   // Scenario 7 — Determinism
   it("returns an identical schedule for the same world and simulatedTime", () => {
-    const tanks = [
-      makeTank("T-A", 5000, 10_000),
-      makeTank("T-B", 5000, 10_000),
-    ];
+    const tanks = [makeTank("T-A", 5000, 10_000), makeTank("T-B", 5000, 10_000)];
     const world = makeWorld(tanks, "T-A", "T-B", 500);
     const t = Date.now();
     const s1 = deriveFlowSchedule(world, t);
@@ -222,10 +200,7 @@ describe("deriveFlowSchedule", () => {
 
   // Scenario 5 — no-overfill / no-overdrain invariant at 600×
   it("produces a schedule that does not overfill or overdrain any tank over 24 simulated hours at 600×", () => {
-    const tanks = [
-      makeTank("T-A", 5000, 10_000),
-      makeTank("T-B", 5000, 10_000),
-    ];
+    const tanks = [makeTank("T-A", 5000, 10_000), makeTank("T-B", 5000, 10_000)];
     const world = makeWorld(tanks, "T-A", "T-B", 500);
 
     // Simulate 24h at 600× in small wall-clock steps (10ms each = 6s sim)
@@ -237,7 +212,10 @@ describe("deriveFlowSchedule", () => {
     let tankLevels: Record<string, number> = { "T-A": 5000, "T-B": 5000 };
     let simulatedTime = Date.now();
     let elapsed = 0;
-    const capacities: Record<string, number> = { "T-A": 10_000, "T-B": 10_000 };
+    const capacities: Record<string, { capacityM3: number }> = {
+      "T-A": { capacityM3: 10_000 },
+      "T-B": { capacityM3: 10_000 },
+    };
 
     while (elapsed < simDuration) {
       const activeFlows = deriveFlowSchedule(world, simulatedTime);
@@ -248,9 +226,9 @@ describe("deriveFlowSchedule", () => {
       elapsed += stepMs * speed;
 
       for (const [id, level] of Object.entries(tankLevels)) {
-        const cap = capacities[id];
+        const cap = capacities[id]?.capacityM3;
         expect(level).toBeGreaterThanOrEqual(0);
-        expect(level).toBeLessThanOrEqual(cap);
+        if (cap !== undefined) expect(level).toBeLessThanOrEqual(cap);
       }
     }
   });
@@ -268,9 +246,7 @@ describe("deriveFlowSchedule", () => {
       "T-B": 5000,
     });
     // Any flow draining T-A should be filtered out (level = 0)
-    const drainsEmptyTank = schedule.some(
-      (f) => f.fromNodeId === "T-A" && f.flowRateM3h > 0
-    );
+    const drainsEmptyTank = schedule.some((f) => f.fromNodeId === "T-A" && f.flowRateM3h > 0);
     expect(drainsEmptyTank).toBe(false);
   });
 });
@@ -281,47 +257,27 @@ describe("deriveFlowSchedule", () => {
 
 describe("estimateFillEmptyTime", () => {
   it("computes hoursToFull = (capacity - level) / incomingRate", () => {
-    const result = estimateFillEmptyTime(
-      { id: "T-1", level: 5000, capacity: 10_000 },
-      1000,
-      0
-    );
+    const result = estimateFillEmptyTime({ id: "T-1", level: 5000, capacity: 10_000 }, 1000, 0);
     expect(result.hoursToFull).toBeCloseTo(5, 5);
   });
 
   it("computes hoursToEmpty = level / outgoingRate", () => {
-    const result = estimateFillEmptyTime(
-      { id: "T-1", level: 5000, capacity: 10_000 },
-      0,
-      500
-    );
+    const result = estimateFillEmptyTime({ id: "T-1", level: 5000, capacity: 10_000 }, 0, 500);
     expect(result.hoursToEmpty).toBeCloseTo(10, 5);
   });
 
   it("returns Infinity for hoursToFull when incomingRate is 0", () => {
-    const result = estimateFillEmptyTime(
-      { id: "T-1", level: 5000, capacity: 10_000 },
-      0,
-      500
-    );
+    const result = estimateFillEmptyTime({ id: "T-1", level: 5000, capacity: 10_000 }, 0, 500);
     expect(result.hoursToFull).toBe(Infinity);
   });
 
   it("returns Infinity for hoursToEmpty when outgoingRate is 0", () => {
-    const result = estimateFillEmptyTime(
-      { id: "T-1", level: 5000, capacity: 10_000 },
-      500,
-      0
-    );
+    const result = estimateFillEmptyTime({ id: "T-1", level: 5000, capacity: 10_000 }, 500, 0);
     expect(result.hoursToEmpty).toBe(Infinity);
   });
 
   it("includes estimatedAt as a number (epoch ms)", () => {
-    const result = estimateFillEmptyTime(
-      { id: "T-1", level: 5000, capacity: 10_000 },
-      1000,
-      1000
-    );
+    const result = estimateFillEmptyTime({ id: "T-1", level: 5000, capacity: 10_000 }, 1000, 1000);
     expect(typeof result.estimatedAt).toBe("number");
     expect(result.estimatedAt).toBeGreaterThan(0);
   });

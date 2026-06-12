@@ -35,13 +35,8 @@ const SEED_WORLD: PipelineWorld = {
     totalLengthKm: 100,
     segments: [],
   },
-  stations: [
-    { id: "s1", name: "Station 1", kind: "PUMP_STATION", km: 0, pipelineId: "p1" },
-  ],
-  tanks: [
-    makeTank("T-101", 5000, 10_000),
-    makeTank("T-6010", 3000, 8_000),
-  ],
+  stations: [{ id: "s1", name: "Station 1", kind: "PUMP_STATION", km: 0, pipelineId: "p1" }],
+  tanks: [makeTank("T-101", 5000, 10_000), makeTank("T-6010", 3000, 8_000)],
   shippers: [],
   equipment: [],
   movements: [
@@ -189,9 +184,7 @@ describe("simulationStore", () => {
     getStore().init(SEED_WORLD);
     // Add an active flow so levels change
     useSimulationStore.setState({
-      activeFlows: [
-        { fromNodeId: "T-101", toNodeId: "T-6010", flowRateM3h: 1000 },
-      ],
+      activeFlows: [{ fromNodeId: "T-101", toNodeId: "T-6010", flowRateM3h: 1000 }],
     });
     getStore().start();
     const timeBefore = getStore().simulatedTime;

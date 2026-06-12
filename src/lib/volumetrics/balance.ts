@@ -119,10 +119,7 @@ export interface HourlyBalance {
  * @returns Sorted ascending array of hourly balance buckets.
  */
 export function groupBalanceByHour(movements: Movement[]): HourlyBalance[] {
-  const buckets = new Map<
-    number,
-    { entradas: number; salidas: number }
-  >();
+  const buckets = new Map<number, { entradas: number; salidas: number }>();
 
   for (const movement of movements) {
     const hour = new Date(movement.startedAt).getUTCHours();

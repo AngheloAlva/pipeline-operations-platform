@@ -60,7 +60,7 @@ function safePercent(numerator: number, denominator: number): number {
 
 function classifyBand(
   cumplimientoPrograma: number,
-  cumplimientoPresupuesto: number
+  cumplimientoPresupuesto: number,
 ): ComplianceBand {
   const inOk =
     cumplimientoPrograma >= BAND_OK_MIN &&

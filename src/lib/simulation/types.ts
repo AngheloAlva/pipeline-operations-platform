@@ -6,7 +6,7 @@
 
 import { SIM_SPEEDS, TANK_HIGH_LEVEL_ALARM } from "@/lib/domain";
 
-export type { };
+export type {};
 
 // Re-export domain constants so simulation modules have a single import point.
 export { SIM_SPEEDS, TANK_HIGH_LEVEL_ALARM };

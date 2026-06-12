@@ -4,12 +4,7 @@
  * All functions are pure — no side effects.
  */
 
-import {
-  CATHODIC_OK,
-  CATHODIC_WARN,
-  CATHODIC_OVERPROTECT,
-  AlertLevel,
-} from "@/lib/domain";
+import { CATHODIC_OK, CATHODIC_WARN, CATHODIC_OVERPROTECT, AlertLevel } from "@/lib/domain";
 import type { CathodicReading } from "@/lib/domain";
 
 /**
@@ -61,9 +56,7 @@ export function detectDegradationTrend(readings: CathodicReading[]): boolean {
   }
 
   // Sort by takenAt ascending to get chronological order
-  const sorted = [...readings].sort((a, b) =>
-    a.takenAt.localeCompare(b.takenAt)
-  );
+  const sorted = [...readings].sort((a, b) => a.takenAt.localeCompare(b.takenAt));
 
   const last3 = sorted.slice(-3);
   const [first, second, third] = last3;

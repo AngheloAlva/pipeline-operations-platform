@@ -4,11 +4,7 @@
  * All functions are pure — no side effects.
  */
 
-import {
-  BALANCE_TOLERANCE_OK,
-  BALANCE_TOLERANCE_WARN,
-  AlertLevel,
-} from "@/lib/domain";
+import { BALANCE_TOLERANCE_OK, BALANCE_TOLERANCE_WARN, AlertLevel } from "@/lib/domain";
 
 /** Parameters for computing a volumetric balance. */
 export interface BalanceParams {
@@ -50,8 +46,7 @@ export function computeBalance(params: BalanceParams): BalanceResult {
 
   const difference = measured - calculated;
   // Percentage relative to calculated stock; guard against division by zero
-  const percentage =
-    calculated !== 0 ? Math.abs(difference / calculated) * 100 : 0;
+  const percentage = calculated !== 0 ? Math.abs(difference / calculated) * 100 : 0;
 
   let level: AlertLevel;
   if (percentage <= BALANCE_TOLERANCE_OK) {

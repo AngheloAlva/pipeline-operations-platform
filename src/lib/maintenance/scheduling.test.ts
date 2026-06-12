@@ -50,7 +50,9 @@ describe("Maintenance scheduling", () => {
     });
 
     it("adds 3 months for QUARTERLY frequency", () => {
-      expect(nextDueDateByCalendar("2026-01-15", MaintenanceFrequency.QUARTERLY)).toBe("2026-04-15");
+      expect(nextDueDateByCalendar("2026-01-15", MaintenanceFrequency.QUARTERLY)).toBe(
+        "2026-04-15",
+      );
     });
 
     it("adds 6 months for BIANNUAL frequency", () => {
@@ -172,9 +174,21 @@ describe("Maintenance scheduling", () => {
     it("HIGH criticality scores between LOW and CRITICAL", () => {
       const task = makeTask({ nextDueDate: "2025-01-01" });
       const now = "2026-06-12";
-      const criticalScore = maintenancePriorityScore(task, makeEquipment({ criticality: Criticality.CRITICAL }), now);
-      const highScore = maintenancePriorityScore(task, makeEquipment({ criticality: Criticality.HIGH }), now);
-      const lowScore = maintenancePriorityScore(task, makeEquipment({ criticality: Criticality.LOW }), now);
+      const criticalScore = maintenancePriorityScore(
+        task,
+        makeEquipment({ criticality: Criticality.CRITICAL }),
+        now,
+      );
+      const highScore = maintenancePriorityScore(
+        task,
+        makeEquipment({ criticality: Criticality.HIGH }),
+        now,
+      );
+      const lowScore = maintenancePriorityScore(
+        task,
+        makeEquipment({ criticality: Criticality.LOW }),
+        now,
+      );
 
       expect(criticalScore).toBeGreaterThan(highScore);
       expect(highScore).toBeGreaterThan(lowScore);

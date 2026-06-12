@@ -1,12 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  apiToSg,
-  sgToApi,
-  vcf,
-  toVolume15C,
-  toVolume60F,
-  toGsv,
-} from "./conversions";
+import { apiToSg, sgToApi, vcf, toVolume15C, toVolume60F, toGsv } from "./conversions";
 
 describe("Volumetric conversions", () => {
   describe("apiToSg", () => {

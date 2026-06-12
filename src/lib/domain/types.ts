@@ -59,8 +59,7 @@ export const WorkOrderStatus = {
   COMPLETED: "COMPLETED",
   CANCELLED: "CANCELLED",
 } as const;
-export type WorkOrderStatus =
-  (typeof WorkOrderStatus)[keyof typeof WorkOrderStatus];
+export type WorkOrderStatus = (typeof WorkOrderStatus)[keyof typeof WorkOrderStatus];
 
 /** Work order priority. */
 export const WorkOrderPriority = {
@@ -69,8 +68,7 @@ export const WorkOrderPriority = {
   HIGH: "HIGH",
   URGENT: "URGENT",
 } as const;
-export type WorkOrderPriority =
-  (typeof WorkOrderPriority)[keyof typeof WorkOrderPriority];
+export type WorkOrderPriority = (typeof WorkOrderPriority)[keyof typeof WorkOrderPriority];
 
 /** Maintenance type. */
 export const MaintenanceType = {
@@ -78,8 +76,7 @@ export const MaintenanceType = {
   CORRECTIVE: "CORRECTIVE",
   PREDICTIVE: "PREDICTIVE",
 } as const;
-export type MaintenanceType =
-  (typeof MaintenanceType)[keyof typeof MaintenanceType];
+export type MaintenanceType = (typeof MaintenanceType)[keyof typeof MaintenanceType];
 
 /** Maintenance task frequency. */
 export const MaintenanceFrequency = {
@@ -91,8 +88,7 @@ export const MaintenanceFrequency = {
   ANNUAL: "ANNUAL",
   BY_HOURS: "BY_HOURS",
 } as const;
-export type MaintenanceFrequency =
-  (typeof MaintenanceFrequency)[keyof typeof MaintenanceFrequency];
+export type MaintenanceFrequency = (typeof MaintenanceFrequency)[keyof typeof MaintenanceFrequency];
 
 /** Telemetry metric type. */
 export const TelemetryMetric = {
@@ -102,8 +98,7 @@ export const TelemetryMetric = {
   TEMPERATURE: "TEMPERATURE",
   VOLTAGE: "VOLTAGE",
 } as const;
-export type TelemetryMetric =
-  (typeof TelemetryMetric)[keyof typeof TelemetryMetric];
+export type TelemetryMetric = (typeof TelemetryMetric)[keyof typeof TelemetryMetric];
 
 /** Alert/integrity severity level. */
 export const AlertLevel = {

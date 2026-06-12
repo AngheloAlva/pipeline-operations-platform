@@ -3,11 +3,7 @@ import { evaluatePotential, detectDegradationTrend } from "./thresholds";
 import { AlertLevel } from "@/lib/domain";
 import type { CathodicReading } from "@/lib/domain";
 
-function makeReading(
-  potentialV: number,
-  takenAt: string,
-  id = "r1"
-): CathodicReading {
+function makeReading(potentialV: number, takenAt: string, id = "r1"): CathodicReading {
   return {
     id,
     segmentId: "seg-1",

@@ -4,11 +4,7 @@
  * All functions are pure — no side effects, no external I/O.
  */
 
-import {
-  MaintenanceFrequency,
-  Criticality,
-  CRITICALITY_WEIGHTS,
-} from "@/lib/domain";
+import { MaintenanceFrequency, Criticality, CRITICALITY_WEIGHTS } from "@/lib/domain";
 import type { MaintenanceTask, Equipment } from "@/lib/domain";
 
 /** Task status classification. */
@@ -72,7 +68,7 @@ function formatDate(date: Date): string {
  */
 export function nextDueDateByCalendar(
   lastExecuted: string,
-  frequency: MaintenanceFrequency
+  frequency: MaintenanceFrequency,
 ): string {
   const date = parseDate(lastExecuted);
 
@@ -104,10 +100,7 @@ export function nextDueDateByCalendar(
  * @param intervalHours - Maintenance interval in hours
  * @returns Operating hour count at which maintenance is next due
  */
-export function nextDueHoursByUsage(
-  lastInterventionHours: number,
-  intervalHours: number
-): number {
+export function nextDueHoursByUsage(lastInterventionHours: number, intervalHours: number): number {
   return lastInterventionHours + intervalHours;
 }
 
@@ -129,18 +122,12 @@ export function nextDueHoursByUsage(
  * @param now - Current date as ISO string (YYYY-MM-DD)
  * @param currentHours - Current operating hours of the associated equipment (optional)
  */
-export function taskStatus(
-  task: MaintenanceTask,
-  now: string,
-  currentHours?: number
-): TaskStatus {
+export function taskStatus(task: MaintenanceTask, now: string, currentHours?: number): TaskStatus {
   const nowDate = parseDate(now);
   const dueDate = parseDate(task.nextDueDate);
 
   // Calendar-based check (applies to all frequencies)
-  const daysDiff = Math.floor(
-    (dueDate.getTime() - nowDate.getTime()) / (1000 * 60 * 60 * 24)
-  );
+  const daysDiff = Math.floor((dueDate.getTime() - nowDate.getTime()) / (1000 * 60 * 60 * 24));
 
   if (daysDiff <= 0) {
     return "OVERDUE";
@@ -184,14 +171,11 @@ export function taskStatus(
 export function maintenancePriorityScore(
   task: MaintenanceTask,
   equipment: Equipment,
-  now: string
+  now: string,
 ): number {
   const status = taskStatus(task, now, equipment.operatingHours);
   const urgency = URGENCY_WEIGHT[status];
   const criticalityLevel = CRITICALITY_LEVEL[equipment.criticality] ?? 1;
 
-  return (
-    CRITICALITY_WEIGHTS.overdue * urgency +
-    CRITICALITY_WEIGHTS.criticality * criticalityLevel
-  );
+  return CRITICALITY_WEIGHTS.overdue * urgency + CRITICALITY_WEIGHTS.criticality * criticalityLevel;
 }

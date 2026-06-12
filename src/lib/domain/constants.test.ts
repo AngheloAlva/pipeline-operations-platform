@@ -72,9 +72,7 @@ describe("Domain constants", () => {
     });
 
     it("weights sum to 1.0", () => {
-      expect(CRITICALITY_WEIGHTS.overdue + CRITICALITY_WEIGHTS.criticality).toBe(
-        1.0
-      );
+      expect(CRITICALITY_WEIGHTS.overdue + CRITICALITY_WEIGHTS.criticality).toBe(1.0);
     });
   });
 

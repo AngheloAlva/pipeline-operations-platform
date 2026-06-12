@@ -1,6 +1,5 @@
-"use client";
-
 import { create } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -47,10 +46,12 @@ export interface Selection {
   selectedEntityType: EntityType | null;
 }
 
-/** Returns the current selection state. */
+/** Returns the current selection state. Wrapped with useShallow to prevent re-renders on reference equality. */
 export function useSelection(): Selection {
-  return useSelectionStore((state) => ({
-    selectedEntityId: state.selectedEntityId,
-    selectedEntityType: state.selectedEntityType,
-  }));
+  return useSelectionStore(
+    useShallow((state) => ({
+      selectedEntityId: state.selectedEntityId,
+      selectedEntityType: state.selectedEntityType,
+    })),
+  );
 }

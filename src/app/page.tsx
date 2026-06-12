@@ -23,9 +23,11 @@ function formatM3(value: number): string {
 // ---------------------------------------------------------------------------
 
 export default function OverviewPage() {
-  const { world, isLoading } = useWorldData();
+  const { world } = useWorldData();
 
-  if (isLoading || !world) {
+  // world is always populated synchronously from the bundled seed; this guard
+  // is a safety net for environments where the module has not yet been evaluated.
+  if (!world) {
     return (
       <div className="flex items-center justify-center p-16 text-text-secondary text-sm">
         Cargando datos operativos…

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Theme = "light" | "dark";
 
@@ -19,26 +19,15 @@ function applyTheme(theme: Theme): void {
   }
 }
 
-function readStoredTheme(): Theme {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "dark") return "dark";
-  } catch (_e) {
-    // ignore
-  }
-  return "light";
-}
-
 export function ThemeToggle() {
-  // Initialize from DOM class (already set by the inline script) to avoid a
-  // secondary flash on hydration. Falls back to "light" during SSR.
-  const [theme, setTheme] = useState<Theme>("light");
-
-  useEffect(() => {
-    // Sync React state with the class the inline script applied before hydration
-    const initial = readStoredTheme();
-    setTheme(initial);
-  }, []);
+  // Read the DOM class set by the inline script before hydration so the icon
+  // is correct on first render — no post-mount flip needed.
+  // During SSR document is undefined, so we fall back to "light".
+  const [theme, setTheme] = useState<Theme>(() =>
+    typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+      ? "dark"
+      : "light",
+  );
 
   function toggle() {
     const next: Theme = theme === "light" ? "dark" : "light";

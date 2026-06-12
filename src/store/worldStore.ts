@@ -1,6 +1,5 @@
-"use client";
-
 import { create } from "zustand";
+import seedData from "@/lib/data/seed.json";
 import type { PipelineWorld } from "@/lib/domain";
 
 // ---------------------------------------------------------------------------
@@ -20,12 +19,13 @@ interface WorldActions {
 type WorldStore = WorldState & WorldActions;
 
 // ---------------------------------------------------------------------------
-// Store
+// Store — initialized with bundled seed so the world is available on first
+// render (both SSR and client) without any async step.
 // ---------------------------------------------------------------------------
 
 export const useWorldStore = create<WorldStore>((set) => ({
-  world: null,
-  loaded: false,
+  world: seedData as unknown as PipelineWorld,
+  loaded: true,
 
   loadWorld: (world) => set({ world, loaded: true }),
   hydrate: (world) => set({ world, loaded: true }),
@@ -35,12 +35,12 @@ export const useWorldStore = create<WorldStore>((set) => ({
 // Typed selectors
 // ---------------------------------------------------------------------------
 
-/** Returns the current world, or null if not yet loaded. */
+/** Returns the current world. Always populated from the bundled seed. */
 export function useWorld(): PipelineWorld | null {
   return useWorldStore((state) => state.world);
 }
 
-/** Returns true once loadWorld has been called at least once. */
+/** Returns true once the world is loaded (always true after module init). */
 export function useWorldLoaded(): boolean {
   return useWorldStore((state) => state.loaded);
 }

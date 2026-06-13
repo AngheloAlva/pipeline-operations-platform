@@ -121,5 +121,35 @@ describe("Cathodic protection thresholds", () => {
     it("returns false for empty readings array", () => {
       expect(detectDegradationTrend([])).toBe(false);
     });
+
+    // Single reading — fewer than 3, must return false
+    it("returns false for a single reading", () => {
+      const readings: CathodicReading[] = [makeReading(-0.9, "2026-01-01T00:00:00Z", "r1")];
+      expect(detectDegradationTrend(readings)).toBe(false);
+    });
+
+    // Unsorted input — the function must sort internally and still detect the trend
+    it("detects degradation even when readings are provided in reverse chronological order", () => {
+      // Most recent → oldest order (reversed), but trend is worsening
+      const readings: CathodicReading[] = [
+        makeReading(-0.84, "2026-01-03T00:00:00Z", "r3"), // worst (most recent)
+        makeReading(-0.87, "2026-01-02T00:00:00Z", "r2"),
+        makeReading(-0.9, "2026-01-01T00:00:00Z", "r1"),  // best (oldest)
+      ];
+      // Internally sorted by takenAt asc → [-0.9, -0.87, -0.84] → strictly increasing → true
+      expect(detectDegradationTrend(readings)).toBe(true);
+    });
+
+    // Counter-case: last 3 of 4 are stable (one pair equal) — not strictly increasing
+    it("returns false when last 3 readings have one equal consecutive pair", () => {
+      const readings: CathodicReading[] = [
+        makeReading(-0.9, "2026-01-01T00:00:00Z", "r1"),
+        makeReading(-0.87, "2026-01-02T00:00:00Z", "r2"),
+        makeReading(-0.87, "2026-01-03T00:00:00Z", "r3"), // equal to previous — not strictly increasing
+        makeReading(-0.84, "2026-01-04T00:00:00Z", "r4"),
+      ];
+      // last 3: [-0.87, -0.87, -0.84] → not strictly monotonic (first pair equal)
+      expect(detectDegradationTrend(readings)).toBe(false);
+    });
   });
 });

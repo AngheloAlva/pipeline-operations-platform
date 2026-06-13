@@ -193,5 +193,87 @@ describe("Maintenance scheduling", () => {
       expect(criticalScore).toBeGreaterThan(highScore);
       expect(highScore).toBeGreaterThan(lowScore);
     });
+
+    // Score formula anchor: score = 0.6 × urgency + 0.4 × criticalityLevel
+    // OVERDUE urgency=3, CRITICAL criticalityLevel=4 → 0.6×3 + 0.4×4 = 1.8 + 1.6 = 3.4
+    it("numeric anchor: OVERDUE + CRITICAL equipment = score 3.4", () => {
+      const overdueTask = makeTask({ nextDueDate: "2025-01-01" });
+      const criticalEquip = makeEquipment({ criticality: Criticality.CRITICAL });
+      expect(maintenancePriorityScore(overdueTask, criticalEquip, "2026-06-12")).toBeCloseTo(3.4, 5);
+    });
+
+    // OK urgency=1, LOW criticalityLevel=1 → 0.6×1 + 0.4×1 = 0.6 + 0.4 = 1.0
+    it("numeric anchor: OK + LOW equipment = score 1.0", () => {
+      const okTask = makeTask({ nextDueDate: "2026-12-01" });
+      const lowEquip = makeEquipment({ criticality: Criticality.LOW });
+      expect(maintenancePriorityScore(okTask, lowEquip, "2026-06-12")).toBeCloseTo(1.0, 5);
+    });
+
+    // Sorting by score is deterministic: same inputs always yield same result
+    it("sort by priority score is deterministic (same inputs → same score)", () => {
+      const task = makeTask({ nextDueDate: "2025-06-01" }); // OVERDUE
+      const equip = makeEquipment({ criticality: Criticality.HIGH });
+      const now = "2026-06-12";
+      const s1 = maintenancePriorityScore(task, equip, now);
+      const s2 = maintenancePriorityScore(task, equip, now);
+      expect(s1).toBe(s2);
+    });
+  });
+
+  describe("nextDueDateByCalendar error path", () => {
+    // BY_HOURS is not a calendar frequency — must throw
+    it("throws when called with BY_HOURS frequency", () => {
+      expect(() =>
+        nextDueDateByCalendar("2026-06-12", MaintenanceFrequency.BY_HOURS),
+      ).toThrow();
+    });
+  });
+
+  describe("taskStatus — BY_HOURS edge cases", () => {
+    // BY_HOURS task at exactly 10% remaining → UPCOMING (boundary inclusive)
+    it("returns UPCOMING for BY_HOURS task with exactly 10% remaining interval", () => {
+      const task = makeTask({
+        frequency: MaintenanceFrequency.BY_HOURS,
+        nextDueAtHours: 2000,
+        intervalHours: 2000,
+        nextDueDate: "2999-12-31",
+      });
+      // remaining = 2000 - 1800 = 200; 200/2000 = 10% — exactly at threshold
+      expect(taskStatus(task, "2026-06-12", 1800)).toBe("UPCOMING");
+    });
+
+    // BY_HOURS task just above 10% → OK
+    it("returns OK for BY_HOURS task with slightly more than 10% remaining", () => {
+      const task = makeTask({
+        frequency: MaintenanceFrequency.BY_HOURS,
+        nextDueAtHours: 2000,
+        intervalHours: 2000,
+        nextDueDate: "2999-12-31",
+      });
+      // remaining = 2000 - 1799 = 201; 201/2000 = 10.05% > 10%
+      expect(taskStatus(task, "2026-06-12", 1799)).toBe("OK");
+    });
+
+    // BY_HOURS task with no currentHours falls back to calendar check
+    it("falls back to calendar check when currentHours is not provided for BY_HOURS task", () => {
+      const upcomingByCalendar = makeTask({
+        frequency: MaintenanceFrequency.BY_HOURS,
+        nextDueAtHours: 2000,
+        intervalHours: 2000,
+        nextDueDate: "2026-06-15", // 3 days away → UPCOMING by calendar
+      });
+      // No currentHours argument — BY_HOURS branch skipped entirely
+      expect(taskStatus(upcomingByCalendar, "2026-06-12")).toBe("UPCOMING");
+    });
+
+    it("uses calendar OVERDUE when no currentHours and nextDueDate is past", () => {
+      const task = makeTask({
+        frequency: MaintenanceFrequency.BY_HOURS,
+        nextDueAtHours: 2000,
+        intervalHours: 2000,
+        nextDueDate: "2026-01-01", // past → OVERDUE by calendar
+      });
+      expect(taskStatus(task, "2026-06-12")).toBe("OVERDUE");
+    });
   });
 });

@@ -267,4 +267,139 @@ describe("validateWorld", () => {
       ).toBe(true);
     });
   });
+
+  // ------------------------------------------------------------------
+  // Rule: Movement FK — fromNodeId and toNodeId must reference stations or tanks
+  // ------------------------------------------------------------------
+  describe("Movement FK validation", () => {
+    it("Movement with unknown fromNodeId is detected", () => {
+      const world = generateWorld({ seed: 42 });
+      if (world.movements.length === 0) return;
+      const tampered: PipelineWorld = {
+        ...world,
+        movements: [
+          { ...world.movements[0], fromNodeId: "nonexistent-from-id" },
+          ...world.movements.slice(1),
+        ],
+      };
+      const result = validateWorld(tampered);
+      expect(result.valid).toBe(false);
+      expect(
+        result.errors.some(
+          (e) =>
+            e.includes("nonexistent-from-id") ||
+            e.toLowerCase().includes("fromnode"),
+        ),
+      ).toBe(true);
+    });
+
+    it("Movement with unknown toNodeId is detected", () => {
+      const world = generateWorld({ seed: 42 });
+      if (world.movements.length === 0) return;
+      const tampered: PipelineWorld = {
+        ...world,
+        movements: [
+          { ...world.movements[0], toNodeId: "nonexistent-to-id" },
+          ...world.movements.slice(1),
+        ],
+      };
+      const result = validateWorld(tampered);
+      expect(result.valid).toBe(false);
+      expect(
+        result.errors.some(
+          (e) =>
+            e.includes("nonexistent-to-id") ||
+            e.toLowerCase().includes("tonode"),
+        ),
+      ).toBe(true);
+    });
+  });
+
+  // ------------------------------------------------------------------
+  // Rule: Equipment.parentId FK against known equipment IDs
+  // ------------------------------------------------------------------
+  describe("Equipment.parentId FK validation", () => {
+    it("Equipment with unknown parentId is detected", () => {
+      const world = generateWorld({ seed: 42 });
+      const tampered: PipelineWorld = {
+        ...world,
+        equipment: [
+          { ...world.equipment[0], parentId: "nonexistent-parent-id" },
+          ...world.equipment.slice(1),
+        ],
+      };
+      const result = validateWorld(tampered);
+      expect(result.valid).toBe(false);
+      expect(
+        result.errors.some(
+          (e) =>
+            e.includes("nonexistent-parent-id") ||
+            e.toLowerCase().includes("parentid"),
+        ),
+      ).toBe(true);
+    });
+  });
+
+  // ------------------------------------------------------------------
+  // Rule: WorkOrder.status IN_PROGRESS with progress at boundary values
+  // ------------------------------------------------------------------
+  describe("WorkOrder IN_PROGRESS progress boundary", () => {
+    it("WorkOrder with IN_PROGRESS status and progress=0 is detected", () => {
+      const world = generateWorld({ seed: 9 });
+      if (world.workOrders.length === 0) return;
+      const tampered: PipelineWorld = {
+        ...world,
+        workOrders: [
+          { ...world.workOrders[0], status: WorkOrderStatus.IN_PROGRESS, progress: 0 },
+          ...world.workOrders.slice(1),
+        ],
+      };
+      const result = validateWorld(tampered);
+      expect(result.valid).toBe(false);
+      expect(
+        result.errors.some(
+          (e) =>
+            e.toLowerCase().includes("progress") ||
+            e.toLowerCase().includes("in_progress"),
+        ),
+      ).toBe(true);
+    });
+
+    it("WorkOrder with IN_PROGRESS status and progress=100 is detected", () => {
+      const world = generateWorld({ seed: 9 });
+      if (world.workOrders.length === 0) return;
+      const tampered: PipelineWorld = {
+        ...world,
+        workOrders: [
+          { ...world.workOrders[0], status: WorkOrderStatus.IN_PROGRESS, progress: 100 },
+          ...world.workOrders.slice(1),
+        ],
+      };
+      const result = validateWorld(tampered);
+      expect(result.valid).toBe(false);
+    });
+
+    it("WorkOrder with IN_PROGRESS and progress=50 is valid", () => {
+      const world = generateWorld({ seed: 9 });
+      if (world.workOrders.length === 0) return;
+      // Replace the first work order with a valid IN_PROGRESS at 50% — must not error on this rule
+      const tampered: PipelineWorld = {
+        ...world,
+        workOrders: [
+          { ...world.workOrders[0], status: WorkOrderStatus.IN_PROGRESS, progress: 50 },
+          ...world.workOrders.slice(1),
+        ],
+      };
+      const result = validateWorld(tampered);
+      // The result may or may not be valid (other errors may exist) but this specific
+      // rule must not trigger an error about progress
+      const hasProgressError = result.errors.some(
+        (e) =>
+          e.toLowerCase().includes("in_progress") &&
+          e.toLowerCase().includes("progress") &&
+          e.includes(world.workOrders[0].id),
+      );
+      expect(hasProgressError).toBe(false);
+    });
+  });
 });

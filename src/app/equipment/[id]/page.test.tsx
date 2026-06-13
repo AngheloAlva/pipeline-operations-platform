@@ -30,7 +30,7 @@ vi.mock("next/navigation", () => ({
 // Mock next/dynamic — return a stub component synchronously in tests
 // ---------------------------------------------------------------------------
 vi.mock("next/dynamic", () => ({
-  default: (_loader: unknown, _opts?: unknown) => {
+  default: () => {
     const Stub = () => <div data-testid="dynamic-stub" />;
     Stub.displayName = "DynamicStub";
     return Stub;

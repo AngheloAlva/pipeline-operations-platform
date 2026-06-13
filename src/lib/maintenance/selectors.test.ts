@@ -911,6 +911,48 @@ describe("deriveMaintenanceBoardRows — SR-204 §8–10", () => {
 });
 
 // ============================================================================
+// WARNING-4: computeMaintenanceKpis — otAbiertas must respect session overrides
+// ============================================================================
+describe("computeMaintenanceKpis — WARNING-4: otAbiertas respects WO overrides", () => {
+  it("transitioning a WO to COMPLETED via override decrements otAbiertas", () => {
+    const workOrders = [
+      makeWorkOrder({ id: "WO-1", status: WorkOrderStatus.PLANNED }),
+      makeWorkOrder({ id: "WO-2", status: WorkOrderStatus.IN_PROGRESS }),
+    ];
+
+    const world: PipelineWorld = { ...emptyWorld(), workOrders };
+
+    // Without overrides: 2 open WOs
+    const kpisWithout = computeMaintenanceKpis(world, "2026-06-12", emptyOverrides());
+    expect(kpisWithout.otAbiertas).toBe(2);
+
+    // Override WO-1 to COMPLETED
+    const overrides: MaintenanceOverrides = {
+      workOrderStatuses: { "WO-1": WorkOrderStatus.COMPLETED },
+      completedTasks: {},
+    };
+
+    const kpisWith = computeMaintenanceKpis(world, "2026-06-12", overrides);
+    expect(kpisWith.otAbiertas).toBe(1); // WO-1 is now COMPLETED, only WO-2 is open
+  });
+
+  it("overriding a WO to ON_HOLD keeps it in the open count", () => {
+    const workOrders = [
+      makeWorkOrder({ id: "WO-1", status: WorkOrderStatus.PLANNED }),
+    ];
+    const world: PipelineWorld = { ...emptyWorld(), workOrders };
+
+    const overrides: MaintenanceOverrides = {
+      workOrderStatuses: { "WO-1": WorkOrderStatus.ON_HOLD },
+      completedTasks: {},
+    };
+
+    const kpis = computeMaintenanceKpis(world, "2026-06-12", overrides);
+    expect(kpis.otAbiertas).toBe(1); // ON_HOLD is still open
+  });
+});
+
+// ============================================================================
 // S-2 regression: applyTaskCompletion must return same reference on not-found paths
 // ============================================================================
 describe("applyTaskCompletion — S-2: same-reference contract on not-found paths", () => {

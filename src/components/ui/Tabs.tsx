@@ -24,7 +24,7 @@ export interface TabItem {
 }
 
 export interface TabsProps {
-  tabs: TabItem[];
+  tabs: ReadonlyArray<TabItem>;
   activeTab: string;
   onTabChange: (id: string) => void;
   /** Additional className for the tablist container. */

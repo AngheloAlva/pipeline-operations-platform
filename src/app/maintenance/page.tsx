@@ -1,35 +1,100 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Mantención — Pipeline Ops",
-};
+/**
+ * Maintenance page — tab composition (SR-212).
+ *
+ * Renders: MaintenanceKpis (always visible) → Tabs (Tablero/Calendario/Órdenes)
+ *          → active tab panel (MaintenanceBoard / MaintenanceCalendar / WorkOrderList).
+ * Tab state from maintenanceStore.activeTab (SR-212 §4).
+ * now = real-world date (NOT simulatedTime) — threaded from page (design ADR-6).
+ * No metadata export — lives in layout.tsx (SR-212 §5 / SR-211 §3).
+ * No simulationStore import (SR-212 §6 / SR-213 §1).
+ */
 
+import { useMemo } from "react";
+import { useWorldData } from "@/hooks/useWorldData";
+import { useMaintenanceStore } from "@/store/maintenanceStore";
+import { Tabs } from "@/components/ui/Tabs";
+import { MaintenanceKpis } from "@/components/maintenance/MaintenanceKpis";
+import { MaintenanceBoard } from "@/components/maintenance/MaintenanceBoard";
+import { MaintenanceCalendar } from "@/components/maintenance/MaintenanceCalendar";
+import { WorkOrderList } from "@/components/maintenance/WorkOrderList";
+
+// ---------------------------------------------------------------------------
+// Tab definitions (Spanish labels, SR-212 §3)
+// ---------------------------------------------------------------------------
+
+const TABS = [
+  { id: "tablero", label: "Tablero" },
+  { id: "calendario", label: "Calendario" },
+  { id: "ordenes", label: "Órdenes" },
+] as const;
+
+// ---------------------------------------------------------------------------
+// Page component
+// ---------------------------------------------------------------------------
+
+/**
+ * MaintenancePage — composes the CMMS dashboard.
+ * "use client" — uses hooks (useWorldData, useMaintenanceStore).
+ * Metadata lives in layout.tsx per SR-211.
+ */
 export default function MaintenancePage() {
-  return (
-    <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6">
-      <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-border-subtle bg-surface-raised py-24 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-status-warning-bg text-status-warning">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-          </svg>
-        </div>
-        <h1 className="text-2xl font-semibold text-text-primary">Mantención</h1>
-        <p className="max-w-md text-sm text-text-secondary">Módulo en desarrollo — Fase 1</p>
-        <p className="text-xs text-text-disabled">
-          Gestión de planes preventivos, órdenes de trabajo y programación de mantenimiento
-        </p>
+  const { world } = useWorldData();
+
+  const activeTab = useMaintenanceStore((s) => s.activeTab);
+  const setActiveTab = useMaintenanceStore((s) => s.setActiveTab);
+
+  // Compute today once at page level — threaded as prop (design ADR-6).
+  // NOT from simulationStore — real-world date only (SR-207 §3, SR-213 §1).
+  const now = useMemo(() => new Date().toISOString().slice(0, 10), []);
+
+  // Loading state — world is bundled seed, always available
+  if (!world) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <span
+          className="text-[11px] uppercase tracking-[0.12em] text-ink-muted"
+          style={{ fontFamily: "var(--font-mono), monospace" }}
+        >
+          Cargando datos…
+        </span>
       </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col">
+      {/* KPI row — always visible (SR-212 §2) */}
+      <section className="border-b border-border-subtle">
+        <MaintenanceKpis world={world} now={now} />
+      </section>
+
+      {/* Tab bar (SR-212 §2) */}
+      <Tabs
+        tabs={TABS}
+        activeTab={activeTab}
+        onTabChange={(id) => setActiveTab(id as typeof activeTab)}
+        className="px-4"
+      />
+
+      {/* Tab panel content */}
+      <section
+        role="tabpanel"
+        id={`tabpanel-${activeTab}`}
+        aria-labelledby={`tab-${activeTab}`}
+        className="flex-1"
+      >
+        {activeTab === "tablero" && (
+          <MaintenanceBoard world={world} now={now} />
+        )}
+        {activeTab === "calendario" && (
+          <MaintenanceCalendar world={world} now={now} />
+        )}
+        {activeTab === "ordenes" && (
+          <WorkOrderList world={world} />
+        )}
+      </section>
     </div>
   );
 }

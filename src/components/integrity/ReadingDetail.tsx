@@ -27,7 +27,7 @@ const TimeSeriesChart = dynamic(
   },
 );
 import type { ThresholdLine } from "@/components/charts/TimeSeriesChart";
-import { extractReadingSeriesForChart } from "@/lib/integrity/selectors";
+import { extractReadingSeriesForChart, pointKey } from "@/lib/integrity/selectors";
 import { CATHODIC_OK, CATHODIC_WARN } from "@/lib/domain/constants";
 import { STATUS_OK, STATUS_WARNING } from "@/lib/charts/palette";
 import type { PipelineWorld } from "@/lib/domain";
@@ -103,8 +103,12 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
 
   // Build ResolvedEntity for CrossNavLinks — find the matching reading to get stationId.
   // The cathodic point's stationId may be undefined; coerce to null per spec (ADR-4).
+  // CRITICAL-3 guard: use pointKey() helper (rounds km via Math.round(km*10)/10)
+  // so float drift on r.km never silently fails the match.
+  // selectedPointKey itself is produced via pointKey() upstream (selection store),
+  // so both sides are guaranteed to use the same rounding.
   const matchedReading = world.cathodicReadings.find(
-    (r) => `${r.km}:${r.segmentId}` === selectedPointKey,
+    (r) => pointKey(r.km, r.segmentId) === selectedPointKey,
   );
   const cathodicEntity: ResolvedEntity = {
     id: selectedPointKey,

@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * CrossNavLinks render tests — TDD (RED→GREEN).
  * F4-3-R1 through F4-3-R8: href correctness per entity type, exclude/hub-link rules.

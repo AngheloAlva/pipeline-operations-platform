@@ -14,6 +14,7 @@ import {
   computeIntegrityKpis,
   groupReadingsByKm,
   buildReadingTableRows,
+  buildReadingTableRowsFromReadings,
   extractReadingSeriesForChart,
   TrendFlag,
 } from "./selectors";
@@ -371,7 +372,38 @@ describe("S-303-K: type purity check", () => {
     expect(typeof mod.computeIntegrityKpis).toBe("function");
     expect(typeof mod.groupReadingsByKm).toBe("function");
     expect(typeof mod.buildReadingTableRows).toBe("function");
+    expect(typeof mod.buildReadingTableRowsFromReadings).toBe("function");
     expect(typeof mod.extractReadingSeriesForChart).toBe("function");
     expect(mod.TrendFlag).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// buildReadingTableRowsFromReadings — scoped-readings variant (CRITICAL 2 fix)
+// ---------------------------------------------------------------------------
+
+describe("buildReadingTableRowsFromReadings", () => {
+  const r1 = makeReading({ id: "r1", km: 10.0, segmentId: "SEG-1", potentialV: -0.9 });
+  const r2 = makeReading({ id: "r2", km: 20.0, segmentId: "SEG-1", potentialV: -0.72 });
+
+  it("returns same rows as buildReadingTableRows(world) when called with world.cathodicReadings", () => {
+    const world = makeWorld([r1, r2]);
+    const fromWorld = buildReadingTableRows(world);
+    const fromReadings = buildReadingTableRowsFromReadings(world.cathodicReadings);
+    expect(fromReadings).toEqual(fromWorld);
+  });
+
+  it("correctly processes a filtered (scoped) readings slice without needing the full world", () => {
+    // Simulate the page pattern: pre-filtered stationReadings passed directly
+    const filtered = [r1]; // only one point
+    const rows = buildReadingTableRowsFromReadings(filtered);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].km).toBe(10);
+    expect(rows[0].latestPotentialV).toBe(-0.9);
+  });
+
+  it("returns [] for an empty readings array", () => {
+    const rows = buildReadingTableRowsFromReadings([]);
+    expect(rows).toHaveLength(0);
   });
 });

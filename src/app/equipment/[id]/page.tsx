@@ -15,6 +15,9 @@
  * Station Integrity section renders an explicit empty-state when stationReadings
  * is empty — MUST NOT render computeIntegrityKpis zeros as if real data (F4-2-R5, ADR-3).
  * Cross-nav links (F4-2-R6, R7) are scoped to PR 3 (CrossNavLinks component).
+ *
+ * HOOKS RULE: ALL hook calls (useMemo, useParams, useWorldData, useMaintenanceStore)
+ * are unconditional and appear BEFORE any conditional early return.
  */
 
 import { useMemo } from "react";
@@ -32,8 +35,7 @@ import {
 import {
   computeIntegrityKpis,
   extractReadingSeriesForChart,
-  pointKey,
-  buildReadingTableRows,
+  buildReadingTableRowsFromReadings,
 } from "@/lib/integrity/selectors";
 import { useMaintenanceStore } from "@/store/maintenanceStore";
 
@@ -166,6 +168,93 @@ function EquipmentPageBody() {
   const overrides = useMaintenanceStore((s) => s.overrides);
   const now = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
+  // ---------------------------------------------------------------------------
+  // Resolve entity — null-safe: world may be null on first render (pre-hydration).
+  // All hook calls MUST be unconditional and run before any conditional return.
+  // ---------------------------------------------------------------------------
+  const resolved = world ? resolveEntity(world, id) : null;
+
+  // WARNING FIX: narrow stationId to string without ! assertion.
+  // The guard checks type AND stationId presence so TS narrows correctly downstream.
+  const shouldNotFound =
+    world !== null &&
+    (!resolved || resolved.type !== EntityType.EQUIPMENT || !resolved.stationId);
+
+  const stationId: string =
+    resolved?.type === EntityType.EQUIPMENT && resolved.stationId
+      ? resolved.stationId
+      : "";
+
+  // ---------------------------------------------------------------------------
+  // Section 1: Maintenance data (F4-2-R4, R8) — null-safe fallbacks
+  // ---------------------------------------------------------------------------
+  const allBoardRows = useMemo(
+    () => (world ? deriveMaintenanceBoardRows(world, now, overrides) : []),
+    [world, now, overrides],
+  );
+
+  const equipmentBoardRows = useMemo(
+    () =>
+      filterMaintenanceBoardRows(allBoardRows, {
+        selectionId: id,
+        selectionLevel: "equipment",
+      }),
+    [allBoardRows, id],
+  );
+
+  const equipmentWorkOrders = useMemo(
+    () => (world ? world.workOrders.filter((wo) => wo.equipmentId === id) : []),
+    [world, id],
+  );
+
+  // ---------------------------------------------------------------------------
+  // Section 2: Station Flow — tanks at this station (F4-2-R4 section 2)
+  // ---------------------------------------------------------------------------
+  const stationTanks = useMemo(
+    () => (world ? world.tanks.filter((t) => t.stationId === stationId) : []),
+    [world, stationId],
+  );
+
+  // ---------------------------------------------------------------------------
+  // Section 3: Station Integrity — cathodic readings for stationId (F4-2-R5, R9)
+  // CRITICAL 2 FIX: use buildReadingTableRowsFromReadings(stationReadings) —
+  // explicit, type-honest contract; no { ...world, cathodicReadings } spread.
+  // ---------------------------------------------------------------------------
+  const stationReadings = useMemo(
+    () =>
+      world && stationId
+        ? world.cathodicReadings.filter((r) => r.stationId === stationId)
+        : [],
+    [world, stationId],
+  );
+
+  const integrityKpis = useMemo(
+    () => computeIntegrityKpis(stationReadings),
+    [stationReadings],
+  );
+
+  const integrityRows = useMemo(
+    () => buildReadingTableRowsFromReadings(stationReadings),
+    [stationReadings],
+  );
+
+  // NIT FIX: wrap firstRowKey in useMemo for style consistency with surrounding memos.
+  const firstRowKey = useMemo(
+    () => (integrityRows.length > 0 ? integrityRows[0].pointKey : null),
+    [integrityRows],
+  );
+
+  const integrityChartSeries = useMemo(
+    () => (firstRowKey ? extractReadingSeriesForChart(stationReadings, firstRowKey) : []),
+    [stationReadings, firstRowKey],
+  );
+
+  const hasIntegrityReadings = stationReadings.length > 0;
+
+  // ---------------------------------------------------------------------------
+  // Conditional returns — ALL hooks have already run above this point.
+  // ---------------------------------------------------------------------------
+
   // Loading guard — world is bundled seed, always available quickly
   if (!world) {
     return (
@@ -180,76 +269,15 @@ function EquipmentPageBody() {
     );
   }
 
-  // F4-2-R3: resolve entity and guard type — must be EQUIPMENT
-  const resolved = resolveEntity(world, id);
-  if (!resolved || resolved.type !== EntityType.EQUIPMENT) {
+  // F4-2-R3: entity must exist and be EQUIPMENT type with a stationId
+  if (shouldNotFound) {
     notFound();
   }
 
-  const stationId = resolved.stationId!;
+  // At this point resolved is guaranteed non-null with stationId
   const equipment = world.equipment.find((e) => e.id === id)!;
   const station = world.stations.find((s) => s.id === stationId);
   const stationName = station?.name ?? stationId;
-
-  // ---------------------------------------------------------------------------
-  // Section 1: Maintenance data (F4-2-R4, R8)
-  // Reuse deriveMaintenanceBoardRows + filterMaintenanceBoardRows — F4-2-R8
-  // ---------------------------------------------------------------------------
-  const allBoardRows = useMemo(
-    () => deriveMaintenanceBoardRows(world, now, overrides),
-    [world, now, overrides],
-  );
-
-  const equipmentBoardRows = useMemo(
-    () =>
-      filterMaintenanceBoardRows(allBoardRows, {
-        selectionId: id,
-        selectionLevel: "equipment",
-      }),
-    [allBoardRows, id],
-  );
-
-  const equipmentWorkOrders = useMemo(
-    () => world.workOrders.filter((wo) => wo.equipmentId === id),
-    [world.workOrders, id],
-  );
-
-  // ---------------------------------------------------------------------------
-  // Section 2: Station Flow — tanks at this station (F4-2-R4 section 2)
-  // ---------------------------------------------------------------------------
-  const stationTanks = useMemo(
-    () => world.tanks.filter((t) => t.stationId === stationId),
-    [world.tanks, stationId],
-  );
-
-  // ---------------------------------------------------------------------------
-  // Section 3: Station Integrity — cathodic readings for stationId (F4-2-R5, R9)
-  // Reuse computeIntegrityKpis + extractReadingSeriesForChart — F4-2-R9
-  // ---------------------------------------------------------------------------
-  const stationReadings = useMemo(
-    () => world.cathodicReadings.filter((r) => r.stationId === stationId),
-    [world.cathodicReadings, stationId],
-  );
-
-  const integrityKpis = useMemo(
-    () => computeIntegrityKpis(stationReadings),
-    [stationReadings],
-  );
-
-  // Build reading table rows for per-point chart selection
-  const integrityRows = useMemo(
-    () => buildReadingTableRows({ ...world, cathodicReadings: stationReadings }),
-    [world, stationReadings],
-  );
-
-  // Use the most-critical point series for the station overview chart
-  const firstRowKey = integrityRows.length > 0 ? integrityRows[0].pointKey : null;
-  const integrityChartSeries = useMemo(
-    () => (firstRowKey ? extractReadingSeriesForChart(stationReadings, firstRowKey) : []),
-    [stationReadings, firstRowKey],
-  );
-
-  const hasIntegrityReadings = stationReadings.length > 0;
 
   return (
     <div className="mx-auto max-w-panel px-4 py-4 sm:px-6 flex flex-col gap-4">

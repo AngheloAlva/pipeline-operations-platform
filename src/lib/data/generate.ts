@@ -750,7 +750,7 @@ function generateCathodicReadings(
   // The series has 8 readings: the first 5 are flat-ish, the last 3 are
   // strictly increasing (less negative) so detectDegradationTrend returns true.
   const firstSegment = pipeline.segments[0];
-  const baseKm = Math.round((firstSegment.fromKm + 1) * 10) / 10;
+  const baseKm = Math.round((firstSegment.toKm + 0.1) * 10) / 10;
   const nearestStation = stations[0];
 
   // 8-reading series: first 5 stable around -0.93, last 3 strictly increasing

@@ -273,11 +273,22 @@ describe("generateWorld — SR-301 cathodic reading enrichment", () => {
     }
   });
 
-  it("S-301-E: groups with 2 readings return detectDegradationTrend === false (neutral)", () => {
-    // By design, all groups have 6-12 readings; this tests the invariant via thresholds contract
-    // but we can also verify: a group with exactly 2 readings must return false
-    const twoReadings = world.cathodicReadings.slice(0, 2);
-    expect(detectDegradationTrend(twoReadings)).toBe(false);
+  it("S-301-E: a point with exactly 2 readings gets trend NEUTRAL from buildReadingTableRows", async () => {
+    const { buildReadingTableRows, TrendFlag } = await import("@/lib/integrity/selectors");
+    const { AlertLevel } = await import("@/lib/domain");
+    const twoReadingWorld = {
+      pipeline: { id: "PL-0001", name: "T", diameterInches: 16, totalLengthKm: 270, segments: [] },
+      stations: [], tanks: [], shippers: [], equipment: [], movements: [],
+      volumeTargets: [], maintenancePlans: [], workOrders: [], telemetry: [],
+      cathodicReadings: [
+        { id: "r1", segmentId: "SEG-0002", km: 1, potentialV: -0.9, takenAt: "2026-01-01T00:00:00Z", level: AlertLevel.OK, stationId: undefined },
+        { id: "r2", segmentId: "SEG-0002", km: 1, potentialV: -0.87, takenAt: "2026-01-02T00:00:00Z", level: AlertLevel.OK, stationId: undefined },
+      ],
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rows = buildReadingTableRows(twoReadingWorld as any);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].trend).toBe(TrendFlag.NEUTRAL);
   });
 });
 

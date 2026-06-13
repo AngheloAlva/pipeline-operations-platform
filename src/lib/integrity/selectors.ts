@@ -4,7 +4,8 @@
  * All functions are deterministic given the same inputs.
  */
 
-import type { CathodicReading, PipelineWorld, AlertLevel } from "@/lib/domain";
+import type { CathodicReading, PipelineWorld } from "@/lib/domain";
+import { AlertLevel } from "@/lib/domain";
 import { evaluatePotential, detectDegradationTrend } from "@/lib/integrity/thresholds";
 
 // ============================================================================
@@ -22,31 +23,31 @@ export type TrendFlag = (typeof TrendFlag)[keyof typeof TrendFlag];
 
 /** KPI counts for the three alert levels, one per unique cathodic point. */
 export interface IntegrityKpis {
-  ok: number;
-  warning: number;
-  critical: number;
+  readonly ok: number;
+  readonly warning: number;
+  readonly critical: number;
 }
 
 /** A single data point in a reading time series (for charts and sparklines). */
 export interface ReadingSeriesPoint {
-  timestamp: Date;
-  potentialV: number;
+  readonly timestamp: Date;
+  readonly potentialV: number;
 }
 
 /** One row in the readings table — one per unique km:segmentId point. */
 export interface ReadingTableRow {
   /** Composite key "km:segmentId". Also used as selection id. */
-  pointKey: string;
-  km: number;
-  segmentId: string;
+  readonly pointKey: string;
+  readonly km: number;
+  readonly segmentId: string;
   /** potentialV from the most-recent reading (by takenAt). */
-  latestPotentialV: number;
+  readonly latestPotentialV: number;
   /** Alert level from evaluatePotential(latestPotentialV). */
-  level: AlertLevel;
+  readonly level: AlertLevel;
   /** All readings for this point sorted ascending by takenAt. */
-  sparkleSeries: ReadingSeriesPoint[];
+  readonly sparkleSeries: ReadonlyArray<ReadingSeriesPoint>;
   /** Trend flag: NEUTRAL if <3 readings, DEGRADING if detectDegradationTrend is true. */
-  trend: TrendFlag;
+  readonly trend: TrendFlag;
 }
 
 // ============================================================================
@@ -55,10 +56,11 @@ export interface ReadingTableRow {
 
 /**
  * Build the composite point key "km:segmentId".
+ * km is rounded to 1 decimal place to prevent float-precision key mismatches.
  * This is the surrogate identity for a logical cathodic protection point.
  */
 export function pointKey(km: number, segmentId: string): string {
-  return `${km}:${segmentId}`;
+  return `${Math.round(km * 10) / 10}:${segmentId}`;
 }
 
 /**
@@ -104,9 +106,19 @@ export function computeIntegrityKpis(readings: CathodicReading[]): IntegrityKpis
     const latest = sorted[sorted.length - 1];
     const level = evaluatePotential(latest.potentialV);
 
-    if (level === "OK") ok++;
-    else if (level === "WARNING") warning++;
-    else critical++;
+    switch (level) {
+      case AlertLevel.OK:
+        ok++;
+        break;
+      case AlertLevel.WARNING:
+        warning++;
+        break;
+      case AlertLevel.CRITICAL:
+        critical++;
+        break;
+      default:
+        throw new Error(`Unknown alert level: ${level}`);
+    }
   }
 
   return { ok, warning, critical };
@@ -163,7 +175,7 @@ export function buildReadingTableRows(world: PipelineWorld): ReadingTableRow[] {
       potentialV: r.potentialV,
     }));
 
-    const trend: TrendFlag = detectDegradationTrend(groupReadings)
+    const trend: TrendFlag = detectDegradationTrend(sorted)
       ? TrendFlag.DEGRADING
       : TrendFlag.NEUTRAL;
 

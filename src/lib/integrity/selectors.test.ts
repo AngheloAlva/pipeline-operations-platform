@@ -139,6 +139,19 @@ describe("computeIntegrityKpis", () => {
     expect(result.ok + result.warning + result.critical).toBe(uniquePoints);
   });
 
+  it("KPI total === buildReadingTableRows length for same world", () => {
+    const readings = [
+      makeReading({ id: "r1", km: 1, segmentId: "SEG-0002", takenAt: "2026-01-01T00:00:00Z", potentialV: -0.92, level: AlertLevel.OK }),
+      makeReading({ id: "r2", km: 1, segmentId: "SEG-0002", takenAt: "2026-02-01T00:00:00Z", potentialV: -0.93, level: AlertLevel.OK }),
+      makeReading({ id: "r3", km: 2, segmentId: "SEG-0002", takenAt: "2026-01-01T00:00:00Z", potentialV: -0.8, level: AlertLevel.WARNING }),
+      makeReading({ id: "r4", km: 3, segmentId: "SEG-0002", takenAt: "2026-01-01T00:00:00Z", potentialV: -0.5, level: AlertLevel.CRITICAL }),
+    ];
+    const w = makeWorld(readings);
+    const kpis = computeIntegrityKpis(w.cathodicReadings);
+    const rows = buildReadingTableRows(w);
+    expect(kpis.ok + kpis.warning + kpis.critical).toBe(rows.length);
+  });
+
   it("a point with multiple readings counts exactly ONCE", () => {
     // 10 readings for the same km:segmentId — latest is WARNING
     const readings = Array.from({ length: 10 }, (_, i) =>

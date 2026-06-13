@@ -3580,7 +3580,7 @@
       "id": "CAT-0336",
       "segmentId": "SEG-0002",
       "stationId": "STA-0005",
-      "km": 1,
+      "km": 96.9,
       "potentialV": -0.93,
       "takenAt": "2026-05-08T12:00:00.000Z",
       "level": "OK"
@@ -3589,7 +3589,7 @@
       "id": "CAT-0337",
       "segmentId": "SEG-0002",
       "stationId": "STA-0005",
-      "km": 1,
+      "km": 96.9,
       "potentialV": -0.93,
       "takenAt": "2026-05-13T12:00:00.000Z",
       "level": "OK"
@@ -3598,7 +3598,7 @@
       "id": "CAT-0338",
       "segmentId": "SEG-0002",
       "stationId": "STA-0005",
-      "km": 1,
+      "km": 96.9,
       "potentialV": -0.93,
       "takenAt": "2026-05-18T12:00:00.000Z",
       "level": "OK"
@@ -3607,7 +3607,7 @@
       "id": "CAT-0339",
       "segmentId": "SEG-0002",
       "stationId": "STA-0005",
-      "km": 1,
+      "km": 96.9,
       "potentialV": -0.93,
       "takenAt": "2026-05-23T12:00:00.000Z",
       "level": "OK"
@@ -3616,7 +3616,7 @@
       "id": "CAT-0340",
       "segmentId": "SEG-0002",
       "stationId": "STA-0005",
-      "km": 1,
+      "km": 96.9,
       "potentialV": -0.93,
       "takenAt": "2026-05-28T12:00:00.000Z",
       "level": "OK"
@@ -3625,7 +3625,7 @@
       "id": "CAT-0341",
       "segmentId": "SEG-0002",
       "stationId": "STA-0005",
-      "km": 1,
+      "km": 96.9,
       "potentialV": -0.9,
       "takenAt": "2026-06-02T12:00:00.000Z",
       "level": "OK"
@@ -3634,7 +3634,7 @@
       "id": "CAT-0342",
       "segmentId": "SEG-0002",
       "stationId": "STA-0005",
-      "km": 1,
+      "km": 96.9,
       "potentialV": -0.87,
       "takenAt": "2026-06-07T12:00:00.000Z",
       "level": "OK"
@@ -3643,7 +3643,7 @@
       "id": "CAT-0343",
       "segmentId": "SEG-0002",
       "stationId": "STA-0005",
-      "km": 1,
+      "km": 96.9,
       "potentialV": -0.84,
       "takenAt": "2026-06-12T12:00:00.000Z",
       "level": "WARNING"

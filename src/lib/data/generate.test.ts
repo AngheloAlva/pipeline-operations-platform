@@ -7,6 +7,7 @@ import { describe, it, expect } from "vitest";
 import { generateWorld } from "./generate";
 import { DEFAULT_CONFIG } from "./config";
 import seedJson from "./seed.json";
+import { detectDegradationTrend, evaluatePotential } from "@/lib/integrity/thresholds";
 
 // ---------------------------------------------------------------------------
 // REQ-011-A: Same seed produces same world
@@ -217,6 +218,77 @@ describe("generateWorld — WorkOrder equipment traceability", () => {
       if (expectedEquipId === undefined) continue; // task not from a plan with equipment
       expect(wo.equipmentId).toBe(expectedEquipId);
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SR-301: Seed enrichment — cathodic readings per point (6–12 per km:segmentId)
+// ---------------------------------------------------------------------------
+describe("generateWorld — SR-301 cathodic reading enrichment", () => {
+  const world = generateWorld({ seed: 2026 });
+
+  it("S-301-A: every km:segmentId group has between 6 and 12 readings", () => {
+    // Group by km:segmentId composite key
+    const groups = new Map<string, number>();
+    for (const r of world.cathodicReadings) {
+      const key = `${r.km}:${r.segmentId}`;
+      groups.set(key, (groups.get(key) ?? 0) + 1);
+    }
+    expect(groups.size).toBeGreaterThan(0);
+    for (const [key, count] of groups) {
+      expect(count, `group ${key} has ${count} readings`).toBeGreaterThanOrEqual(6);
+      expect(count, `group ${key} has ${count} readings`).toBeLessThanOrEqual(12);
+    }
+  });
+
+  it("S-301-B: at least 1 km:segmentId group returns detectDegradationTrend === true", () => {
+    // Group readings by composite key
+    const groups = new Map<string, typeof world.cathodicReadings>();
+    for (const r of world.cathodicReadings) {
+      const key = `${r.km}:${r.segmentId}`;
+      const existing = groups.get(key) ?? [];
+      existing.push(r);
+      groups.set(key, existing);
+    }
+    let foundDegrading = false;
+    for (const readings of groups.values()) {
+      if (detectDegradationTrend(readings)) {
+        foundDegrading = true;
+        break;
+      }
+    }
+    expect(foundDegrading).toBe(true);
+  });
+
+  it("S-301-C: same seed produces identical cathodicReadings (determinism)", () => {
+    const world2 = generateWorld({ seed: 2026 });
+    expect(JSON.stringify(world.cathodicReadings)).toBe(
+      JSON.stringify(world2.cathodicReadings),
+    );
+  });
+
+  it("S-301-D-level: every reading level === evaluatePotential(potentialV)", () => {
+    for (const r of world.cathodicReadings) {
+      expect(r.level, `reading ${r.id} level mismatch`).toBe(evaluatePotential(r.potentialV));
+    }
+  });
+
+  it("S-301-E: a point with exactly 2 readings gets trend NEUTRAL from buildReadingTableRows", async () => {
+    const { buildReadingTableRows, TrendFlag } = await import("@/lib/integrity/selectors");
+    const { AlertLevel } = await import("@/lib/domain");
+    const twoReadingWorld = {
+      pipeline: { id: "PL-0001", name: "T", diameterInches: 16, totalLengthKm: 270, segments: [] },
+      stations: [], tanks: [], shippers: [], equipment: [], movements: [],
+      volumeTargets: [], maintenancePlans: [], workOrders: [], telemetry: [],
+      cathodicReadings: [
+        { id: "r1", segmentId: "SEG-0002", km: 1, potentialV: -0.9, takenAt: "2026-01-01T00:00:00Z", level: AlertLevel.OK, stationId: undefined },
+        { id: "r2", segmentId: "SEG-0002", km: 1, potentialV: -0.87, takenAt: "2026-01-02T00:00:00Z", level: AlertLevel.OK, stationId: undefined },
+      ],
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rows = buildReadingTableRows(twoReadingWorld as any);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].trend).toBe(TrendFlag.NEUTRAL);
   });
 });
 

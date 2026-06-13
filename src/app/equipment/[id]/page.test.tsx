@@ -111,9 +111,9 @@ describe("EquipmentPage render tests — hooks-order regression (CRITICAL #1)", 
     render(<EquipmentPage />);
 
     // The three mandatory section headers per spec F4-2-R4/R5
-    expect(screen.getByText("Maintenance")).toBeTruthy();
-    expect(screen.getByText("Station Flow")).toBeTruthy();
-    expect(screen.getByText("Station Integrity")).toBeTruthy();
+    expect(screen.getByText("Mantenimiento")).toBeTruthy();
+    expect(screen.getByText("Flujo de la estación")).toBeTruthy();
+    expect(screen.getByText("Integridad de la estación")).toBeTruthy();
   });
 
   it("calls notFound() for an unknown equipment id", async () => {

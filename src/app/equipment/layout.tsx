@@ -12,9 +12,9 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "Equipment Detail | Pipeline Operations",
+  title: "Detalle de equipo | Pipeline Operations",
   description:
-    "Aggregate equipment detail — maintenance tasks, station flow, and cathodic integrity for a pipeline equipment item.",
+    "Vista agregada de equipo — tareas de mantenimiento, flujo de estación e integridad catódica.",
 };
 
 interface EquipmentLayoutProps {

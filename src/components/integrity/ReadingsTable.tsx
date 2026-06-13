@@ -189,7 +189,7 @@ export function ReadingsTable({ world }: ReadingsTableProps) {
         onRowClick={handleRowClick}
         isRowSelected={isRowSelected}
         getRowKey={(row) => row.pointKey}
-        emptyLabel="No cathodic readings"
+        emptyLabel="Sin lecturas catódicas"
         caption="Cathodic protection readings table"
       />
     </section>

@@ -79,7 +79,7 @@ export function TimeSeriesChart({
   series,
   thresholds = [],
   height = 220,
-  emptyLabel = "No readings for this point",
+  emptyLabel = "Sin lecturas para este punto",
 }: TimeSeriesChartProps) {
   const isEmpty = series.length === 0;
 

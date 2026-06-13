@@ -45,3 +45,5 @@ next-env.d.ts
 
 # playwright mcp scratch (screenshots, console logs)
 .playwright-mcp/
+# ad-hoc verification screenshots written to repo root
+/*.png

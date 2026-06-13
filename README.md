@@ -87,13 +87,13 @@ src/
 │   └── globals.css         # Tokens de diseño (Tailwind @theme)
 │
 ├── lib/                    # Lógica de dominio pura — sin React
-│   ├── domain/             # Tipos del núcleo compartido (types.ts, constants.ts)
+│   ├── domain/             # Tipos del núcleo, constants.ts, resolveEntity (bridge cross-dominio)
 │   ├── data/               # Generador de datos sintéticos + seed.json + validador
 │   ├── volumetrics/        # Conversiones 15°C↔60°F, balance volumétrico, compliance
 │   ├── simulation/         # Simulación de caudal y llenado/vaciado
 │   ├── maintenance/        # Scheduling: next due, estado de tarea, priorización
 │   ├── integrity/          # Evaluación de umbrales catódicos, detección de tendencia
-│   ├── focus/              # resolveEntity + buildFocusHref (navegación cruzada)
+│   ├── focus/              # focusUrl: buildFocusHref + parse/serialize (navegación cruzada)
 │   └── kpi/                # Derivaciones de KPIs por módulo
 │
 ├── components/             # Componentes React
@@ -146,7 +146,7 @@ La entidad enfocada se persiste como `?focus=<entityId>` en la URL. El hook `use
 
 #### 4. `resolveEntity()` — puente universal entre dominios
 
-`src/lib/focus/resolveEntity.ts` es una función pura que, dado `(world, id)`, devuelve `{ id, type, stationId } | null`. La resolución es por pertenencia a colecciones (no por parsing de prefijos). Devuelve `null` en lugar de lanzar excepciones.
+`src/lib/domain/resolveEntity.ts` es una función pura que, dado `(world, id)`, devuelve `{ id, type, stationId } | null`. La resolución es por pertenencia a colecciones (no por parsing de prefijos). Devuelve `null` en lugar de lanzar excepciones.
 
 **Por qué**: **Station es el único FK universal cross-dominio**. No existen links directos equipo→estanque ni estanque→lecturas. Todo puente entre módulos pasa por `stationId`. `resolveEntity` es el punto donde ese contrato se codifica explícitamente.
 

@@ -406,14 +406,17 @@ export function FlowDiagram({ world }: FlowDiagramProps) {
       </div>
 
       {/* ── PART 1: Pipe SVG — stations + directional two-lane pipes ── */}
+      {/* overflow-x-auto + min-w on mobile keeps SVG legible at 375px (B-6) */}
+      <div className="overflow-x-auto">
       <svg
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         preserveAspectRatio="xMidYMid meet"
-        className="mx-auto block w-full"
+        className="mx-auto block w-full min-w-[640px] md:min-w-0"
         style={{
           display: "block",
           aspectRatio: `${VIEW_W} / ${VIEW_H}`,
           maxWidth: `${VIEW_MAX_W}px`,
+          minHeight: "90px",
         }}
         aria-hidden="true"
       >
@@ -460,6 +463,7 @@ export function FlowDiagram({ world }: FlowDiagramProps) {
           );
         })}
       </svg>
+      </div>
 
       {/* ── PART 2: Station-grouped tank cards (HTML) ── */}
       <div className="flex flex-wrap gap-3 px-4 pb-4 pt-3">

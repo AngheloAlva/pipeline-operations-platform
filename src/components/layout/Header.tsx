@@ -35,7 +35,7 @@ interface HeaderProps {
  */
 export function Header({ children }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 border-b border-border-mid bg-surface-raised">
+    <header className="sticky top-0 z-40 border-b border-border-mid bg-surface-raised relative">
       <div className="mx-auto flex h-12 max-w-panel items-center justify-between px-4 sm:px-6">
         {/* System identity — pipeline icon + name, left-anchored */}
         <Link
@@ -67,10 +67,13 @@ export function Header({ children }: HeaderProps) {
         {/* Module selector — panel-style tab row */}
         <NavLinks />
 
-        {/* Right slot — optional client island (e.g. SimClock) + theme toggle */}
+        {/* Right slot — optional client island (e.g. SimClock) + theme toggle.
+            ThemeToggle is hidden on mobile because MobileNav includes it in its sheet. */}
         <div className="flex items-center gap-4">
           {children}
-          <ThemeToggle />
+          <span className="hidden md:inline-flex">
+            <ThemeToggle />
+          </span>
         </div>
       </div>
     </header>

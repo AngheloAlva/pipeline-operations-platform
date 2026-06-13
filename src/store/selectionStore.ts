@@ -10,6 +10,7 @@ export const EntityType = {
   TANK: "tank",
   EQUIPMENT: "equipment",
   SEGMENT: "segment",
+  CATHODIC_POINT: "cathodic_point",
 } as const;
 export type EntityType = (typeof EntityType)[keyof typeof EntityType];
 

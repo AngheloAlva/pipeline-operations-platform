@@ -1,35 +1,80 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Integridad — Pipeline Ops",
-};
+/**
+ * Integrity page — cathodic protection dashboard. SR-311.
+ *
+ * Composes four panels in a responsive grid:
+ *   Row 1 (full-width): PipelineMap (F3-1)
+ *   Row 2 (3-col): IntegrityKpis (1 col) | ReadingsTable (2 cols)
+ *   Row 3 (full-width): ReadingDetail (F3-4)
+ *
+ * World data via useWorldData(). Selection via useSelection().
+ * No metadata export — lives in layout.tsx per SR-310.
+ * No simulationStore / maintenanceStore / useSimulationLoop imports (SR-312 §3).
+ * No Tabs component (SR-312 §5).
+ */
 
+import { useWorldData } from "@/hooks/useWorldData";
+import { useSelection, EntityType } from "@/store/selectionStore";
+import { PipelineMap } from "@/components/integrity/PipelineMap";
+import { IntegrityKpis } from "@/components/integrity/IntegrityKpis";
+import { ReadingsTable } from "@/components/integrity/ReadingsTable";
+import { ReadingDetail } from "@/components/integrity/ReadingDetail";
+
+// ---------------------------------------------------------------------------
+// Page component
+// ---------------------------------------------------------------------------
+
+/**
+ * IntegrityPage — composes the cathodic integrity monitoring dashboard.
+ * "use client" — uses hooks (useWorldData, useSelection).
+ * Metadata lives in layout.tsx per SR-310.
+ */
 export default function IntegrityPage() {
-  return (
-    <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6">
-      <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-border-subtle bg-surface-raised py-24 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-status-ok-bg text-status-ok">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          </svg>
-        </div>
-        <h1 className="text-2xl font-semibold text-text-primary">Integridad</h1>
-        <p className="max-w-md text-sm text-text-secondary">Módulo en desarrollo — Fase 1</p>
-        <p className="text-xs text-text-disabled">
-          Monitoreo de protección catódica, lecturas de potencial y análisis de tendencias
-        </p>
+  const { world } = useWorldData();
+  const { selectedEntityId, selectedEntityType } = useSelection();
+
+  // Derive selectedPointKey from selection store (pass-down pattern per SR-311 §4)
+  const selectedPointKey =
+    selectedEntityType === EntityType.CATHODIC_POINT ? selectedEntityId : null;
+
+  if (!world) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <span
+          className="text-[11px] uppercase tracking-[0.12em] text-ink-muted"
+          style={{ fontFamily: "var(--font-mono), monospace" }}
+        >
+          Cargando datos…
+        </span>
       </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-screen-xl px-4 py-4 sm:px-6 flex flex-col gap-4">
+      {/* Row 1: PipelineMap — full width (F3-1) */}
+      <section>
+        <PipelineMap world={world} selectedPointKey={selectedPointKey} />
+      </section>
+
+      {/* Row 2: IntegrityKpis (1 col) + ReadingsTable (2 cols) */}
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {/* KPI panel — 1 column */}
+        <div className="lg:col-span-1">
+          <IntegrityKpis world={world} />
+        </div>
+
+        {/* Readings table — 2 columns */}
+        <div className="lg:col-span-2">
+          <ReadingsTable world={world} />
+        </div>
+      </section>
+
+      {/* Row 3: ReadingDetail — full width (F3-4) */}
+      <section>
+        <ReadingDetail world={world} />
+      </section>
     </div>
   );
 }

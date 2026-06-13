@@ -148,16 +148,19 @@ export function groupReadingsByKm(
 }
 
 /**
- * Build one ReadingTableRow per unique km:segmentId point.
+ * Build one ReadingTableRow per unique km:segmentId point from a readings array.
  * Rows are sorted by km ascending.
  *
  * Level is computed fresh from evaluatePotential(latestPotentialV) so the
  * displayed level always matches the displayed potential (spec §5, SR-303 §5).
  *
- * @param world - Full pipeline world (uses world.cathodicReadings)
+ * Prefer this overload when you already have a filtered or scoped readings slice
+ * (e.g., readings pre-filtered by stationId). Avoids monkey-patching the world.
+ *
+ * @param readings - Array of cathodic readings to process
  */
-export function buildReadingTableRows(world: PipelineWorld): ReadingTableRow[] {
-  const groups = groupReadingsByKm(world.cathodicReadings);
+export function buildReadingTableRowsFromReadings(readings: CathodicReading[]): ReadingTableRow[] {
+  const groups = groupReadingsByKm(readings);
   const rows: ReadingTableRow[] = [];
 
   for (const [key, groupReadings] of groups.entries()) {
@@ -194,6 +197,19 @@ export function buildReadingTableRows(world: PipelineWorld): ReadingTableRow[] {
   rows.sort((a, b) => a.km - b.km);
 
   return rows;
+}
+
+/**
+ * Build one ReadingTableRow per unique km:segmentId point.
+ * Rows are sorted by km ascending.
+ *
+ * Level is computed fresh from evaluatePotential(latestPotentialV) so the
+ * displayed level always matches the displayed potential (spec §5, SR-303 §5).
+ *
+ * @param world - Full pipeline world (uses world.cathodicReadings)
+ */
+export function buildReadingTableRows(world: PipelineWorld): ReadingTableRow[] {
+  return buildReadingTableRowsFromReadings(world.cathodicReadings);
 }
 
 /**

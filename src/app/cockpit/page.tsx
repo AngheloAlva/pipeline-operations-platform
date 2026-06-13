@@ -7,13 +7,16 @@
  * SR-014: useSimulationLoop mounted once here; per-tank selectors in TankNode (inside FlowDiagram).
  * "use client" required for hooks (useWorldData, useSimulationStore).
  * Metadata is in cockpit/layout.tsx — NOT here (SR-008 req 7, SR-013 req 6).
+ * F4-1: CockpitPageBody wrapped in <Suspense> — required because useFocusSync uses
+ *        useSearchParams which triggers CSR bailout without a Suspense boundary.
  */
 
-import { useEffect, useMemo } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 import { useWorldData } from "@/hooks/useWorldData";
 import { useSimulationStore } from "@/store/simulationStore";
 import { useSimulationLoop } from "@/hooks/useSimulationLoop";
 import { useSelectionStore } from "@/store/selectionStore";
+import { useFocusSync } from "@/hooks/useFocusSync";
 
 import { CockpitKPIs } from "@/components/cockpit/CockpitKPIs";
 import { PkRuler } from "@/components/ui/PkRuler";
@@ -25,19 +28,20 @@ import { ConversionWidget } from "@/components/cockpit/ConversionWidget";
 import { SimControls } from "@/components/cockpit/SimControls";
 
 // ============================================================================
-// PAGE COMPONENT
+// PAGE BODY (inside Suspense boundary — useFocusSync uses useSearchParams)
 // ============================================================================
 
 /**
- * CockpitPage — composes the full cockpit dashboard.
- * - Mounts useSimulationLoop ONCE at page level (SR-004).
- * - Calls simulationStore.init() once the world is ready (SR-003 req 3).
- * - Layout order per SR-013 req 1.
+ * CockpitPageBody — inner body requiring Suspense for useSearchParams.
+ * Mounts useFocusSync to synchronize ?focus= URL param with selectionStore.
  */
-export default function CockpitPage() {
+function CockpitPageBody() {
   const { world } = useWorldData();
   const init = useSimulationStore((state) => state.init);
   const selectedEntityId = useSelectionStore((state) => state.selectedEntityId);
+
+  // F4-1: bidirectional ?focus= ↔ selectionStore sync — ADR-1
+  useFocusSync();
 
   // Mount rAF simulation loop once at page level — SR-004
   useSimulationLoop();
@@ -46,8 +50,6 @@ export default function CockpitPage() {
   useEffect(() => {
     if (world) init(world);
   }, [world, init]);
-
-  // No tankIds needed — groupBalanceByHour now uses startedAt/endedAt timestamps
 
   // Derive WaterfallChart inputs from volumeTargets + shippers
   const waterfallInputs = useMemo(() => {
@@ -108,5 +110,21 @@ export default function CockpitPage() {
         <SimControls />
       </div>
     </div>
+  );
+}
+
+// ============================================================================
+// PAGE EXPORT (thin Suspense shell — F4-1-R5, ADR-1)
+// ============================================================================
+
+/**
+ * CockpitPage — Suspense shell required for useSearchParams in useFocusSync.
+ * fallback={null} so there is no layout shift while params hydrate.
+ */
+export default function CockpitPage() {
+  return (
+    <Suspense fallback={null}>
+      <CockpitPageBody />
+    </Suspense>
   );
 }

@@ -9,11 +9,16 @@
  * now = real-world date (NOT simulatedTime) — threaded from page (design ADR-6).
  * No metadata export — lives in layout.tsx (SR-212 §5 / SR-211 §3).
  * No simulationStore import (SR-212 §6 / SR-213 §1).
+ * F4-1: MaintenancePageBody wrapped in <Suspense> — required because useFocusSync uses
+ *        useSearchParams which triggers CSR bailout without a Suspense boundary.
+ *        onFocusStation syncs activeBoardFilter when the arriving entity's station changes
+ *        without cross-store imports (ADR-5, ADR-7).
  */
 
-import { useMemo } from "react";
+import { Suspense, useCallback, useMemo } from "react";
 import { useWorldData } from "@/hooks/useWorldData";
 import { useMaintenanceStore } from "@/store/maintenanceStore";
+import { useFocusSync } from "@/hooks/useFocusSync";
 import { Tabs } from "@/components/ui/Tabs";
 import { MaintenanceKpis } from "@/components/maintenance/MaintenanceKpis";
 import { MaintenanceBoard } from "@/components/maintenance/MaintenanceBoard";
@@ -31,23 +36,45 @@ const TABS = [
 ] as const;
 
 // ---------------------------------------------------------------------------
-// Page component
+// Page body (inside Suspense boundary — useFocusSync uses useSearchParams)
 // ---------------------------------------------------------------------------
 
 /**
- * MaintenancePage — composes the CMMS dashboard.
- * "use client" — uses hooks (useWorldData, useMaintenanceStore).
- * Metadata lives in layout.tsx per SR-211.
+ * MaintenancePageBody — inner body requiring Suspense for useSearchParams.
+ * Mounts useFocusSync with onFocusStation to sync activeBoardFilter on arrival.
+ * F4-1-R6: board filter sync fires once per stationId change, not every render.
+ * ADR-5: coupling lives here (component layer), not inside stores.
  */
-export default function MaintenancePage() {
+function MaintenancePageBody() {
   const { world } = useWorldData();
 
   const activeTab = useMaintenanceStore((s) => s.activeTab);
   const setActiveTab = useMaintenanceStore((s) => s.setActiveTab);
+  const setBoardFilter = useMaintenanceStore((s) => s.setBoardFilter);
 
   // Compute today once at page level — threaded as prop (design ADR-6).
   // NOT from simulationStore — real-world date only (SR-207 §3, SR-213 §1).
   const now = useMemo(() => new Date().toISOString().slice(0, 10), []);
+
+  // F4-1-R6 / ADR-5: sync activeBoardFilter when arriving focus resolves to a new station.
+  // This callback fires ONLY when the stationId changes (gated in useFocusSync).
+  // It does NOT clobber a user-applied filter — the stationId gate ensures it only runs on
+  // the initial arrival focus, not on every render or on user-initiated filter changes.
+  const onFocusStation = useCallback(
+    (stationId: string | null) => {
+      if (stationId) {
+        setBoardFilter({
+          selectionId: stationId,
+          selectionLevel: "station",
+          stationId,
+        });
+      }
+    },
+    [setBoardFilter],
+  );
+
+  // F4-1: bidirectional ?focus= ↔ selectionStore sync, with Maintenance board filter sync — ADR-1/5
+  useFocusSync({ onFocusStation });
 
   // Loading state — world is bundled seed, always available
   if (!world) {
@@ -96,5 +123,21 @@ export default function MaintenancePage() {
         )}
       </section>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Page export (thin Suspense shell — F4-1-R5, ADR-1)
+// ---------------------------------------------------------------------------
+
+/**
+ * MaintenancePage — Suspense shell required for useSearchParams in useFocusSync.
+ * fallback={null} so there is no layout shift while params hydrate.
+ */
+export default function MaintenancePage() {
+  return (
+    <Suspense fallback={null}>
+      <MaintenancePageBody />
+    </Suspense>
   );
 }

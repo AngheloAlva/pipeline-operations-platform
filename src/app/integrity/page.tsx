@@ -12,27 +12,33 @@
  * No metadata export — lives in layout.tsx per SR-310.
  * No simulationStore / maintenanceStore / useSimulationLoop imports (SR-312 §3).
  * No Tabs component (SR-312 §5).
+ * F4-1: IntegrityPageBody wrapped in <Suspense> — required because useFocusSync uses
+ *        useSearchParams which triggers CSR bailout without a Suspense boundary.
  */
 
+import { Suspense } from "react";
 import { useWorldData } from "@/hooks/useWorldData";
 import { useSelection, EntityType } from "@/store/selectionStore";
+import { useFocusSync } from "@/hooks/useFocusSync";
 import { PipelineMap } from "@/components/integrity/PipelineMap";
 import { IntegrityKpis } from "@/components/integrity/IntegrityKpis";
 import { ReadingsTable } from "@/components/integrity/ReadingsTable";
 import { ReadingDetail } from "@/components/integrity/ReadingDetail";
 
 // ---------------------------------------------------------------------------
-// Page component
+// Page body (inside Suspense boundary — useFocusSync uses useSearchParams)
 // ---------------------------------------------------------------------------
 
 /**
- * IntegrityPage — composes the cathodic integrity monitoring dashboard.
- * "use client" — uses hooks (useWorldData, useSelection).
- * Metadata lives in layout.tsx per SR-310.
+ * IntegrityPageBody — inner body requiring Suspense for useSearchParams.
+ * Mounts useFocusSync to synchronize ?focus= URL param with selectionStore.
  */
-export default function IntegrityPage() {
+function IntegrityPageBody() {
   const { world } = useWorldData();
   const { selectedEntityId, selectedEntityType } = useSelection();
+
+  // F4-1: bidirectional ?focus= ↔ selectionStore sync — ADR-1
+  useFocusSync();
 
   // Derive selectedPointKey from selection store (pass-down pattern per SR-311 §4)
   const selectedPointKey =
@@ -76,5 +82,21 @@ export default function IntegrityPage() {
         <ReadingDetail world={world} />
       </section>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Page export (thin Suspense shell — F4-1-R5, ADR-1)
+// ---------------------------------------------------------------------------
+
+/**
+ * IntegrityPage — Suspense shell required for useSearchParams in useFocusSync.
+ * fallback={null} so there is no layout shift while params hydrate.
+ */
+export default function IntegrityPage() {
+  return (
+    <Suspense fallback={null}>
+      <IntegrityPageBody />
+    </Suspense>
   );
 }

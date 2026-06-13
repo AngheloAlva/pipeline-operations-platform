@@ -56,7 +56,7 @@ export function IntegrityKpis({ world }: IntegrityKpisProps) {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       {/* OK — protected points. Wrapper is flex so the KpiCard stretches to the
           grid-stretched wrapper height — keeps the accent bar flush with the card. */}
       <div className="flex" style={{ borderLeft: "2px solid var(--status-ok)" }}>

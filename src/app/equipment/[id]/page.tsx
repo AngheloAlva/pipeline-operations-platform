@@ -352,7 +352,14 @@ function EquipmentPageBody() {
         )}
 
         {/* Work orders */}
-        {equipmentWorkOrders.length > 0 && (
+        {equipmentWorkOrders.length === 0 ? (
+          <p
+            className="text-[12px] text-ink-muted py-2"
+            style={{ fontFamily: "var(--font-mono), monospace" }}
+          >
+            Sin órdenes de trabajo para este equipo.
+          </p>
+        ) : (
           <div className="mt-2 flex flex-col gap-2">
             <p
               className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink-secondary"
@@ -384,7 +391,7 @@ function EquipmentPageBody() {
 
       {/* ================================================================
           Section 2: Station Flow — Cockpit context (F4-2-R4 section 2)
-          Header MUST read "Station Flow" — station context, NOT equipment flow.
+          Header MUST read "Flujo de la estación" — station context, NOT equipment flow.
           ================================================================ */}
       <SectionPanel
         title="Flujo de la estación"

@@ -41,6 +41,20 @@ export function IntegrityKpis({ world }: IntegrityKpisProps) {
     [world.cathodicReadings],
   );
 
+  if (world.cathodicReadings.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-2 py-6">
+        <span aria-hidden="true" className="text-[18px] text-ink-muted opacity-50">○</span>
+        <p
+          className="text-[12px] uppercase tracking-[0.1em] text-ink-muted"
+          style={{ fontFamily: "var(--font-mono), monospace" }}
+        >
+          Sin lecturas catódicas disponibles
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-3 gap-3">
       {/* OK — protected points. Wrapper is flex so the KpiCard stretches to the

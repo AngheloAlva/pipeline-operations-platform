@@ -17,6 +17,7 @@
  */
 
 import { Suspense } from "react";
+import { IntegritySkeleton } from "@/components/ui/Skeleton";
 import { useWorldData } from "@/hooks/useWorldData";
 import { useSelection, EntityType } from "@/store/selectionStore";
 import { useFocusSync } from "@/hooks/useFocusSync";
@@ -95,7 +96,7 @@ function IntegrityPageBody() {
  */
 export default function IntegrityPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<IntegritySkeleton />}>
       <IntegrityPageBody />
     </Suspense>
   );

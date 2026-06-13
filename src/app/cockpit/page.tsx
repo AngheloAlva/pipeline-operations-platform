@@ -12,6 +12,7 @@
  */
 
 import { Suspense, useEffect, useMemo } from "react";
+import { CockpitSkeleton } from "@/components/ui/Skeleton";
 import { useWorldData } from "@/hooks/useWorldData";
 import { useSimulationStore } from "@/store/simulationStore";
 import { useSimulationLoop } from "@/hooks/useSimulationLoop";
@@ -123,7 +124,7 @@ function CockpitPageBody() {
  */
 export default function CockpitPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<CockpitSkeleton />}>
       <CockpitPageBody />
     </Suspense>
   );

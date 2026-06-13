@@ -16,6 +16,7 @@
  */
 
 import { Suspense, useCallback, useMemo } from "react";
+import { MaintenanceSkeleton } from "@/components/ui/Skeleton";
 import { useWorldData } from "@/hooks/useWorldData";
 import { useMaintenanceStore } from "@/store/maintenanceStore";
 import { useFocusSync } from "@/hooks/useFocusSync";
@@ -136,7 +137,7 @@ function MaintenancePageBody() {
  */
 export default function MaintenancePage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<MaintenanceSkeleton />}>
       <MaintenancePageBody />
     </Suspense>
   );

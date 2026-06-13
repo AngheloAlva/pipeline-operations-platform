@@ -24,6 +24,7 @@ import { useMemo } from "react";
 import { useParams } from "next/navigation";
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
+import { CrossNavLinks } from "@/components/shared/CrossNavLinks";
 
 import { useWorldData } from "@/hooks/useWorldData";
 import { resolveEntity } from "@/lib/domain/resolveEntity";
@@ -289,6 +290,11 @@ function EquipmentPageBody() {
         criticality={equipment.criticality}
         stationName={stationName}
       />
+
+      {/* F4-2-R6/R7, F4-3-R2, F4-3-S6: hub-and-spoke cross-module links.
+          exclude=['equipment'] since we are already on the equipment page.
+          resolved is guaranteed non-null here (guarded by shouldNotFound above). */}
+      <CrossNavLinks entity={resolved} exclude={["equipment"]} />
 
       {/* ================================================================
           Section 1: Maintenance (F4-2-R4, R8)

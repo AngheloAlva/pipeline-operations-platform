@@ -183,16 +183,19 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
           tall FlowDiagram (1080×320), stretching this to full container width
           only increases height by ~50px at 1900px viewport — acceptable and
           desired. maxWidth cap removed so markers span the full panel width
-          with no dead side space. FlowDiagram and PkRuler keep their caps. */}
+          with no dead side space. FlowDiagram and PkRuler keep their caps.
+          overflow-x-auto + min-w on mobile keeps SVG legible at 375px (B-7) */}
+      <div className="overflow-x-auto">
       <svg
         viewBox={`0 0 ${VB_WIDTH} ${VB_HEIGHT}`}
         preserveAspectRatio="xMidYMid meet"
         role="img"
         aria-label="Pipeline cathodic integrity map"
-        className="block w-full"
+        className="block w-full min-w-[640px] md:min-w-0"
         style={{
           display: "block",
           aspectRatio: `${VB_WIDTH} / ${VB_HEIGHT}`,
+          minHeight: "70px",
         }}
       >
         {/* Baseline */}
@@ -299,6 +302,7 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
           );
         })}
       </svg>
+      </div>
     </section>
   );
 }

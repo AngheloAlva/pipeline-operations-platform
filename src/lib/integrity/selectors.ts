@@ -208,15 +208,18 @@ export function extractReadingSeriesForChart(
   readings: CathodicReading[],
   key: string,
 ): ReadingSeriesPoint[] {
-  const filtered = readings.filter(
-    (r) => `${r.km}:${r.segmentId}` === key,
-  );
+  // CRITICAL-3: use pointKey() helper (which rounds km) so float-imprecise values match correctly.
+  // A raw template literal `${r.km}:${r.segmentId}` silently fails for km values like 96.79999999.
+  const filtered = readings.filter((r) => pointKey(r.km, r.segmentId) === key);
 
   if (filtered.length === 0) {
     return [];
   }
 
-  const sorted = [...filtered].sort((a, b) => a.takenAt.localeCompare(b.takenAt));
+  // SUGGESTION-1: use Date.parse for robustness — localeCompare breaks on non-UTC offset strings.
+  const sorted = [...filtered].sort(
+    (a, b) => Date.parse(a.takenAt) - Date.parse(b.takenAt),
+  );
 
   return sorted.map((r) => ({
     timestamp: new Date(r.takenAt),

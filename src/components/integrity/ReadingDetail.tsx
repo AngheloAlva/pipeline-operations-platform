@@ -9,8 +9,21 @@
  * Placeholder text when no CATHODIC_POINT is selected.
  */
 
+import dynamic from "next/dynamic";
 import { useSelection, EntityType } from "@/store/selectionStore";
-import { TimeSeriesChart } from "@/components/charts/TimeSeriesChart";
+// CRITICAL-4: TimeSeriesChart uses ResponsiveContainer which measures a DOM
+// element during SSR and gets width=-1 → hydration flash. Import dynamically
+// with ssr:false since the chart is client-only interactive content.
+const TimeSeriesChart = dynamic(
+  () =>
+    import("@/components/charts/TimeSeriesChart").then(
+      (m) => m.TimeSeriesChart,
+    ),
+  {
+    ssr: false,
+    loading: () => <div style={{ height: 220 }} className="w-full" aria-hidden="true" />,
+  },
+);
 import type { ThresholdLine } from "@/components/charts/TimeSeriesChart";
 import { extractReadingSeriesForChart } from "@/lib/integrity/selectors";
 import { CATHODIC_OK, CATHODIC_WARN } from "@/lib/domain/constants";

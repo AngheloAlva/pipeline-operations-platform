@@ -237,6 +237,9 @@ export function DataTable<T extends object>({
                 <tr
                   key={key}
                   role="row"
+                  // WARNING-2: add tabIndex + role + onKeyDown for keyboard access when clickable
+                  // WARNING-3: selection highlight via box-shadow (inset) so it composes with
+                  //            rowVariant left-border rather than overwriting it via borderLeft
                   className={cn(
                     "border-b border-border-subtle transition-colors hover:bg-surface-interactive",
                     rowClass,
@@ -244,10 +247,21 @@ export function DataTable<T extends object>({
                   )}
                   style={
                     selected
-                      ? { ...rowStyle, borderLeft: "2px solid var(--status-flow)", background: "rgba(59,130,246,0.06)" }
+                      ? { ...rowStyle, boxShadow: "inset 3px 0 0 var(--status-flow)", background: "rgba(59,130,246,0.06)" }
                       : rowStyle
                   }
+                  tabIndex={onRowClick ? 0 : undefined}
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
+                  onKeyDown={
+                    onRowClick
+                      ? (e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            onRowClick(row);
+                          }
+                        }
+                      : undefined
+                  }
                 >
                   {columns.map((col) => (
                     <td

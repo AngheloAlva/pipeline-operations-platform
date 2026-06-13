@@ -13,7 +13,7 @@
  * Font: CHART_FONT_MONO resolved string — never CSS var() in SVG context.
  */
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import {
   STATUS_OK,
   STATUS_WARNING,
@@ -68,10 +68,42 @@ export interface PipelineMapProps {
 export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
   const selectEntity = useSelectionStore((s) => s.selectEntity);
 
-  // Derive km range from stations
-  const stationKms = world.stations.map((s) => s.km);
-  const minKm = stationKms.length > 0 ? Math.min(...stationKms) : 0;
-  const maxKm = stationKms.length > 0 ? Math.max(...stationKms) : 270;
+  // WARNING-4: wrap all derived values in useMemo so they don't rebuild new refs on every render.
+  // React Compiler is NOT enabled (next.config.ts is bare), so manual memoization is required.
+
+  // Group cathodic readings — needed for km range too (SUGGESTION-2)
+  const cathodicGroups = useMemo(
+    () => groupReadingsByKm(world.cathodicReadings),
+    [world.cathodicReadings],
+  );
+
+  // Build cathodic marker data: one per unique point key
+  const cathodicMarkers = useMemo(
+    () =>
+      Array.from(cathodicGroups.entries()).map(([key, readings]) => {
+        // Sort ascending by takenAt, take last = latest
+        const sorted = [...readings].sort((a, b) =>
+          a.takenAt.localeCompare(b.takenAt),
+        );
+        const latest = sorted[sorted.length - 1];
+        const km = latest.km;
+        const level = latest.level as AlertLevel;
+        return { key, km, level };
+      }),
+    [cathodicGroups],
+  );
+
+  // SUGGESTION-2: include cathodic km values in the range so cathodic points
+  // outside the station span don't extrapolate off-canvas.
+  const { minKm, maxKm } = useMemo(() => {
+    const stationKms = world.stations.map((s) => s.km);
+    const cathodicKms = cathodicMarkers.map((m) => m.km);
+    const allKms = [...stationKms, ...cathodicKms];
+    return {
+      minKm: allKms.length > 0 ? Math.min(...allKms) : 0,
+      maxKm: allKms.length > 0 ? Math.max(...allKms) : 270,
+    };
+  }, [world.stations, cathodicMarkers]);
 
   const toX = useCallback(
     (km: number) => kmToX(km, minKm, maxKm, VB_WIDTH, PADDING),
@@ -79,31 +111,18 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
   );
 
   // Build station id → km lookup for rectifier positioning (ADR-4)
-  const stationKmById: Record<string, number> = {};
-  for (const s of world.stations) {
-    stationKmById[s.id] = s.km;
-  }
+  const stationKmById = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const s of world.stations) {
+      map[s.id] = s.km;
+    }
+    return map;
+  }, [world.stations]);
 
   // Rectifiers — from world.equipment where type === RECTIFIER
-  const rectifiers = world.equipment.filter(
-    (eq) => eq.type === EquipmentType.RECTIFIER,
-  );
-
-  // Group cathodic readings by composite key km:segmentId
-  const cathodicGroups = groupReadingsByKm(world.cathodicReadings);
-
-  // Build cathodic marker data: one per unique point key
-  const cathodicMarkers = Array.from(cathodicGroups.entries()).map(
-    ([key, readings]) => {
-      // Sort ascending by takenAt, take last = latest
-      const sorted = [...readings].sort((a, b) =>
-        a.takenAt.localeCompare(b.takenAt),
-      );
-      const latest = sorted[sorted.length - 1];
-      const km = latest.km;
-      const level = latest.level as AlertLevel;
-      return { key, km, level };
-    },
+  const rectifiers = useMemo(
+    () => world.equipment.filter((eq) => eq.type === EquipmentType.RECTIFIER),
+    [world.equipment],
   );
 
   // Handle rectifier overlap: group rectifiers by station km, assign ±8px offsets

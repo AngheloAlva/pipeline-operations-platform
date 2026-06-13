@@ -21,6 +21,7 @@ import {
   INK_TERTIARY,
   CHART_FONT_MONO,
 } from "@/lib/charts/palette";
+import { CATHODIC_OK, CATHODIC_WARN } from "@/lib/domain/constants";
 import type { ReadingSeriesPoint } from "@/lib/integrity/selectors";
 
 // ============================================================================
@@ -88,10 +89,19 @@ export function TimeSeriesChart({
     potentialV: pt.potentialV,
   }));
 
-  // Y-axis domain: min-0.05 to max+0.05 (standard ascending, no inversion)
+  // CRITICAL-2: Y-axis domain must always contain both threshold reference lines
+  // (CATHODIC_OK = -0.85, CATHODIC_WARN = -0.75). Computing min/max from series
+  // data alone clips the thresholds when all potentials are below -0.85.
   const potentials = data.map((d) => d.potentialV);
-  const yMin = potentials.length > 0 ? Math.min(...potentials) - 0.05 : -1.2;
-  const yMax = potentials.length > 0 ? Math.max(...potentials) + 0.05 : -0.7;
+  // Expand domain to include threshold values with a 0.05 buffer on each side.
+  const yMin =
+    potentials.length > 0
+      ? Math.min(Math.min(...potentials), CATHODIC_OK) - 0.05
+      : CATHODIC_OK - 0.05;
+  const yMax =
+    potentials.length > 0
+      ? Math.max(Math.max(...potentials), CATHODIC_WARN) + 0.05
+      : CATHODIC_WARN + 0.05;
 
   return (
     <div style={{ height }} className="w-full">

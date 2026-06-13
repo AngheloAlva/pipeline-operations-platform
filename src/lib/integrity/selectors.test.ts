@@ -324,6 +324,34 @@ describe("extractReadingSeriesForChart", () => {
     expect(result[0].timestamp).toBeInstanceOf(Date);
     expect(result[0].timestamp.toISOString()).toBe("2026-01-15T12:00:00.000Z");
   });
+
+  // CRITICAL-3 fix: float-imprecise km must still match via pointKey() rounding
+  it("CRITICAL-3: reading with float-imprecise km (96.79999999) still matches the rounded pointKey", () => {
+    const readings = [
+      makeReading({
+        id: "r-float",
+        km: 96.79999999,
+        segmentId: "SEG-0003",
+        takenAt: "2026-01-01T00:00:00Z",
+        potentialV: -0.91,
+      }),
+    ];
+    // pointKey(96.79999999, "SEG-0003") rounds to "96.8:SEG-0003"
+    const result = extractReadingSeriesForChart(readings, "96.8:SEG-0003");
+    expect(result).toHaveLength(1);
+    expect(result[0].potentialV).toBe(-0.91);
+  });
+
+  // SUGGESTION-1: sort must be chronologically correct (Date.parse, not localeCompare)
+  it("SUGGESTION-1: sort is chronological even for non-UTC offset strings", () => {
+    const readings = [
+      makeReading({ id: "r1", km: 1, segmentId: "SEG-0002", takenAt: "2026-03-01T00:00:00Z", potentialV: -0.84 }),
+      makeReading({ id: "r2", km: 1, segmentId: "SEG-0002", takenAt: "2026-01-01T00:00:00Z", potentialV: -0.9 }),
+    ];
+    const result = extractReadingSeriesForChart(readings, "1:SEG-0002");
+    expect(result[0].potentialV).toBe(-0.9);   // oldest first
+    expect(result[1].potentialV).toBe(-0.84);
+  });
 });
 
 // ---------------------------------------------------------------------------

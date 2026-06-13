@@ -60,6 +60,13 @@ export interface DataTableProps<T extends object> {
   onSort?: (key: keyof T) => void;
   /** Per-row semantic highlight. */
   rowVariant?: (row: T) => RowVariant;
+  /** Called when a row is clicked. */
+  onRowClick?: (row: T) => void;
+  /**
+   * When provided, rows that return true are highlighted with the selection
+   * accent (left border using --status-flow token).
+   */
+  isRowSelected?: (row: T) => boolean;
   /** Empty state label. Defaults to "Sin resultados". */
   emptyLabel?: string;
   /** Screen-reader caption for the table. */
@@ -142,6 +149,8 @@ export function DataTable<T extends object>({
   sortDir,
   onSort,
   rowVariant,
+  onRowClick,
+  isRowSelected,
   emptyLabel = "Sin resultados",
   caption,
   className,
@@ -222,16 +231,37 @@ export function DataTable<T extends object>({
               const variant = rowVariant ? rowVariant(row) : ROW_VARIANT.DEFAULT;
               const { className: rowClass, style: rowStyle } = getRowStyle(variant);
               const key: string | number = getRowKey ? getRowKey(row) : rowIndex;
+              const selected = isRowSelected ? isRowSelected(row) : false;
 
               return (
                 <tr
                   key={key}
                   role="row"
+                  // WARNING-2: add tabIndex + role + onKeyDown for keyboard access when clickable
+                  // WARNING-3: selection highlight via box-shadow (inset) so it composes with
+                  //            rowVariant left-border rather than overwriting it via borderLeft
                   className={cn(
                     "border-b border-border-subtle transition-colors hover:bg-surface-interactive",
                     rowClass,
+                    onRowClick && "cursor-pointer",
                   )}
-                  style={rowStyle}
+                  style={
+                    selected
+                      ? { ...rowStyle, boxShadow: "inset 3px 0 0 var(--status-flow)", background: "rgba(59,130,246,0.06)" }
+                      : rowStyle
+                  }
+                  tabIndex={onRowClick ? 0 : undefined}
+                  onClick={onRowClick ? () => onRowClick(row) : undefined}
+                  onKeyDown={
+                    onRowClick
+                      ? (e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            onRowClick(row);
+                          }
+                        }
+                      : undefined
+                  }
                 >
                   {columns.map((col) => (
                     <td

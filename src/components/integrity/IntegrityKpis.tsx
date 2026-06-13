@@ -1,0 +1,74 @@
+"use client";
+
+/**
+ * IntegrityKpis — three KpiCard instances showing OK / WARNING / CRITICAL
+ * cathodic point counts. SR-307.
+ *
+ * Counts are PER POINT (by latest reading level per ORCHESTRATOR DECISION).
+ * KPI card totals MUST equal ReadingsTable row count.
+ * No simulationStore / maintenanceStore imports.
+ */
+
+import { useMemo } from "react";
+import { KpiCard } from "@/components/ui/KpiCard";
+import { computeIntegrityKpis } from "@/lib/integrity/selectors";
+import type { PipelineWorld } from "@/lib/domain";
+
+// ============================================================================
+// Props
+// ============================================================================
+
+export interface IntegrityKpisProps {
+  world: PipelineWorld;
+}
+
+// ============================================================================
+// Component
+// ============================================================================
+
+/**
+ * Renders 3 KpiCard instances for cathodic protection health.
+ * computeIntegrityKpis counts PER UNIQUE POINT — the totals equal the
+ * ReadingsTable row count (one row per unique km:segmentId point).
+ *
+ * Accent colors use CSS custom property tokens. The left-border accent is
+ * applied via a wrapping div using inline style (wins the cascade) so we do
+ * not need to modify KpiCard's interface.
+ */
+export function IntegrityKpis({ world }: IntegrityKpisProps) {
+  const kpis = useMemo(
+    () => computeIntegrityKpis(world.cathodicReadings),
+    [world.cathodicReadings],
+  );
+
+  return (
+    <div className="grid grid-cols-3 gap-3">
+      {/* OK — protected points */}
+      <div style={{ borderLeft: "2px solid var(--status-ok)" }}>
+        <KpiCard
+          label="Protegidos"
+          value={String(kpis.ok)}
+          secondary="OK ≤ −0.85 V"
+        />
+      </div>
+
+      {/* WARNING — marginal protection */}
+      <div style={{ borderLeft: "2px solid var(--amber-safety)" }}>
+        <KpiCard
+          label="Marginales"
+          value={String(kpis.warning)}
+          secondary="ADVERTENCIA"
+        />
+      </div>
+
+      {/* CRITICAL — unprotected points */}
+      <div style={{ borderLeft: "2px solid var(--alarm-red)" }}>
+        <KpiCard
+          label="Sin Protección"
+          value={String(kpis.critical)}
+          secondary="CRÍTICO > −0.75 V"
+        />
+      </div>
+    </div>
+  );
+}

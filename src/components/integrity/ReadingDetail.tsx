@@ -1,0 +1,132 @@
+"use client";
+
+/**
+ * ReadingDetail — TimeSeriesChart panel for the selected cathodic point. SR-309.
+ *
+ * Reads selectedEntityId + selectedEntityType from useSelection().
+ * Only renders chart when selectedEntityType === EntityType.CATHODIC_POINT.
+ * Threshold lines: CATHODIC_OK (-0.85 V) and CATHODIC_WARN (-0.75 V) from constants.
+ * Placeholder text when no CATHODIC_POINT is selected.
+ */
+
+import dynamic from "next/dynamic";
+import { useSelection, EntityType } from "@/store/selectionStore";
+// CRITICAL-4: TimeSeriesChart uses ResponsiveContainer which measures a DOM
+// element during SSR and gets width=-1 → hydration flash. Import dynamically
+// with ssr:false since the chart is client-only interactive content.
+const TimeSeriesChart = dynamic(
+  () =>
+    import("@/components/charts/TimeSeriesChart").then(
+      (m) => m.TimeSeriesChart,
+    ),
+  {
+    ssr: false,
+    loading: () => <div style={{ height: 220 }} className="w-full" aria-hidden="true" />,
+  },
+);
+import type { ThresholdLine } from "@/components/charts/TimeSeriesChart";
+import { extractReadingSeriesForChart } from "@/lib/integrity/selectors";
+import { CATHODIC_OK, CATHODIC_WARN } from "@/lib/domain/constants";
+import { STATUS_OK, STATUS_WARNING } from "@/lib/charts/palette";
+import type { PipelineWorld } from "@/lib/domain";
+
+// ============================================================================
+// Constants
+// ============================================================================
+
+/** Threshold lines always passed to TimeSeriesChart for integrity context. */
+const INTEGRITY_THRESHOLDS: ThresholdLine[] = [
+  { value: CATHODIC_OK, label: `Protected (${CATHODIC_OK}V)`, color: STATUS_OK },
+  { value: CATHODIC_WARN, label: `Marginal (${CATHODIC_WARN}V)`, color: STATUS_WARNING },
+];
+
+// ============================================================================
+// Props
+// ============================================================================
+
+export interface ReadingDetailProps {
+  world: PipelineWorld;
+}
+
+// ============================================================================
+// Component
+// ============================================================================
+
+/**
+ * Detail panel showing the potential history for the selected cathodic point.
+ *
+ * Selection is read directly from useSelection() — not from props — so this
+ * panel stays in sync with PipelineMap and ReadingsTable automatically.
+ * When no CATHODIC_POINT is selected, a placeholder is shown.
+ */
+export function ReadingDetail({ world }: ReadingDetailProps) {
+  const { selectedEntityId, selectedEntityType } = useSelection();
+
+  // Derive active point key only for CATHODIC_POINT selections
+  const selectedPointKey =
+    selectedEntityType === EntityType.CATHODIC_POINT && selectedEntityId
+      ? selectedEntityId
+      : null;
+
+  if (!selectedPointKey) {
+    return (
+      <section
+        className="flex flex-col border border-border-mid bg-surface-raised"
+        aria-label="Cathodic point detail"
+      >
+        <header className="border-b border-border-mid px-4 py-3">
+          <h2
+            className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+            style={{ fontFamily: "var(--font-mono), monospace" }}
+          >
+            Historial de Potencial
+          </h2>
+        </header>
+        <div className="flex items-center justify-center" style={{ height: 220 }}>
+          <p
+            className="text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+            style={{ fontFamily: "var(--font-mono), monospace" }}
+          >
+            Select a point on the map or table to view its history
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  const series = extractReadingSeriesForChart(
+    world.cathodicReadings,
+    selectedPointKey,
+  );
+
+  return (
+    <section
+      className="flex flex-col border border-border-mid bg-surface-raised"
+      aria-label={`Cathodic point detail — ${selectedPointKey}`}
+    >
+      <header className="flex items-center justify-between border-b border-border-mid px-4 py-3">
+        <h2
+          className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+          style={{ fontFamily: "var(--font-mono), monospace" }}
+        >
+          Historial de Potencial
+        </h2>
+        <span
+          className="font-mono text-[10px] tabular-nums text-ink-secondary"
+          style={{ fontFamily: "var(--font-mono), monospace" }}
+        >
+          Point: {selectedPointKey}
+        </span>
+      </header>
+
+      <div className="p-4">
+        <TimeSeriesChart
+          series={series}
+          thresholds={INTEGRITY_THRESHOLDS}
+          height={220}
+          emptyLabel="No readings for this point"
+        />
+      </div>
+    </section>
+  );
+}

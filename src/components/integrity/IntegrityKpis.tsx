@@ -43,30 +43,34 @@ export function IntegrityKpis({ world }: IntegrityKpisProps) {
 
   return (
     <div className="grid grid-cols-3 gap-3">
-      {/* OK — protected points */}
-      <div style={{ borderLeft: "2px solid var(--status-ok)" }}>
+      {/* OK — protected points. Wrapper is flex so the KpiCard stretches to the
+          grid-stretched wrapper height — keeps the accent bar flush with the card. */}
+      <div className="flex" style={{ borderLeft: "2px solid var(--status-ok)" }}>
         <KpiCard
           label="Protegidos"
           value={String(kpis.ok)}
           secondary="OK ≤ −0.85 V"
+          className="flex-1"
         />
       </div>
 
       {/* WARNING — marginal protection */}
-      <div style={{ borderLeft: "2px solid var(--amber-safety)" }}>
+      <div className="flex" style={{ borderLeft: "2px solid var(--amber-safety)" }}>
         <KpiCard
           label="Marginales"
           value={String(kpis.warning)}
           secondary="ADVERTENCIA"
+          className="flex-1"
         />
       </div>
 
       {/* CRITICAL — unprotected points */}
-      <div style={{ borderLeft: "2px solid var(--alarm-red)" }}>
+      <div className="flex" style={{ borderLeft: "2px solid var(--alarm-red)" }}>
         <KpiCard
           label="Sin Protección"
           value={String(kpis.critical)}
           secondary="CRÍTICO > −0.75 V"
+          className="flex-1"
         />
       </div>
     </div>

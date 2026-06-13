@@ -1,6 +1,8 @@
 "use client";
 
 import type { Pipeline, Station } from "@/lib/domain/types";
+import { kmToX } from "@/lib/diagrams/layout";
+import { formatPk } from "@/lib/format";
 
 // ---------------------------------------------------------------------------
 // PkRuler props
@@ -15,14 +17,15 @@ interface PkRulerProps {
 // ---------------------------------------------------------------------------
 // Layout constants
 // ---------------------------------------------------------------------------
-const RULER_HEIGHT = 52; // total component height in px (SVG viewBox units)
-const TRACK_Y = 26; // vertical center of the pipe track
+const RULER_HEIGHT = 64; // total component height in px (SVG viewBox units)
+const H_PADDING = 55; // horizontal inset so km 0 / km max station labels never clip
+const TRACK_Y = 38; // vertical center of the pipe track
 const TRACK_THICKNESS = 3; // pipe track stroke width
-const MAJOR_TICK_H = 10; // major tick height (every 50 km)
-const MINOR_TICK_H = 5; // minor tick height (every 10 km)
-const STATION_DOT_R = 5; // station dot radius
-const LABEL_Y_TOP = 10; // station label y (above track)
-const KM_LABEL_Y = RULER_HEIGHT - 2; // km label y (below track)
+const MAJOR_TICK_H = 12; // major tick height (every 50 km)
+const MINOR_TICK_H = 6; // minor tick height (every 10 km)
+const STATION_DOT_R = 5.5; // station dot radius
+const LABEL_Y_TOP = 13; // station label y (above track)
+const KM_LABEL_Y = RULER_HEIGHT - 4; // km label y (below track)
 
 /**
  * PkRuler — "La progresiva"
@@ -45,9 +48,9 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
   const vbWidth = 1080; // fixed logical width for the viewBox
   const vbHeight = RULER_HEIGHT;
 
-  function xOf(km: number): number {
-    return (km / totalLengthKm) * vbWidth;
-  }
+  // Shared km→x mapping (same helper FlowDiagram/PipelineMap use) so the ruler
+  // stays in lockstep with the rest of the diagrams. minKm=0, padding=H_PADDING.
+  const xOf = (km: number) => kmToX(km, 0, totalLengthKm, vbWidth, H_PADDING);
 
   // Tick generation
   const ticks: { km: number; major: boolean }[] = [];
@@ -70,11 +73,11 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
     >
       {/* Section header */}
       <div className="flex items-center justify-between px-4 pt-2.5 pb-1">
-        <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-secondary">
+        <span className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-secondary">
           La Progresiva — pk 0 → pk {totalLengthKm}
         </span>
         <span
-          className="text-[10px] text-ink-muted"
+          className="text-[12px] text-ink-muted"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           {pipeline.name} · ∅{pipeline.diameterInches}&quot; · {sorted.length} estaciones
@@ -87,11 +90,10 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
       <svg
         viewBox={`0 0 ${vbWidth} ${vbHeight}`}
         preserveAspectRatio="xMidYMid meet"
-        className="mx-auto block w-full"
+        className="block w-full"
         style={{
           display: "block",
           aspectRatio: `${vbWidth} / ${vbHeight}`,
-          maxWidth: `${vbWidth}px`,
         }}
         aria-hidden="true"
       >
@@ -158,7 +160,7 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
               x={xOf(km)}
               y={KM_LABEL_Y}
               textAnchor="middle"
-              fontSize="7"
+              fontSize="8.5"
               fill="var(--ink-muted)"
               fontFamily="var(--font-mono), monospace"
             >
@@ -178,7 +180,7 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
                 x1={x}
                 y1={TRACK_Y - STATION_DOT_R}
                 x2={x}
-                y2={LABEL_Y_TOP + 8}
+                y2={LABEL_Y_TOP + 11}
                 stroke="var(--border-mid)"
                 strokeWidth="0.75"
               />
@@ -198,7 +200,7 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
                 x={x}
                 y={LABEL_Y_TOP}
                 textAnchor="middle"
-                fontSize="7.5"
+                fontSize="9.5"
                 fill="var(--ink-secondary)"
                 fontFamily="var(--font-mono), monospace"
                 fontWeight="500"
@@ -209,13 +211,13 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
               {/* PK value below name */}
               <text
                 x={x}
-                y={LABEL_Y_TOP + 8}
+                y={LABEL_Y_TOP + 10}
                 textAnchor="middle"
-                fontSize="6.5"
+                fontSize="7.5"
                 fill="var(--ink-muted)"
                 fontFamily="var(--font-mono), monospace"
               >
-                pk{station.km.toFixed(0)}
+                pk{formatPk(station.km)}
               </text>
             </g>
           );

@@ -10,6 +10,7 @@
 import { useSelectionStore } from "@/store/selectionStore";
 import type { PipelineWorld, Tank, Station } from "@/lib/domain";
 import { TELEMETRY_BLUE, STATUS_WARNING, AMBER_SAFETY } from "@/lib/charts/palette";
+import { formatPk } from "@/lib/format";
 
 // ============================================================================
 // TYPES
@@ -56,7 +57,7 @@ function TankDetail({ tank }: TankDetailProps) {
       {/* Tank identity */}
       <div>
         <p
-          className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
           style={monoStyle}
         >
           Tanque
@@ -64,7 +65,7 @@ function TankDetail({ tank }: TankDetailProps) {
         <p className="text-sm font-medium text-ink-primary" style={monoStyle}>
           {tank.tag}
         </p>
-        <p className="text-[10px] text-ink-muted" style={monoStyle}>
+        <p className="text-[12px] text-ink-muted" style={monoStyle}>
           {tank.product}
         </p>
       </div>
@@ -73,12 +74,12 @@ function TankDetail({ tank }: TankDetailProps) {
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
           <span
-            className="text-[10px] uppercase tracking-[0.12em] text-ink-tertiary"
+            className="text-[12px] uppercase tracking-[0.12em] text-ink-tertiary"
             style={monoStyle}
           >
             Nivel
           </span>
-          <span className="text-[11px] tabular-nums" style={{ ...monoStyle, color: levelColor }}>
+          <span className="text-[13px] tabular-nums" style={{ ...monoStyle, color: levelColor }}>
             {formatPercent(fillPercent)}
           </span>
         </div>
@@ -90,10 +91,10 @@ function TankDetail({ tank }: TankDetailProps) {
           />
         </div>
         <div className="flex justify-between">
-          <span className="text-[9px] text-ink-muted" style={monoStyle}>
+          <span className="text-[11px] text-ink-muted" style={monoStyle}>
             {formatM3(tank.currentLevelM3)}
           </span>
-          <span className="text-[9px] text-ink-muted" style={monoStyle}>
+          <span className="text-[11px] text-ink-muted" style={monoStyle}>
             / {formatM3(tank.capacityM3)}
           </span>
         </div>
@@ -102,18 +103,18 @@ function TankDetail({ tank }: TankDetailProps) {
       {/* Tank metrics */}
       <div className="grid grid-cols-2 gap-2 border-t border-border-subtle pt-2">
         <div className="flex flex-col gap-0.5">
-          <span className="text-[9px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
+          <span className="text-[11px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
             Temp.
           </span>
-          <span className="text-[11px] tabular-nums text-ink-secondary" style={monoStyle}>
+          <span className="text-[13px] tabular-nums text-ink-secondary" style={monoStyle}>
             {tank.temperatureF.toFixed(1)} °F
           </span>
         </div>
         <div className="flex flex-col gap-0.5">
-          <span className="text-[9px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
+          <span className="text-[11px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
             API
           </span>
-          <span className="text-[11px] tabular-nums text-ink-secondary" style={monoStyle}>
+          <span className="text-[13px] tabular-nums text-ink-secondary" style={monoStyle}>
             {tank.apiGravity.toFixed(1)} °
           </span>
         </div>
@@ -122,7 +123,7 @@ function TankDetail({ tank }: TankDetailProps) {
       {/* High-level alarm indicator */}
       {ratio >= 0.95 && (
         <div
-          className="border px-2 py-1.5 text-[10px] uppercase tracking-[0.12em]"
+          className="border px-2 py-1.5 text-[12px] uppercase tracking-[0.12em]"
           style={{
             borderColor: AMBER_SAFETY,
             color: AMBER_SAFETY,
@@ -154,7 +155,7 @@ function StationDetail({ station, world }: StationDetailProps) {
       {/* Station identity */}
       <div>
         <p
-          className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
           style={monoStyle}
         >
           Estación
@@ -162,26 +163,26 @@ function StationDetail({ station, world }: StationDetailProps) {
         <p className="text-sm font-medium text-ink-primary" style={monoStyle}>
           {station.name}
         </p>
-        <p className="text-[10px] text-ink-muted" style={monoStyle}>
-          PK {station.km} km · {station.kind}
+        <p className="text-[12px] text-ink-muted" style={monoStyle}>
+          PK {formatPk(station.km)} km · {station.kind}
         </p>
       </div>
 
       {/* Station tanks summary */}
       {stationTanks.length > 0 && (
         <div className="flex flex-col gap-1.5 border-t border-border-subtle pt-2">
-          <p className="text-[9px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
+          <p className="text-[11px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
             Tanques ({stationTanks.length})
           </p>
           {stationTanks.map((tank) => {
             const ratio = tank.currentLevelM3 / tank.capacityM3;
             return (
               <div key={tank.id} className="flex items-center justify-between">
-                <span className="text-[10px] text-ink-secondary" style={monoStyle}>
+                <span className="text-[12px] text-ink-secondary" style={monoStyle}>
                   {tank.tag}
                 </span>
                 <span
-                  className="text-[10px] tabular-nums"
+                  className="text-[12px] tabular-nums"
                   style={{ ...monoStyle, color: getLevelColor(ratio) }}
                 >
                   {formatPercent(ratio * 100)}
@@ -230,7 +231,7 @@ export function ContextPanel({ world }: ContextPanelProps) {
       {/* Panel header */}
       <header>
         <h2
-          className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
           style={monoStyle}
         >
           Contexto
@@ -242,7 +243,7 @@ export function ContextPanel({ world }: ContextPanelProps) {
         {!selectedEntityId && (
           <div className="flex h-full items-center justify-center py-8">
             <p
-              className="text-center text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+              className="text-center text-[12px] uppercase tracking-[0.12em] text-ink-muted"
               style={monoStyle}
             >
               Seleccione un nodo en el diagrama
@@ -259,7 +260,7 @@ export function ContextPanel({ world }: ContextPanelProps) {
         {selectedEntityId && !selectedTank && !selectedStation && (
           <div className="flex h-full items-center justify-center py-8">
             <p
-              className="text-center text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+              className="text-center text-[12px] uppercase tracking-[0.12em] text-ink-muted"
               style={monoStyle}
             >
               Sin detalle disponible para este nodo

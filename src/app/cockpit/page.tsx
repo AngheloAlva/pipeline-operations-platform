@@ -66,7 +66,7 @@ export default function CockpitPage() {
     return (
       <div className="flex items-center justify-center py-32">
         <span
-          className="text-[11px] uppercase tracking-[0.12em] text-ink-muted"
+          className="text-[13px] uppercase tracking-[0.12em] text-ink-muted"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           Cargando datos del oleoducto…
@@ -79,7 +79,7 @@ export default function CockpitPage() {
     <div className="flex min-h-[calc(100vh-96px)] flex-col">
       {/* Main content — scrollable */}
       <div className="flex-1 overflow-auto">
-        <div className="mx-auto max-w-screen-xl space-y-px px-4 py-4 sm:px-6">
+        <div className="mx-auto max-w-panel space-y-2 px-4 py-4 sm:px-6">
           {/* 1. KPI row — SR-013 req 1 */}
           <CockpitKPIs world={world} />
 
@@ -90,9 +90,9 @@ export default function CockpitPage() {
           <FlowDiagram world={world} />
 
           {/* 4. Side-by-side: BalancePanel + (ContextPanel + ConversionWidget) — SR-013 req 1 */}
-          <div className="grid grid-cols-1 gap-px md:grid-cols-[1fr_320px]">
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-[1fr_320px]">
             <BalancePanel movements={world.movements} />
-            <div className="flex flex-col gap-px">
+            <div className="flex flex-col gap-2">
               <ContextPanel world={world} />
               <ConversionWidget selectedNodeId={selectedEntityId} />
             </div>

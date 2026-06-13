@@ -42,7 +42,7 @@ export default function IntegrityPage() {
     return (
       <div className="flex items-center justify-center py-32">
         <span
-          className="text-[11px] uppercase tracking-[0.12em] text-ink-muted"
+          className="text-[13px] uppercase tracking-[0.12em] text-ink-muted"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           Cargando datos…
@@ -52,7 +52,7 @@ export default function IntegrityPage() {
   }
 
   return (
-    <div className="mx-auto max-w-screen-xl px-4 py-4 sm:px-6 flex flex-col gap-4">
+    <div className="mx-auto max-w-panel px-4 py-4 sm:px-6 flex flex-col gap-4">
       {/* Row 1: PipelineMap — full width (F3-1) */}
       <section>
         <PipelineMap world={world} selectedPointKey={selectedPointKey} />

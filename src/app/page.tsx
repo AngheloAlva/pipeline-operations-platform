@@ -5,6 +5,7 @@ import { KpiCard } from "@/components/ui/KpiCard";
 import { PkRuler } from "@/components/ui/PkRuler";
 import { totalStock, equipmentStatusCounts, latestCathodicReading } from "@/lib/kpi/overview";
 import type { AlertLevel } from "@/lib/domain";
+import { formatPk } from "@/lib/format";
 
 // ---------------------------------------------------------------------------
 // Number formatters
@@ -27,7 +28,7 @@ function LoadingScreen() {
   return (
     <div className="flex items-center justify-center p-16">
       <span
-        className="text-xs uppercase tracking-[0.14em] text-ink-tertiary"
+        className="text-sm uppercase tracking-[0.14em] text-ink-tertiary"
         style={{ fontFamily: "var(--font-mono), monospace" }}
       >
         Cargando datos operativos…
@@ -46,7 +47,7 @@ interface SectionHeadingProps {
 
 function SectionHeading({ label }: SectionHeadingProps) {
   return (
-    <h2 className="mb-3 text-[10px] font-medium uppercase tracking-[0.14em] text-ink-tertiary">
+    <h2 className="mb-3 text-[12px] font-medium uppercase tracking-[0.14em] text-ink-tertiary">
       {label}
     </h2>
   );
@@ -84,15 +85,15 @@ export default function OverviewPage() {
     openOrders > 5 ? "CRITICAL" : openOrders > 0 ? "WARNING" : "OK";
 
   return (
-    <div className="mx-auto max-w-screen-xl px-4 py-6 sm:px-6">
+    <div className="mx-auto max-w-panel px-4 py-6 sm:px-6">
       {/* ── Page heading ───────────────────────────────────────────────── */}
       <div className="mb-6 flex items-baseline justify-between">
         <div>
-          <h1 className="text-xs font-medium uppercase tracking-[0.16em] text-ink-primary">
+          <h1 className="text-sm font-medium uppercase tracking-[0.16em] text-ink-primary">
             Panel de Operaciones
           </h1>
           <p
-            className="mt-0.5 text-[10px] text-ink-tertiary"
+            className="mt-0.5 text-[12px] text-ink-tertiary"
             style={{ fontFamily: "var(--font-mono), monospace" }}
           >
             {world.pipeline.name} · {world.pipeline.totalLengthKm} km · ∅
@@ -108,7 +109,7 @@ export default function OverviewPage() {
             <span className="relative inline-flex h-2 w-2 rounded-full bg-status-ok" />
           </span>
           <span
-            className="text-[10px] uppercase tracking-[0.12em] text-ink-tertiary"
+            className="text-[12px] uppercase tracking-[0.12em] text-ink-tertiary"
             style={{ fontFamily: "var(--font-mono), monospace" }}
           >
             En línea
@@ -172,7 +173,7 @@ export default function OverviewPage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {/* Pipeline summary panel */}
           <div className="border border-border-mid bg-surface-raised p-5">
-            <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.12em] text-ink-secondary">
+            <p className="mb-3 text-[12px] font-medium uppercase tracking-[0.12em] text-ink-secondary">
               Oleoducto
             </p>
             <dl className="space-y-2">
@@ -184,11 +185,11 @@ export default function OverviewPage() {
                 { label: "Segmentos", value: String(world.pipeline.segments.length) },
               ].map(({ label, value }) => (
                 <div key={label} className="flex items-baseline justify-between gap-4">
-                  <dt className="text-[10px] uppercase tracking-wide text-ink-tertiary shrink-0">
+                  <dt className="text-[12px] uppercase tracking-wide text-ink-tertiary shrink-0">
                     {label}
                   </dt>
                   <dd
-                    className="text-xs text-ink-primary truncate"
+                    className="text-sm text-ink-primary truncate"
                     style={{ fontFamily: "var(--font-mono), monospace" }}
                   >
                     {value}
@@ -200,7 +201,7 @@ export default function OverviewPage() {
 
           {/* Stations panel */}
           <div className="border border-border-mid bg-surface-raised p-5">
-            <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.12em] text-ink-secondary">
+            <p className="mb-3 text-[12px] font-medium uppercase tracking-[0.12em] text-ink-secondary">
               Estaciones
             </p>
             <ul className="space-y-2">
@@ -208,12 +209,12 @@ export default function OverviewPage() {
                 .sort((a, b) => a.km - b.km)
                 .map((station) => (
                   <li key={station.id} className="flex items-center justify-between gap-4">
-                    <span className="text-xs text-ink-primary truncate">{station.name}</span>
+                    <span className="text-sm text-ink-primary truncate">{station.name}</span>
                     <span
-                      className="text-[10px] text-ink-tertiary shrink-0 tabular-nums"
+                      className="text-[12px] text-ink-tertiary shrink-0 tabular-nums"
                       style={{ fontFamily: "var(--font-mono), monospace" }}
                     >
-                      pk {station.km.toFixed(1)}
+                      pk {formatPk(station.km)}
                     </span>
                   </li>
                 ))}
@@ -222,7 +223,7 @@ export default function OverviewPage() {
 
           {/* Work orders panel */}
           <div className="border border-border-mid bg-surface-raised p-5">
-            <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.12em] text-ink-secondary">
+            <p className="mb-3 text-[12px] font-medium uppercase tracking-[0.12em] text-ink-secondary">
               Órdenes de Trabajo
             </p>
             <dl className="space-y-2">
@@ -249,11 +250,11 @@ export default function OverviewPage() {
                 },
               ].map(({ label, value }) => (
                 <div key={label} className="flex items-baseline justify-between gap-4">
-                  <dt className="text-[10px] uppercase tracking-wide text-ink-tertiary shrink-0">
+                  <dt className="text-[12px] uppercase tracking-wide text-ink-tertiary shrink-0">
                     {label}
                   </dt>
                   <dd
-                    className="text-xs text-ink-primary tabular-nums"
+                    className="text-sm text-ink-primary tabular-nums"
                     style={{ fontFamily: "var(--font-mono), monospace" }}
                   >
                     {value}
@@ -270,7 +271,7 @@ export default function OverviewPage() {
                       : "bg-status-warning shadow-[0_0_6px_2px_var(--status-warning-bg)]"
                   }`}
                 />
-                <span className="text-[10px] uppercase tracking-widest text-ink-tertiary">
+                <span className="text-[12px] uppercase tracking-widest text-ink-tertiary">
                   {openOrderStatus === "OK" ? "Sin alertas" : `${openOrders} activas`}
                 </span>
               </span>

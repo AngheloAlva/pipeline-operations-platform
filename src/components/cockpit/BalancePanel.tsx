@@ -87,7 +87,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
       }}
     >
       <p
-        className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.12em]"
+        className="mb-1.5 text-[12px] font-medium uppercase tracking-[0.12em]"
         style={{ color: INK_TERTIARY }}
       >
         Hora {String(label).padStart(2, "0")}:00
@@ -135,31 +135,36 @@ export function BalancePanel({ movements }: BalancePanelProps) {
       {/* Panel header */}
       <header className="flex items-center justify-between">
         <h2
-          className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           Balance Horario
         </h2>
         <span
-          className="text-[10px] text-ink-muted"
+          className="text-[12px] text-ink-muted"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           m³ · UTC
         </span>
       </header>
 
-      {/* Chart — SR-009 req 1 */}
-      <div className="h-48 w-full">
+      {/* Chart — SR-009 req 1. flex-1 so it fills the panel height (the panel is
+          grid-stretched to the taller Context column); min height guards narrow/single-col. */}
+      <div className="relative min-h-48 w-full flex-1">
         {isEmpty ? (
           <div className="flex h-full items-center justify-center">
             <p
-              className="text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+              className="text-[12px] uppercase tracking-[0.12em] text-ink-muted"
               style={{ fontFamily: "'Geist Mono', monospace" }}
             >
               Sin datos de balance horario
             </p>
           </div>
         ) : (
+          // absolute inset-0 gives ResponsiveContainer a concrete-sized parent at
+          // first paint, avoiding the Recharts width/height(-1) warning that a bare
+          // flex-1 child triggers before the flex layout resolves.
+          <div className="absolute inset-0">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={hourlyData}
@@ -203,9 +208,10 @@ export function BalancePanel({ movements }: BalancePanelProps) {
               {/* SR-009 req 1: grouped bars for entradas / salidas / Δstock */}
               <Bar dataKey="entradas" name="Entradas" fill={COLORS.entradas} radius={0} />
               <Bar dataKey="salidas" name="Salidas" fill={COLORS.salidas} radius={0} />
-              <Bar dataKey="deltaStock" name="Δ Stock" fill={COLORS.delta} radius={0} />
+              <Bar dataKey="deltaStock" name="Stock" fill={COLORS.delta} radius={0} />
             </BarChart>
           </ResponsiveContainer>
+          </div>
         )}
       </div>
     </section>

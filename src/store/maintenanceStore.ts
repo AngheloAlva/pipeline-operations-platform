@@ -162,13 +162,12 @@ export const useMaintenanceStore = create<MaintenanceStore>((set, get) => ({
   transitionWorkOrder: (workOrders, id, newStatus) => {
     const { overrides } = get();
     const next = applyWorkOrderTransition(workOrders, id, newStatus, overrides);
-    // Detect whether the transition was applied: the override for `id` matches newStatus.
-    const wasApplied = next.workOrderStatuses[id] === newStatus;
-    if (wasApplied) {
-      set({ overrides: next });
-      return true;
-    }
-    return false;
+    // Detect whether the transition was applied via reference identity.
+    // applyWorkOrderTransition returns the same reference on illegal transitions
+    // (including self-transitions), so reference inequality is the correct signal.
+    const wasApplied = next !== overrides;
+    if (wasApplied) set({ overrides: next });
+    return wasApplied;
   },
 
   completeTask: (world, planId, taskId, now) => {

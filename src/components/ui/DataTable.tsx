@@ -66,6 +66,8 @@ export interface DataTableProps<T extends object> {
   caption?: string;
   /** Additional className for the table wrapper. */
   className?: string;
+  /** Optional row key extractor. When provided, used instead of rowIndex to key rows. */
+  getRowKey?: (row: T) => string;
 }
 
 // ---------------------------------------------------------------------------
@@ -143,6 +145,7 @@ export function DataTable<T extends object>({
   emptyLabel = "Sin resultados",
   caption,
   className,
+  getRowKey,
 }: DataTableProps<T>) {
   return (
     <div className={cn("overflow-x-auto", className)}>
@@ -218,10 +221,11 @@ export function DataTable<T extends object>({
             rows.map((row, rowIndex) => {
               const variant = rowVariant ? rowVariant(row) : ROW_VARIANT.DEFAULT;
               const { className: rowClass, style: rowStyle } = getRowStyle(variant);
+              const key: string | number = getRowKey ? getRowKey(row) : rowIndex;
 
               return (
                 <tr
-                  key={rowIndex}
+                  key={key}
                   role="row"
                   className={cn(
                     "border-b border-border-subtle transition-colors hover:bg-surface-interactive",

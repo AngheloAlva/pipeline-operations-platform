@@ -99,6 +99,7 @@ export function Tabs({ tabs, activeTab, onTabChange, className }: TabsProps) {
     <div
       role="tablist"
       aria-label="Navegación de secciones"
+      aria-orientation="horizontal"
       className={cn(
         "flex items-end border-b border-border-mid",
         className,

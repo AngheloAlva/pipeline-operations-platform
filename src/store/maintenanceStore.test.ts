@@ -355,6 +355,23 @@ describe("maintenanceStore", () => {
     expect(getStore().activeBoardFilter).toEqual({});
   });
 
+  // --- C-1 regression: self-transition must return false ---
+
+  it("C-1 regression: self-transition (IN_PROGRESS→IN_PROGRESS) returns false and does not re-set overrides", () => {
+    const wo = makeWorkOrder("WO-SELF", WorkOrderStatus.PLANNED);
+    const world = makeWorld([wo]);
+    // Legal first transition: PLANNED → IN_PROGRESS
+    const r1 = getStore().transitionWorkOrder(world.workOrders, "WO-SELF", WorkOrderStatus.IN_PROGRESS);
+    expect(r1).toBe(true);
+    // Capture overrides reference after first legal transition
+    const overridesAfterFirst = getStore().overrides;
+    // Now attempt illegal self-transition: IN_PROGRESS → IN_PROGRESS
+    const r2 = getStore().transitionWorkOrder(world.workOrders, "WO-SELF", WorkOrderStatus.IN_PROGRESS);
+    expect(r2).toBe(false);
+    // Overrides reference must not change
+    expect(getStore().overrides).toBe(overridesAfterFirst);
+  });
+
   // --- No cross-store imports (SR-205 §7) ---
 
   it("maintenanceStore module has no imports from simulationStore, worldStore, or selectionStore", async () => {

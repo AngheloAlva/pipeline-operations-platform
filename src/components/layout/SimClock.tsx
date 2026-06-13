@@ -72,7 +72,7 @@ export function SimClock() {
   return (
     <time
       dateTime={simulatedTime > 0 ? new Date(simulatedTime).toISOString() : undefined}
-      className="text-[11px] tabular-nums text-ink-secondary"
+      className="text-[13px] tabular-nums text-ink-secondary"
       style={{ fontFamily: "var(--font-mono), monospace" }}
       aria-label={`Tiempo simulado: ${display}`}
     >

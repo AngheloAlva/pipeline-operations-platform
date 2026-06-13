@@ -42,7 +42,7 @@ export function SimControls() {
     >
       {/* Panel label */}
       <span
-        className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+        className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
         style={monoStyle}
       >
         Simulación
@@ -58,7 +58,7 @@ export function SimControls() {
         aria-pressed={isRunning}
         aria-label={isRunning ? "Pausar simulación" : "Iniciar simulación"}
         className={cn(
-          "flex items-center gap-1.5 border px-3 py-1.5 text-[11px] font-medium uppercase tracking-widest transition-colors",
+          "flex items-center gap-1.5 border px-3 py-1.5 text-[13px] font-medium uppercase tracking-widest transition-colors",
           isRunning
             ? "border-status-warning bg-surface-interactive text-status-warning"
             : "border-status-flow bg-surface-interactive text-status-flow hover:bg-surface-overlay",
@@ -83,7 +83,7 @@ export function SimControls() {
         type="button"
         onClick={reset}
         aria-label="Restablecer simulación"
-        className="flex items-center gap-1.5 border border-border-mid px-3 py-1.5 text-[11px] font-medium uppercase tracking-widest text-ink-secondary transition-colors hover:border-border-strong hover:text-ink-primary"
+        className="flex items-center gap-1.5 border border-border-mid px-3 py-1.5 text-[13px] font-medium uppercase tracking-widest text-ink-secondary transition-colors hover:border-border-strong hover:text-ink-primary"
         style={monoStyle}
       >
         <ResetIcon />
@@ -96,7 +96,7 @@ export function SimControls() {
       {/* Speed selector */}
       <div className="flex items-center gap-1" role="group" aria-label="Velocidad de simulación">
         <span
-          className="mr-1 text-[9px] uppercase tracking-[0.12em] text-ink-muted"
+          className="mr-1 text-[11px] uppercase tracking-[0.12em] text-ink-muted"
           style={monoStyle}
         >
           Vel.
@@ -111,7 +111,7 @@ export function SimControls() {
               aria-pressed={isActive}
               aria-label={`Velocidad ${speed}×`}
               className={cn(
-                "min-w-[36px] border px-2 py-1 text-[11px] tabular-nums transition-colors",
+                "min-w-[36px] border px-2 py-1 text-[13px] tabular-nums transition-colors",
                 isActive
                   ? "border-accent bg-surface-interactive text-accent"
                   : "border-border-mid text-ink-secondary hover:border-border-strong hover:text-ink-primary",

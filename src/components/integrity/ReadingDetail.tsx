@@ -76,7 +76,7 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
       >
         <header className="border-b border-border-mid px-4 py-3">
           <h2
-            className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+            className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
             style={{ fontFamily: "var(--font-mono), monospace" }}
           >
             Historial de Potencial
@@ -84,7 +84,7 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
         </header>
         <div className="flex items-center justify-center" style={{ height: 220 }}>
           <p
-            className="text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+            className="text-[12px] uppercase tracking-[0.12em] text-ink-muted"
             style={{ fontFamily: "var(--font-mono), monospace" }}
           >
             Select a point on the map or table to view its history
@@ -106,13 +106,13 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
     >
       <header className="flex items-center justify-between border-b border-border-mid px-4 py-3">
         <h2
-          className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           Historial de Potencial
         </h2>
         <span
-          className="font-mono text-[10px] tabular-nums text-ink-secondary"
+          className="font-mono text-[12px] tabular-nums text-ink-secondary"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           Point: {selectedPointKey}

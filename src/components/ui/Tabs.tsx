@@ -123,7 +123,7 @@ export function Tabs({ tabs, activeTab, onTabChange, className }: TabsProps) {
             onKeyDown={(e) => handleKeyDown(e, i)}
             className={cn(
               // Flat buttons — no border-radius (SR-202 §9)
-              "px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.1em] transition-colors",
+              "px-4 py-2.5 text-[13px] font-medium uppercase tracking-[0.1em] transition-colors",
               // Active: bottom border accent + primary ink
               isActive
                 ? "border-b-2 border-status-flow text-ink-primary"

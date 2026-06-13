@@ -138,17 +138,29 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
     rectByStationKm[kmKey].push(eq);
   }
 
-  // Flatten rectifiers with offset applied
-  const rectifierMarkers: Array<{ eq: (typeof rectifiers)[number]; x: number; yLabel: number }> = [];
+  // Group rectifiers per station: diamond markers fan out ±8px, but the LABEL is
+  // rendered ONCE per group to avoid collisions. A "REC-xxxx" tag (~30px wide) at
+  // an 8px marker offset overlaps its neighbour, so multi-rectifier stations show
+  // a count badge (×N) instead of stacked tags; single rectifiers keep their tag.
+  const rectifierGroups: Array<{
+    markers: Array<{ eq: (typeof rectifiers)[number]; x: number }>;
+    labelX: number;
+    label: string;
+  }> = [];
   for (const [, group] of Object.entries(rectByStationKm)) {
     const stKm = stationKmById[group[0].stationId];
     const baseX = toX(stKm);
-    group.forEach((eq, i) => {
+    const markers = group.map((eq, i) => {
       // Offset: first at 0, then alternate ±8, ±16...
       const offsetIndex = Math.floor((i + 1) / 2);
       const sign = i % 2 === 0 ? -1 : 1;
       const offset = i === 0 ? 0 : sign * offsetIndex * 8;
-      rectifierMarkers.push({ eq, x: baseX + offset, yLabel: 20 });
+      return { eq, x: baseX + offset };
+    });
+    rectifierGroups.push({
+      markers,
+      labelX: baseX,
+      label: group.length === 1 ? group[0].tag : `×${group.length}`,
     });
   }
 
@@ -159,7 +171,7 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
     >
       <header className="mb-2 flex items-center justify-between">
         <h2
-          className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           Mapa de Integridad — Protección Catódica
@@ -221,29 +233,32 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
           );
         })}
 
-        {/* Rectifier markers — rotated square 8×8, label at y=20 */}
-        {rectifierMarkers.map(({ eq, x, yLabel }) => (
-          <g key={eq.id}>
-            {/* Rotated square (diamond) via transform="rotate(45, cx, cy)" */}
-            <rect
-              x={x - 4}
-              y={BASELINE_Y - 4}
-              width={8}
-              height={8}
-              fill={AMBER_SAFETY}
-              opacity={0.85}
-              transform={`rotate(45, ${x}, ${BASELINE_Y})`}
-            />
+        {/* Rectifier markers — rotated squares (diamonds) fan out per station;
+            one label per group (tag if single, ×N badge if clustered). */}
+        {rectifierGroups.map((g) => (
+          <g key={g.markers[0].eq.id}>
+            {g.markers.map(({ eq, x }) => (
+              <rect
+                key={eq.id}
+                x={x - 4}
+                y={BASELINE_Y - 4}
+                width={8}
+                height={8}
+                fill={AMBER_SAFETY}
+                opacity={0.85}
+                transform={`rotate(45, ${x}, ${BASELINE_Y})`}
+              />
+            ))}
             <text
-              x={x}
-              y={yLabel}
+              x={g.labelX}
+              y={20}
               textAnchor="middle"
               fontSize={7}
               fontFamily={CHART_FONT_MONO}
               fill={AMBER_SAFETY}
               opacity={0.9}
             >
-              {eq.tag}
+              {g.label}
             </text>
           </g>
         ))}

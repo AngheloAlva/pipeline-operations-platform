@@ -169,12 +169,28 @@
 }
 
 /* ---------------------------------------------------------------------------
+ * Layout — shared page content cap (single source of truth).
+ * The max width used by every top-level module container (cockpit, integrity,
+ * overview, header). Use `max-w-panel` in className; never hardcode the px.
+ * Defined via @utility (not a --container-* theme key) so the utility is
+ * generated reliably.
+ * --------------------------------------------------------------------------- */
+@utility max-w-panel {
+  max-width: 1600px;
+}
+
+/* ---------------------------------------------------------------------------
  * Pipe flow animation — used by FlowDiagram PipeEdge component.
  * Defined here (not inline) to avoid re-injecting the @keyframes rule on
  * every render cycle, which causes style churn at 60fps.
  * --------------------------------------------------------------------------- */
 @keyframes flow-dash {
   to { stroke-dashoffset: -100; }
+}
+
+@keyframes pulse-border {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
 }
 
 /* ---------------------------------------------------------------------------

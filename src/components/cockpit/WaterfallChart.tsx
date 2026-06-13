@@ -94,7 +94,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
       }}
     >
       <p
-        className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.12em]"
+        className="mb-1.5 text-[12px] font-medium uppercase tracking-[0.12em]"
         style={{ color: INK_TERTIARY }}
       >
         {label}
@@ -149,13 +149,13 @@ export function WaterfallChart({ inputs }: WaterfallChartProps) {
       {/* Panel header */}
       <header className="flex items-center justify-between">
         <h2
-          className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           Cumplimiento por Cargador
         </h2>
         <span
-          className="text-[10px] text-ink-muted"
+          className="text-[12px] text-ink-muted"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           Δreal − programa · m³
@@ -167,7 +167,7 @@ export function WaterfallChart({ inputs }: WaterfallChartProps) {
         {isEmpty ? (
           <div className="flex h-full items-center justify-center">
             <p
-              className="text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+              className="text-[12px] uppercase tracking-[0.12em] text-ink-muted"
               style={{ fontFamily: "var(--font-mono), monospace" }}
             >
               Sin datos de cargadores

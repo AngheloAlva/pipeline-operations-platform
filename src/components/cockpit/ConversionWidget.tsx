@@ -96,9 +96,9 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
     setError(null);
   }
 
-  const labelClass = "text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary";
+  const labelClass = "text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary";
   const inputClass =
-    "w-full border border-border-subtle bg-surface-overlay px-2 py-1.5 text-[11px] text-ink-primary tabular-nums focus:border-border-mid focus:outline-none";
+    "w-full border border-border-subtle bg-surface-overlay px-2 py-1.5 text-[13px] text-ink-primary tabular-nums focus:border-border-mid focus:outline-none";
   const monoStyle = { fontFamily: "var(--font-mono), monospace" };
 
   return (
@@ -111,15 +111,15 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
         <h2 className={labelClass} style={monoStyle}>
           Conversión Volumétrica
         </h2>
-        <p className="mt-0.5 text-[10px] text-ink-muted" style={monoStyle}>
+        <p className="mt-0.5 text-[12px] text-ink-muted" style={monoStyle}>
           Corrección lineal — α fijo 0.0007/°C
         </p>
         {selectedNodeId ? (
-          <p className="mt-0.5 text-[10px] text-ink-muted" style={monoStyle}>
+          <p className="mt-0.5 text-[12px] text-ink-muted" style={monoStyle}>
             Nodo: {selectedNodeId}
           </p>
         ) : (
-          <p className="mt-0.5 text-[10px] text-ink-muted" style={monoStyle}>
+          <p className="mt-0.5 text-[12px] text-ink-muted" style={monoStyle}>
             Seleccione un nodo en el diagrama
           </p>
         )}
@@ -166,7 +166,7 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
 
         {/* Error message */}
         {error && (
-          <p className="text-[10px] text-status-critical" style={monoStyle}>
+          <p className="text-[12px] text-status-critical" style={monoStyle}>
             {error}
           </p>
         )}
@@ -175,7 +175,7 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
         <div className="flex gap-2 pt-1">
           <button
             type="submit"
-            className="flex-1 border border-border-mid bg-surface-interactive px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-ink-secondary transition-colors hover:bg-surface-overlay hover:text-ink-primary"
+            className="flex-1 border border-border-mid bg-surface-interactive px-3 py-1.5 text-[12px] font-medium uppercase tracking-[0.12em] text-ink-secondary transition-colors hover:bg-surface-overlay hover:text-ink-primary"
             style={monoStyle}
           >
             Calcular
@@ -183,7 +183,7 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
           <button
             type="button"
             onClick={handleReset}
-            className="border border-border-subtle px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-ink-muted transition-colors hover:border-border-mid hover:text-ink-tertiary"
+            className="border border-border-subtle px-3 py-1.5 text-[12px] font-medium uppercase tracking-[0.12em] text-ink-muted transition-colors hover:border-border-mid hover:text-ink-tertiary"
             style={monoStyle}
           >
             Restablecer
@@ -200,7 +200,7 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
           <div className="flex flex-col gap-1.5">
             <div className="flex items-baseline justify-between">
               <span
-                className="text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+                className="text-[12px] uppercase tracking-[0.12em] text-ink-muted"
                 style={monoStyle}
               >
                 V@15°C
@@ -211,7 +211,7 @@ export function ConversionWidget({ selectedNodeId }: ConversionWidgetProps) {
             </div>
             <div className="flex items-baseline justify-between">
               <span
-                className="text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+                className="text-[12px] uppercase tracking-[0.12em] text-ink-muted"
                 style={monoStyle}
               >
                 V@60°F

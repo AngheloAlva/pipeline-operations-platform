@@ -31,7 +31,7 @@ function PanelLamp({ level }: PanelLampProps) {
         aria-hidden="true"
       />
       {/* Level label — uppercase, wide tracking, tertiary ink */}
-      <span className="text-[10px] font-medium uppercase tracking-widest text-ink-tertiary">
+      <span className="text-[12px] font-medium uppercase tracking-widest text-ink-tertiary">
         {LAMP_LABEL[level]}
       </span>
     </span>
@@ -73,13 +73,13 @@ export function KpiCard({ label, value, secondary, status, className }: KpiCardP
       style={{ borderLeftColor: "var(--border-strong)" }}
     >
       {/* Label — uppercase, wide tracking, secondary ink */}
-      <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-secondary">
+      <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-secondary">
         {label}
       </p>
 
       {/* Value — large mono readout, tabular numbers */}
       <p
-        className="font-mono text-2xl font-medium leading-none text-ink-primary tabular-nums"
+        className="font-mono text-3xl font-medium leading-none text-ink-primary tabular-nums"
         style={{ fontFamily: "var(--font-mono), monospace" }}
       >
         {value}
@@ -88,7 +88,7 @@ export function KpiCard({ label, value, secondary, status, className }: KpiCardP
       {/* Secondary line — metadata */}
       {secondary && (
         <p
-          className="text-xs text-ink-tertiary"
+          className="text-sm text-ink-tertiary"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           {secondary}

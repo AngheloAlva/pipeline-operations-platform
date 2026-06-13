@@ -203,10 +203,10 @@ function TreeNode({
         )}
       >
         {Chevron}
-        <span className="flex-1 truncate text-[12px] font-medium tracking-[0.03em]">
+        <span className="flex-1 truncate text-[14px] font-medium tracking-[0.03em]">
           {label}
         </span>
-        <StatusBadge variant={statusVariant} className="ml-auto text-[9px]" />
+        <StatusBadge variant={statusVariant} className="ml-auto text-[11px]" />
       </div>
       {children}
     </div>

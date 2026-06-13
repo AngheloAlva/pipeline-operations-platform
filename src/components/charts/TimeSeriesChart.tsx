@@ -111,7 +111,7 @@ export function TimeSeriesChart({
           style={{ height }}
         >
           <p
-            className="text-[10px] uppercase tracking-[0.12em] text-ink-muted"
+            className="text-[12px] uppercase tracking-[0.12em] text-ink-muted"
             style={{ fontFamily: CHART_FONT_MONO }}
           >
             {emptyLabel}

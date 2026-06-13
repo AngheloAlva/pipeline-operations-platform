@@ -103,7 +103,7 @@ function TaskDot({ bucket, onClickTask }: TaskDotProps) {
       title={title}
       className={cn(
         "flex w-full items-center gap-1 px-0.5 py-0.5 text-left",
-        "text-[9px] leading-tight text-ink-primary",
+        "text-[11px] leading-tight text-ink-primary",
         canClick && "cursor-pointer hover:bg-surface-interactive",
         !canClick && "cursor-default",
       )}
@@ -191,13 +191,13 @@ export function MaintenanceCalendar({ world, now }: MaintenanceCalendarProps) {
           type="button"
           onClick={prevMonth}
           aria-label="Mes anterior"
-          className="px-2 py-1 text-[11px] uppercase tracking-[0.1em] text-ink-secondary hover:text-ink-primary focus:outline-none"
+          className="px-2 py-1 text-[13px] uppercase tracking-[0.1em] text-ink-secondary hover:text-ink-primary focus:outline-none"
         >
           ‹ Prev
         </button>
 
         <h2
-          className="text-[11px] font-medium uppercase tracking-[0.12em] text-ink-primary"
+          className="text-[13px] font-medium uppercase tracking-[0.12em] text-ink-primary"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           {monthLabel}
@@ -207,7 +207,7 @@ export function MaintenanceCalendar({ world, now }: MaintenanceCalendarProps) {
           type="button"
           onClick={nextMonth}
           aria-label="Mes siguiente"
-          className="px-2 py-1 text-[11px] uppercase tracking-[0.1em] text-ink-secondary hover:text-ink-primary focus:outline-none"
+          className="px-2 py-1 text-[13px] uppercase tracking-[0.1em] text-ink-secondary hover:text-ink-primary focus:outline-none"
         >
           Sig ›
         </button>
@@ -218,7 +218,7 @@ export function MaintenanceCalendar({ world, now }: MaintenanceCalendarProps) {
         {DAY_HEADERS.map((d) => (
           <div
             key={d}
-            className="px-1 py-1.5 text-center text-[10px] font-medium uppercase tracking-[0.12em] text-ink-muted"
+            className="px-1 py-1.5 text-center text-[12px] font-medium uppercase tracking-[0.12em] text-ink-muted"
           >
             {d}
           </div>
@@ -243,7 +243,7 @@ export function MaintenanceCalendar({ world, now }: MaintenanceCalendarProps) {
                   {cell.day !== null && (
                     <>
                       <div
-                        className="mb-1 text-right text-[10px] font-medium tabular-nums text-ink-tertiary"
+                        className="mb-1 text-right text-[12px] font-medium tabular-nums text-ink-tertiary"
                         style={{ fontFamily: "var(--font-mono), monospace" }}
                       >
                         {cell.day}

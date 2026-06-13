@@ -128,7 +128,7 @@ export function StatusBadge({ variant, label, className }: StatusBadgeProps) {
         aria-hidden="true"
       />
       {/* Text label — uppercase, 10px, letter-spacing (SR-201 §5) */}
-      <span className="text-[10px] font-medium uppercase leading-none tracking-[0.1em]">
+      <span className="text-[12px] font-medium uppercase leading-none tracking-[0.1em]">
         {displayLabel}
       </span>
     </span>

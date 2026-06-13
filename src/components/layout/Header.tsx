@@ -36,11 +36,11 @@ interface HeaderProps {
 export function Header({ children }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-border-mid bg-surface-raised">
-      <div className="mx-auto flex h-12 max-w-screen-xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-12 max-w-panel items-center justify-between px-4 sm:px-6">
         {/* System identity — pipeline icon + name, left-anchored */}
         <Link
           href="/"
-          className="flex items-center gap-2.5 text-xs font-medium uppercase tracking-widest text-ink-primary"
+          className="flex items-center gap-2.5 text-sm font-medium uppercase tracking-widest text-ink-primary"
         >
           {/* Pipe cross-section icon — simplified pipeline schematic */}
           <svg

@@ -52,7 +52,7 @@ const COLUMNS: DataTableColumn<MaintenanceBoardRow>[] = [
     key: "equipmentTag",
     label: "Equipo",
     render: (row) => (
-      <span className="font-mono tabular-nums text-[12px]">
+      <span className="font-mono tabular-nums text-[14px]">
         <span className="text-ink-primary">{row.equipmentTag}</span>
         <span className="text-ink-muted"> — {row.equipmentName}</span>
       </span>
@@ -62,14 +62,14 @@ const COLUMNS: DataTableColumn<MaintenanceBoardRow>[] = [
     key: "stationName",
     label: "Estación",
     render: (row) => (
-      <span className="text-[12px] text-ink-secondary">{row.stationName}</span>
+      <span className="text-[14px] text-ink-secondary">{row.stationName}</span>
     ),
   },
   {
     key: "taskName",
     label: "Tarea",
     render: (row) => (
-      <span className="text-[12px] text-ink-primary">{row.taskName}</span>
+      <span className="text-[14px] text-ink-primary">{row.taskName}</span>
     ),
   },
   {
@@ -90,7 +90,7 @@ const COLUMNS: DataTableColumn<MaintenanceBoardRow>[] = [
     key: "frequency",
     label: "Frecuencia",
     render: (row) => (
-      <span className="text-[11px] text-ink-secondary">
+      <span className="text-[13px] text-ink-secondary">
         {FREQUENCY_LABELS[row.frequency as string] ?? row.frequency}
       </span>
     ),
@@ -100,7 +100,7 @@ const COLUMNS: DataTableColumn<MaintenanceBoardRow>[] = [
     label: "Criticidad",
     sortable: true,
     render: (row) => (
-      <span className="text-[11px] text-ink-secondary">
+      <span className="text-[13px] text-ink-secondary">
         {CRITICALITY_LABELS[row.criticality as string] ?? row.criticality}
       </span>
     ),
@@ -111,7 +111,7 @@ const COLUMNS: DataTableColumn<MaintenanceBoardRow>[] = [
     sortable: true,
     render: (row) => (
       <span
-        className="font-mono text-[12px] tabular-nums text-ink-primary"
+        className="font-mono text-[14px] tabular-nums text-ink-primary"
         style={{ fontFamily: "var(--font-mono), monospace" }}
       >
         {row.operatingHours.toLocaleString("es-AR")}
@@ -123,7 +123,7 @@ const COLUMNS: DataTableColumn<MaintenanceBoardRow>[] = [
     label: "Próxima Fecha",
     render: (row) => (
       <span
-        className="font-mono text-[11px] tabular-nums text-ink-secondary"
+        className="font-mono text-[13px] tabular-nums text-ink-secondary"
         style={{ fontFamily: "var(--font-mono), monospace" }}
       >
         {row.nextDueDate || "—"}
@@ -342,7 +342,7 @@ export function MaintenanceBoard({ world, now }: MaintenanceBoardProps) {
               onClick={() => toggleStatusChip(status)}
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full px-3 py-1",
-                "text-[10px] font-medium uppercase tracking-[0.1em] transition-opacity",
+                "text-[12px] font-medium uppercase tracking-[0.1em] transition-opacity",
                 "border",
                 activeStatuses.includes(status)
                   ? "opacity-100 border-transparent"
@@ -362,7 +362,7 @@ export function MaintenanceBoard({ world, now }: MaintenanceBoardProps) {
             placeholder="Buscar equipo…"
             className={cn(
               "ml-auto w-48 border border-border-mid bg-surface-base px-3 py-1.5",
-              "text-[12px] text-ink-primary placeholder:text-ink-muted",
+              "text-[14px] text-ink-primary placeholder:text-ink-muted",
               "focus:border-accent focus:outline-none",
             )}
           />
@@ -372,7 +372,7 @@ export function MaintenanceBoard({ world, now }: MaintenanceBoardProps) {
             <button
               type="button"
               onClick={resetFilter}
-              className="text-[10px] uppercase tracking-[0.1em] text-ink-muted hover:text-ink-primary"
+              className="text-[12px] uppercase tracking-[0.1em] text-ink-muted hover:text-ink-primary"
             >
               Limpiar
             </button>

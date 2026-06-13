@@ -229,7 +229,7 @@ export function WorkOrderList({ world }: WorkOrderListProps) {
           <button
             type="button"
             onClick={() => setActiveStatusFilters([])}
-            className="text-[10px] uppercase tracking-[0.1em] text-ink-muted hover:text-ink-primary"
+            className="text-[12px] uppercase tracking-[0.1em] text-ink-muted hover:text-ink-primary"
           >
             Todos
           </button>
@@ -266,15 +266,15 @@ export function WorkOrderList({ world }: WorkOrderListProps) {
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div className="flex flex-col gap-1">
                   <span
-                    className="font-mono text-[11px] font-medium tracking-[0.08em] text-ink-muted tabular-nums"
+                    className="font-mono text-[13px] font-medium tracking-[0.08em] text-ink-muted tabular-nums"
                     style={{ fontFamily: "var(--font-mono), monospace" }}
                   >
                     {wo.otNumber}
                   </span>
-                  <span className="text-[13px] font-medium text-ink-primary">
+                  <span className="text-[15px] font-medium text-ink-primary">
                     {wo.description}
                   </span>
-                  <span className="text-[11px] text-ink-secondary">
+                  <span className="text-[13px] text-ink-secondary">
                     {TYPE_LABELS[wo.type] ?? wo.type}
                   </span>
                 </div>
@@ -308,7 +308,7 @@ export function WorkOrderList({ world }: WorkOrderListProps) {
                   />
                 </div>
                 <span
-                  className="w-10 text-right font-mono text-[11px] tabular-nums text-ink-tertiary"
+                  className="w-10 text-right font-mono text-[13px] tabular-nums text-ink-tertiary"
                   style={{ fontFamily: "var(--font-mono), monospace" }}
                 >
                   {displayProgress}%
@@ -325,7 +325,7 @@ export function WorkOrderList({ world }: WorkOrderListProps) {
                       onClick={() => handleTransition(wo, t.to)}
                       className={cn(
                         "border border-border-mid bg-surface-base px-3 py-1",
-                        "text-[10px] font-medium uppercase tracking-[0.1em] text-ink-secondary",
+                        "text-[12px] font-medium uppercase tracking-[0.1em] text-ink-secondary",
                         "hover:border-border-strong hover:text-ink-primary",
                         "focus:outline-none focus:ring-1 focus:ring-accent",
                         "transition-colors",

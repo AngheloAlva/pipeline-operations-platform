@@ -114,12 +114,12 @@ function getRowStyle(variant: RowVariant): RowStyle {
 
 function SortIcon({ dir }: { dir?: SortDir }) {
   if (dir === SORT_DIR.ASC) {
-    return <span aria-hidden="true" className="ml-1 text-[10px] text-accent">↑</span>;
+    return <span aria-hidden="true" className="ml-1 text-[12px] text-accent">↑</span>;
   }
   if (dir === SORT_DIR.DESC) {
-    return <span aria-hidden="true" className="ml-1 text-[10px] text-accent">↓</span>;
+    return <span aria-hidden="true" className="ml-1 text-[12px] text-accent">↓</span>;
   }
-  return <span aria-hidden="true" className="ml-1 text-[10px] text-ink-muted">↕</span>;
+  return <span aria-hidden="true" className="ml-1 text-[12px] text-ink-muted">↕</span>;
 }
 
 // ---------------------------------------------------------------------------
@@ -190,7 +190,7 @@ export function DataTable<T extends object>({
                   scope="col"
                   aria-sort={ariaSortValue}
                   className={cn(
-                    "px-3 py-2.5 text-left text-[10px] font-medium uppercase tracking-[0.12em] text-ink-secondary",
+                    "px-3 py-2.5 text-left text-[12px] font-medium uppercase tracking-[0.12em] text-ink-secondary",
                     "border-b border-border-mid bg-surface-raised",
                   )}
                 >

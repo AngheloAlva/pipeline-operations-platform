@@ -36,7 +36,7 @@ export default function MaintenanceLayout({ children }: MaintenanceLayoutProps) 
         aria-label="Panel de equipos"
       >
         <div className="border-b border-border-mid px-4 py-2">
-          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-secondary">
+          <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-secondary">
             Equipos
           </p>
         </div>

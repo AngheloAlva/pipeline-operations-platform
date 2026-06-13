@@ -34,7 +34,7 @@ export default function CockpitLayout({ children }: CockpitLayoutProps) {
     <>
       {/* Cockpit instrument sub-header — cockpit-specific toolbar with SimClock */}
       <div className="border-b border-border-subtle bg-surface-raised px-4 py-1.5 sm:px-6">
-        <div className="mx-auto flex max-w-screen-xl items-center justify-end">
+        <div className="mx-auto flex max-w-panel items-center justify-end">
           <SimClock />
         </div>
       </div>

@@ -54,7 +54,7 @@ export default function MaintenancePage() {
     return (
       <div className="flex items-center justify-center py-32">
         <span
-          className="text-[11px] uppercase tracking-[0.12em] text-ink-muted"
+          className="text-[13px] uppercase tracking-[0.12em] text-ink-muted"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           Cargando datos…

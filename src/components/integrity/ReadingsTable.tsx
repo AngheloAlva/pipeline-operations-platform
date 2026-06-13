@@ -173,7 +173,7 @@ export function ReadingsTable({ world }: ReadingsTableProps) {
     <section className="flex flex-col border border-border-mid bg-surface-raised">
       <header className="border-b border-border-mid px-4 py-3">
         <h2
-          className="text-[10px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
           Lecturas Catódicas

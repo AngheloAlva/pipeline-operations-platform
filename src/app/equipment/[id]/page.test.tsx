@@ -82,7 +82,7 @@ describe("EquipmentPage render tests — hooks-order regression (CRITICAL #1)", 
     setParams(validId);
     // world is null (pre-hydration); must NOT throw a hooks-count error
     expect(() => render(<EquipmentPage />)).not.toThrow();
-    expect(screen.queryByText(/Loading pipeline data/i)).toBeTruthy();
+    expect(screen.queryByText(/Cargando datos del sistema/i)).toBeTruthy();
   });
 
   it("does NOT crash when world transitions null → hydrated across re-renders", async () => {
@@ -90,7 +90,7 @@ describe("EquipmentPage render tests — hooks-order regression (CRITICAL #1)", 
 
     // First render: null world (loading state)
     const { rerender } = render(<EquipmentPage />);
-    expect(screen.queryByText(/Loading pipeline data/i)).toBeTruthy();
+    expect(screen.queryByText(/Cargando datos del sistema/i)).toBeTruthy();
 
     // Hydrate the store — simulates Zustand picking up the bundled seed
     await act(async () => {

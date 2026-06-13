@@ -82,7 +82,7 @@ describe("EquipmentPage render tests — hooks-order regression (CRITICAL #1)", 
     setParams(validId);
     // world is null (pre-hydration); must NOT throw a hooks-count error
     expect(() => render(<EquipmentPage />)).not.toThrow();
-    expect(screen.queryByText(/Loading pipeline data/i)).toBeTruthy();
+    expect(screen.queryByText(/Cargando datos del sistema/i)).toBeTruthy();
   });
 
   it("does NOT crash when world transitions null → hydrated across re-renders", async () => {
@@ -90,7 +90,7 @@ describe("EquipmentPage render tests — hooks-order regression (CRITICAL #1)", 
 
     // First render: null world (loading state)
     const { rerender } = render(<EquipmentPage />);
-    expect(screen.queryByText(/Loading pipeline data/i)).toBeTruthy();
+    expect(screen.queryByText(/Cargando datos del sistema/i)).toBeTruthy();
 
     // Hydrate the store — simulates Zustand picking up the bundled seed
     await act(async () => {
@@ -111,9 +111,9 @@ describe("EquipmentPage render tests — hooks-order regression (CRITICAL #1)", 
     render(<EquipmentPage />);
 
     // The three mandatory section headers per spec F4-2-R4/R5
-    expect(screen.getByText("Maintenance")).toBeTruthy();
-    expect(screen.getByText("Station Flow")).toBeTruthy();
-    expect(screen.getByText("Station Integrity")).toBeTruthy();
+    expect(screen.getByText("Mantención")).toBeTruthy();
+    expect(screen.getByText("Flujo de la estación")).toBeTruthy();
+    expect(screen.getByText("Integridad de la estación")).toBeTruthy();
   });
 
   it("calls notFound() for an unknown equipment id", async () => {

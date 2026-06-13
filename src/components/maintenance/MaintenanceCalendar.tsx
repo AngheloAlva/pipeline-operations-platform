@@ -183,6 +183,8 @@ export function MaintenanceCalendar({ world, now }: MaintenanceCalendarProps) {
     weeks.push(gridCells.slice(i, i + 7));
   }
 
+  const hasNoBuckets = buckets.length === 0;
+
   return (
     <div className="flex flex-col">
       {/* Month navigation header */}
@@ -265,6 +267,18 @@ export function MaintenanceCalendar({ world, now }: MaintenanceCalendarProps) {
           </div>
         ))}
       </div>
+
+      {/* Empty state — shown when no tasks exist for the visible month */}
+      {hasNoBuckets && (
+        <div className="flex items-center justify-center py-6 border-t border-border-subtle">
+          <p
+            className="text-[12px] uppercase tracking-[0.1em] text-ink-muted"
+            style={{ fontFamily: "var(--font-mono), monospace" }}
+          >
+            Sin tareas en este período.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

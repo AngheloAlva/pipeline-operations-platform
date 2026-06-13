@@ -66,13 +66,13 @@ const TimeSeriesChart = dynamic(
 // ============================================================================
 
 const INTEGRITY_THRESHOLDS: ThresholdLine[] = [
-  { value: CATHODIC_OK, label: `Protected (${CATHODIC_OK}V)`, color: STATUS_OK },
+  { value: CATHODIC_OK, label: `Protegido (${CATHODIC_OK}V)`, color: STATUS_OK },
   { value: CATHODIC_WARN, label: `Marginal (${CATHODIC_WARN}V)`, color: STATUS_WARNING },
 ];
 
 const TASK_STATUS_LABELS: Record<string, string> = {
-  OVERDUE: "Overdue",
-  UPCOMING: "Upcoming",
+  OVERDUE: "Vencida",
+  UPCOMING: "Próxima",
   OK: "OK",
 };
 
@@ -141,7 +141,7 @@ function EquipmentHeader({ tag, name, type, criticality, stationName }: {
           className="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-muted"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
-          Equipment Detail
+          Detalle de equipo
         </p>
         <h1
           className="text-[22px] font-medium tracking-tight text-ink-primary"
@@ -264,7 +264,7 @@ function EquipmentPageBody() {
           className="text-[13px] uppercase tracking-[0.12em] text-ink-muted"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
-          Loading pipeline data…
+          Cargando datos del sistema…
         </span>
       </div>
     );
@@ -301,8 +301,8 @@ function EquipmentPageBody() {
           Section 1: Maintenance (F4-2-R4, R8)
           ================================================================ */}
       <SectionPanel
-        title="Maintenance"
-        subtitle={`Equipment ${equipment.tag} · ${equipmentBoardRows.length} task(s) · ${equipmentWorkOrders.length} work order(s)`}
+        title="Mantención"
+        subtitle={`Equipo ${equipment.tag} · ${equipmentBoardRows.length} tarea(s) · ${equipmentWorkOrders.length} orden(es) de trabajo`}
       >
         {/* Maintenance tasks table */}
         {equipmentBoardRows.length === 0 ? (
@@ -310,13 +310,13 @@ function EquipmentPageBody() {
             className="text-[13px] text-ink-muted py-4 text-center"
             style={{ fontFamily: "var(--font-mono), monospace" }}
           >
-            No maintenance tasks found for this equipment.
+            Sin tareas de mantenimiento para este equipo.
           </p>
         ) : (
           <div className="flex flex-col gap-1">
             {/* Column headers */}
             <div className="grid grid-cols-[1fr_120px_140px_100px] gap-3 border-b border-border-subtle pb-2">
-              {["Task", "Status", "Next Due", "Frequency"].map((h) => (
+              {["Tarea", "Estado", "Próximo vencimiento", "Frecuencia"].map((h) => (
                 <span
                   key={h}
                   className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink-muted"
@@ -352,13 +352,20 @@ function EquipmentPageBody() {
         )}
 
         {/* Work orders */}
-        {equipmentWorkOrders.length > 0 && (
+        {equipmentWorkOrders.length === 0 ? (
+          <p
+            className="text-[12px] text-ink-muted py-2"
+            style={{ fontFamily: "var(--font-mono), monospace" }}
+          >
+            Sin órdenes de trabajo para este equipo.
+          </p>
+        ) : (
           <div className="mt-2 flex flex-col gap-2">
             <p
               className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink-secondary"
               style={{ fontFamily: "var(--font-mono), monospace" }}
             >
-              Work Orders ({equipmentWorkOrders.length})
+              Órdenes de trabajo ({equipmentWorkOrders.length})
             </p>
             <div className="flex flex-col gap-1">
               {equipmentWorkOrders.map((wo) => (
@@ -384,18 +391,18 @@ function EquipmentPageBody() {
 
       {/* ================================================================
           Section 2: Station Flow — Cockpit context (F4-2-R4 section 2)
-          Header MUST read "Station Flow" — station context, NOT equipment flow.
+          Header MUST read "Flujo de la estación" — station context, NOT equipment flow.
           ================================================================ */}
       <SectionPanel
-        title="Station Flow"
-        subtitle={`Station context · ${stationName} · ${stationTanks.length} tank(s)`}
+        title="Flujo de la estación"
+        subtitle={`Contexto de estación · ${stationName} · ${stationTanks.length} tanque(s)`}
       >
         {stationTanks.length === 0 ? (
           <p
             className="text-[13px] text-ink-muted py-4 text-center"
             style={{ fontFamily: "var(--font-mono), monospace" }}
           >
-            No tanks found for station {stationName}.
+            Sin tanques para la estación {stationName}.
           </p>
         ) : (
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -421,8 +428,8 @@ function EquipmentPageBody() {
           MUST NOT render KPI zeros as if real data.
           ================================================================ */}
       <SectionPanel
-        title="Station Integrity"
-        subtitle={`Station context · ${stationName}`}
+        title="Integridad de la estación"
+        subtitle={`Contexto de estación · ${stationName}`}
       >
         {!hasIntegrityReadings ? (
           /* F4-2-R5: explicit empty-state — REQUIRED when no readings exist */
@@ -431,10 +438,10 @@ function EquipmentPageBody() {
               className="text-[13px] font-medium uppercase tracking-[0.1em] text-ink-muted"
               style={{ fontFamily: "var(--font-mono), monospace" }}
             >
-              No cathodic readings for this station
+              Sin lecturas catódicas para esta estación
             </p>
             <p className="text-[12px] text-ink-tertiary text-center max-w-xs">
-              Station {stationName} has no cathodic protection readings in the current dataset.
+              La estación {stationName} no tiene lecturas de protección catódica en el conjunto de datos actual.
             </p>
           </div>
         ) : (
@@ -444,7 +451,7 @@ function EquipmentPageBody() {
             <div className="grid grid-cols-3 gap-3">
               <div className="flex" style={{ borderLeft: "2px solid var(--status-ok)" }}>
                 <KpiCard
-                  label="Protected"
+                  label="Protegidos"
                   value={String(integrityKpis.ok)}
                   secondary="OK ≤ −0.85 V"
                   className="flex-1"
@@ -452,17 +459,17 @@ function EquipmentPageBody() {
               </div>
               <div className="flex" style={{ borderLeft: "2px solid var(--amber-safety)" }}>
                 <KpiCard
-                  label="Marginal"
+                  label="Marginales"
                   value={String(integrityKpis.warning)}
-                  secondary="WARNING"
+                  secondary="ADVERTENCIA"
                   className="flex-1"
                 />
               </div>
               <div className="flex" style={{ borderLeft: "2px solid var(--alarm-red)" }}>
                 <KpiCard
-                  label="Unprotected"
+                  label="Sin protección"
                   value={String(integrityKpis.critical)}
-                  secondary="CRITICAL > −0.75 V"
+                  secondary="CRÍTICO > −0.75 V"
                   className="flex-1"
                 />
               </div>
@@ -473,7 +480,7 @@ function EquipmentPageBody() {
               className="text-[12px] text-ink-muted"
               style={{ fontFamily: "var(--font-mono), monospace" }}
             >
-              {integrityRows.length} unique cathodic point(s) at station {stationName}
+              {integrityRows.length} punto(s) catódico(s) únicos en la estación {stationName}
             </p>
 
             {/* Time series chart for the first cathodic point */}
@@ -483,7 +490,7 @@ function EquipmentPageBody() {
                   className="mb-2 text-[11px] uppercase tracking-[0.1em] text-ink-muted"
                   style={{ fontFamily: "var(--font-mono), monospace" }}
                 >
-                  Point {firstRowKey} — potential history
+                  Punto {firstRowKey} — historial de potencial
                 </p>
                 <TimeSeriesChart
                   series={integrityChartSeries}
@@ -496,7 +503,7 @@ function EquipmentPageBody() {
             {/* Readings table — all points for this station */}
             <div className="flex flex-col gap-1">
               <div className="grid grid-cols-[80px_1fr_120px_80px] gap-3 border-b border-border-subtle pb-2">
-                {["km", "Point", "Latest (V)", "Level"].map((h) => (
+                {["km", "Punto", "Último (V)", "Nivel"].map((h) => (
                   <span
                     key={h}
                     className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink-muted"

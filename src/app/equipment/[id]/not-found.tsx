@@ -20,13 +20,13 @@ export default function EquipmentNotFound() {
         className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-muted"
         style={{ fontFamily: "var(--font-mono), monospace" }}
       >
-        404 — Equipment not found
+        404 — Equipo no encontrado
       </p>
 
       {/* Human-readable message */}
       <p className="text-[15px] text-ink-secondary text-center max-w-sm">
-        The equipment ID you requested could not be found in the pipeline world.
-        It may not exist or the ID format may be incorrect.
+        El ID de equipo solicitado no existe en el sistema.
+        Puede que no exista o que el formato del ID sea incorrecto.
       </p>
 
       {/* Back navigation */}
@@ -35,7 +35,7 @@ export default function EquipmentNotFound() {
         className="text-[13px] font-medium uppercase tracking-[0.1em] text-ink-secondary border border-border-mid px-4 py-2 hover:bg-surface-raised transition-colors"
         style={{ fontFamily: "var(--font-mono), monospace" }}
       >
-        Back to Maintenance
+        Volver a Mantención
       </Link>
     </div>
   );

@@ -155,7 +155,7 @@ export function BalancePanel({ movements }: BalancePanelProps) {
           <div className="flex h-full items-center justify-center">
             <p
               className="text-[12px] uppercase tracking-[0.12em] text-ink-muted"
-              style={{ fontFamily: "'Geist Mono', monospace" }}
+              style={{ fontFamily: "var(--font-mono), monospace" }}
             >
               Sin datos de balance horario
             </p>

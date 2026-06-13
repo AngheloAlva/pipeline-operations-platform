@@ -69,6 +69,8 @@ export interface DataTableProps<T extends object> {
   isRowSelected?: (row: T) => boolean;
   /** Empty state label. Defaults to "Sin resultados". */
   emptyLabel?: string;
+  /** Optional secondary hint shown below the empty label. */
+  emptyHint?: string;
   /** Screen-reader caption for the table. */
   caption?: string;
   /** Additional className for the table wrapper. */
@@ -152,6 +154,7 @@ export function DataTable<T extends object>({
   onRowClick,
   isRowSelected,
   emptyLabel = "Sin resultados",
+  emptyHint,
   caption,
   className,
   getRowKey,
@@ -221,9 +224,15 @@ export function DataTable<T extends object>({
               <td
                 role="cell"
                 colSpan={columns.length}
-                className="px-3 py-4 text-center text-sm text-ink-muted"
+                className="px-3 py-6 text-center"
               >
-                {emptyLabel}
+                <div className="flex flex-col items-center gap-1.5">
+                  <span aria-hidden="true" className="text-[18px] text-ink-muted opacity-50">○</span>
+                  <span className="text-[12px] uppercase tracking-[0.1em] text-ink-muted">{emptyLabel}</span>
+                  {emptyHint && (
+                    <span className="text-[11px] text-ink-tertiary">{emptyHint}</span>
+                  )}
+                </div>
               </td>
             </tr>
           ) : (

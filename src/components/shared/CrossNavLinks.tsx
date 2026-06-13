@@ -42,10 +42,10 @@ export interface CrossNavLinksProps {
 // ============================================================================
 
 const MODULE_LABELS: Record<CrossNavModule, string> = {
-  cockpit: "View in Cockpit",
-  maintenance: "View in Maintenance",
-  integrity: "View in Integrity",
-  equipment: "View Equipment Detail",
+  cockpit: "Ver en Cockpit",
+  maintenance: "Ver en Mantención",
+  integrity: "Ver en Integridad",
+  equipment: "Ver detalle de equipo",
 };
 
 const DIRECT_MODULES: CrossNavModule[] = ["cockpit", "maintenance", "integrity"];

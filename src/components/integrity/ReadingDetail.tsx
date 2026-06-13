@@ -89,7 +89,7 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
             className="text-[12px] uppercase tracking-[0.12em] text-ink-muted"
             style={{ fontFamily: "var(--font-mono), monospace" }}
           >
-            Select a point on the map or table to view its history
+            Seleccione un punto en el mapa o la tabla para ver su historial
           </p>
         </div>
       </section>
@@ -132,7 +132,7 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
           className="font-mono text-[12px] tabular-nums text-ink-secondary"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
-          Point: {selectedPointKey}
+          Punto: {selectedPointKey}
         </span>
       </header>
 
@@ -141,7 +141,7 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
           series={series}
           thresholds={INTEGRITY_THRESHOLDS}
           height={220}
-          emptyLabel="No readings for this point"
+          emptyLabel="Sin lecturas para este punto"
         />
       </div>
 

@@ -64,7 +64,7 @@ const COLUMNS: DataTableColumn<ReadingTableRow>[] = [
   },
   {
     key: "latestPotentialV",
-    label: "Potential (V)",
+    label: "Potencial (V)",
     sortable: true,
     render: (row) => (
       <span
@@ -77,7 +77,7 @@ const COLUMNS: DataTableColumn<ReadingTableRow>[] = [
   },
   {
     key: "level",
-    label: "Level",
+    label: "Nivel",
     sortable: false,
     render: (row) => (
       <StatusBadge variant={LEVEL_BADGE[row.level as AlertLevel] ?? "warning"} />
@@ -85,19 +85,19 @@ const COLUMNS: DataTableColumn<ReadingTableRow>[] = [
   },
   {
     key: "sparkleSeries",
-    label: "Trend",
+    label: "Tendencia",
     sortable: false,
     render: (row) => (
       <Sparkline
         series={Array.from(row.sparkleSeries)}
         degrading={row.trend === TrendFlag.DEGRADING}
-        label={`Trend for point ${row.pointKey}`}
+        label={`Tendencia del punto ${row.pointKey}`}
       />
     ),
   },
   {
     key: "trend",
-    label: "Direction",
+    label: "Dirección",
     sortable: false,
     render: (row) => (
       <span
@@ -189,7 +189,7 @@ export function ReadingsTable({ world }: ReadingsTableProps) {
         onRowClick={handleRowClick}
         isRowSelected={isRowSelected}
         getRowKey={(row) => row.pointKey}
-        emptyLabel="No cathodic readings"
+        emptyLabel="Sin lecturas catódicas"
         caption="Cathodic protection readings table"
       />
     </section>

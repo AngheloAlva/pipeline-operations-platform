@@ -313,7 +313,9 @@ function EquipmentPageBody() {
             Sin tareas de mantenimiento para este equipo.
           </p>
         ) : (
-          <div className="flex flex-col gap-1">
+          /* overflow-x-auto: fixed-column grid scrolls horizontally on mobile (B-2) */
+          <div className="overflow-x-auto">
+          <div className="flex flex-col gap-1 min-w-[480px]">
             {/* Column headers */}
             <div className="grid grid-cols-[1fr_120px_140px_100px] gap-3 border-b border-border-subtle pb-2">
               {["Tarea", "Estado", "Próximo vencimiento", "Frecuencia"].map((h) => (
@@ -348,6 +350,7 @@ function EquipmentPageBody() {
                 <span className="text-[12px] text-ink-muted">{row.frequency}</span>
               </div>
             ))}
+          </div>
           </div>
         )}
 
@@ -447,8 +450,8 @@ function EquipmentPageBody() {
         ) : (
           /* F4-2-R9: populated branch — reuse computeIntegrityKpis + extractReadingSeriesForChart */
           <div className="flex flex-col gap-4">
-            {/* KPI summary — 3 cards */}
-            <div className="grid grid-cols-3 gap-3">
+            {/* KPI summary — 3 cards (B-3: responsive grid) */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="flex" style={{ borderLeft: "2px solid var(--status-ok)" }}>
                 <KpiCard
                   label="Protegidos"
@@ -501,7 +504,9 @@ function EquipmentPageBody() {
             )}
 
             {/* Readings table — all points for this station */}
-            <div className="flex flex-col gap-1">
+            {/* overflow-x-auto: fixed-column grid scrolls horizontally on mobile (B-4) */}
+            <div className="overflow-x-auto">
+            <div className="flex flex-col gap-1 min-w-[380px]">
               <div className="grid grid-cols-[80px_1fr_120px_80px] gap-3 border-b border-border-subtle pb-2">
                 {["km", "Punto", "Último (V)", "Nivel"].map((h) => (
                   <span
@@ -551,6 +556,7 @@ function EquipmentPageBody() {
                   </span>
                 </div>
               ))}
+            </div>
             </div>
           </div>
         )}

@@ -58,10 +58,21 @@ export function useFocusSync(options: UseFocusSyncOptions = {}): void {
   const lastSyncedRef = useRef<string | null>(null);
 
   // Maintenance specialization guard: only fire onFocusStation when stationId changes.
-  const lastStationRef = useRef<string | null>(undefined as unknown as null);
+  // Initialized to null so the first real station id always triggers a callback.
+  // null → null transitions are explicitly skipped (no spurious fire on empty-selection mount).
+  const lastStationRef = useRef<string | null>(null);
 
   // ---------------------------------------------------------------------------
   // READ direction: URL → store (mount + param change)
+  //
+  // ADR-1 URL ↔ store authority contract:
+  //   • URL PRESENT  (?focus=<id>): URL is authoritative — hydrate store from it.
+  //     This makes focus state shareable via link and persists cross-tab navigation.
+  //   • URL ABSENT   (no ?focus=):  store is authoritative — reflect its current
+  //     selection back into the URL on mount/change. This is intentional: nav-header
+  //     links are bare paths (/cockpit, /integrity, etc.) so the store selection
+  //     carries over across module switches without losing the focused entity.
+  //   Adding a mount-time clearSelection() here would BREAK cross-module persistence.
   // ---------------------------------------------------------------------------
   useEffect(() => {
     const urlFocus = parseFocusParam(searchParams.get("focus"));

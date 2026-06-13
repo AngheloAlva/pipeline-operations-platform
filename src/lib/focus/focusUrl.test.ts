@@ -165,10 +165,14 @@ describe("buildFocusHref — CATHODIC_POINT entity", () => {
     expect(buildFocusHref(entityNoStation, "maintenance")).toBeNull();
   });
 
-  it("CATHODIC_POINT × integrity → null (no integrity link from cathodic point)", () => {
+  it("CATHODIC_POINT × integrity → /integrity?focus=<stationId> when stationId is known", () => {
     // Per design: cathodic is already IN integrity; this path is exclude-handled at component level
     // but buildFocusHref for cathodic×integrity: use stationId if known
     expect(buildFocusHref(entityWithStation, "integrity")).toBe("/integrity?focus=STA-0007");
+  });
+
+  it("CATHODIC_POINT × integrity × null stationId → null", () => {
+    expect(buildFocusHref(entityNoStation, "integrity")).toBeNull();
   });
 });
 

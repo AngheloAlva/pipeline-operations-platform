@@ -72,7 +72,8 @@ export function buildFocusHref(entity: ResolvedEntity, target: ModuleKey): strin
     if (target === "equipment") return `${MODULE_PATH.equipment}/${id}`;
     // Maintenance uses equipment id directly (natively selects equipment)
     if (target === "maintenance") return `${MODULE_PATH.maintenance}?focus=${id}`;
-    // Cockpit and Integrity navigate to the station context
+    // Cockpit and Integrity navigate to the station context — guard against null stationId
+    if (!stationId) return null;
     if (target === "cockpit") return `${MODULE_PATH.cockpit}?focus=${stationId}`;
     if (target === "integrity") return `${MODULE_PATH.integrity}?focus=${stationId}`;
   }
@@ -80,7 +81,8 @@ export function buildFocusHref(entity: ResolvedEntity, target: ModuleKey): strin
   if (type === EntityType.TANK || type === EntityType.STATION) {
     // Cockpit: navigate to the entity itself (tank or station)
     if (target === "cockpit") return `${MODULE_PATH.cockpit}?focus=${id}`;
-    // Maintenance and Integrity: bridge via stationId
+    // Maintenance and Integrity: bridge via stationId — guard against null stationId
+    if (!stationId) return null;
     if (target === "maintenance") return `${MODULE_PATH.maintenance}?focus=${stationId}`;
     if (target === "integrity") return `${MODULE_PATH.integrity}?focus=${stationId}`;
   }

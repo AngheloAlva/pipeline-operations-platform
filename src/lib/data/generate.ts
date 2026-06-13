@@ -684,68 +684,88 @@ function generateCathodicReadings(
   const today = new Date(GENERATOR_REFERENCE_DATE + "T12:00:00Z");
 
   for (const segment of pipeline.segments) {
-    // Generate 3–6 readings per segment
-    const count = pickInt(rng, 3, 6);
+    // Generate 3–6 distinct km positions per segment
+    const positionCount = pickInt(rng, 3, 6);
     const segLen = segment.toKm - segment.fromKm;
 
-    for (let i = 0; i < count; i++) {
-      const km = segment.fromKm + (segLen * i) / (count - 1);
+    for (let i = 0; i < positionCount; i++) {
+      const km = segment.fromKm + (segLen * i) / (positionCount - 1);
+      const roundedKm = Math.round(km * 10) / 10;
 
-      // Potential distribution: ~80% OK, ~15% WARNING, ~5% CRITICAL
-      const roll = rng();
-      let potentialV: number;
-      if (roll < 0.05) {
-        // CRITICAL: underprotected (above -0.750)
-        potentialV = pickFloat(rng, -0.74, -0.3);
-      } else if (roll < 0.2) {
-        // WARNING: marginal (-0.850 to -0.750) or overprotected (≤ -1.200)
-        if (rng() > 0.5) {
-          potentialV = pickFloat(rng, -0.849, -0.751);
-        } else {
-          potentialV = pickFloat(rng, -1.5, -1.201);
-        }
-      } else {
-        // OK: well protected (-1.200 to -0.850)
-        potentialV = pickFloat(rng, -1.199, -0.851);
-      }
-
-      const level = evaluatePotential(potentialV);
       const nearestStation = stations.reduce((best, s) =>
         Math.abs(s.km - km) < Math.abs(best.km - km) ? s : best,
       );
 
-      // takenAt: spread over the last 30 days
-      const daysAgo = pickInt(rng, 0, 29);
-      const takenAt = new Date(today);
-      takenAt.setDate(takenAt.getDate() - daysAgo);
+      // Draw base potential for this position — same band scheme as before
+      // (preserves band-distribution intent; first rng() draw per position is unchanged)
+      const roll = rng();
+      let pBase: number;
+      if (roll < 0.05) {
+        // CRITICAL: underprotected (above -0.750)
+        pBase = pickFloat(rng, -0.74, -0.3);
+      } else if (roll < 0.2) {
+        // WARNING: marginal or overprotected
+        if (rng() > 0.5) {
+          pBase = pickFloat(rng, -0.849, -0.751);
+        } else {
+          pBase = pickFloat(rng, -1.5, -1.201);
+        }
+      } else {
+        // OK: well protected
+        pBase = pickFloat(rng, -1.199, -0.851);
+      }
 
-      readings.push({
-        id: nextId("CAT"),
-        segmentId: segment.id,
-        stationId: nearestStation.id,
-        km: Math.round(km * 10) / 10,
-        potentialV: Math.round(potentialV * 1000) / 1000,
-        takenAt: takenAt.toISOString(),
-        level,
-      });
+      // Draw how many readings this position will have (6–12)
+      const seriesLen = pickInt(rng, 6, 12);
+
+      // Emit seriesLen readings spread over ~seriesLen*5 days ending near GENERATOR_REFERENCE_DATE.
+      // takenAt walks backward: most-recent reading is near today, older ones farther back.
+      const totalDays = seriesLen * 5;
+      for (let j = 0; j < seriesLen; j++) {
+        // j=0 → oldest (furthest back), j=seriesLen-1 → most recent
+        const daysAgo = Math.round((totalDays * (seriesLen - 1 - j)) / (seriesLen - 1));
+        const takenAt = new Date(today);
+        takenAt.setDate(takenAt.getDate() - daysAgo);
+
+        // Each reading gets a small jitter around the base potential
+        const jitter = pickFloat(rng, -0.03, 0.03);
+        const potentialV = Math.round((pBase + jitter) * 1000) / 1000;
+        const level = evaluatePotential(potentialV);
+
+        readings.push({
+          id: nextId("CAT"),
+          segmentId: segment.id,
+          stationId: nearestStation.id,
+          km: roundedKm,
+          potentialV,
+          takenAt: takenAt.toISOString(),
+          level,
+        });
+      }
     }
   }
 
-  // Inject at least one monotonically degrading series of 3+ readings for trend detection
+  // Inject a deterministic degrading series (RNG-free) to guarantee ≥1 group
+  // returns detectDegradationTrend === true.
+  // The series has 8 readings: the first 5 are flat-ish, the last 3 are
+  // strictly increasing (less negative) so detectDegradationTrend returns true.
   const firstSegment = pipeline.segments[0];
-  const baseKm = firstSegment.fromKm + 1;
-  const degradingPotentials = [-0.9, -0.87, -0.84]; // strictly increasing
-  const baseTime = new Date(today);
-  baseTime.setDate(baseTime.getDate() - 3);
+  const baseKm = Math.round((firstSegment.fromKm + 1) * 10) / 10;
+  const nearestStation = stations[0];
 
-  for (let i = 0; i < 3; i++) {
+  // 8-reading series: first 5 stable around -0.93, last 3 strictly increasing
+  const degradingPotentials = [-0.93, -0.93, -0.93, -0.93, -0.93, -0.9, -0.87, -0.84];
+  const seriesStart = new Date(today);
+  seriesStart.setDate(seriesStart.getDate() - (degradingPotentials.length - 1) * 5);
+
+  for (let i = 0; i < degradingPotentials.length; i++) {
     const potentialV = degradingPotentials[i];
-    const takenAt = new Date(baseTime);
-    takenAt.setDate(takenAt.getDate() + i);
+    const takenAt = new Date(seriesStart);
+    takenAt.setDate(takenAt.getDate() + i * 5);
     readings.push({
       id: nextId("CAT"),
       segmentId: firstSegment.id,
-      stationId: stations[0]?.id,
+      stationId: nearestStation?.id,
       km: baseKm,
       potentialV,
       takenAt: takenAt.toISOString(),

@@ -2627,979 +2627,1834 @@
       "segmentId": "SEG-0002",
       "stationId": "STA-0005",
       "km": 0,
-      "potentialV": -1.254,
-      "takenAt": "2026-06-02T12:00:00.000Z",
+      "potentialV": -1.284,
+      "takenAt": "2026-05-03T12:00:00.000Z",
       "level": "WARNING"
     },
     {
       "id": "CAT-0231",
       "segmentId": "SEG-0002",
-      "stationId": "STA-0006",
-      "km": 32.3,
-      "potentialV": -0.372,
-      "takenAt": "2026-05-22T12:00:00.000Z",
-      "level": "CRITICAL"
+      "stationId": "STA-0005",
+      "km": 0,
+      "potentialV": -1.234,
+      "takenAt": "2026-05-09T12:00:00.000Z",
+      "level": "WARNING"
     },
     {
       "id": "CAT-0232",
       "segmentId": "SEG-0002",
-      "stationId": "STA-0006",
-      "km": 64.5,
-      "potentialV": -0.835,
-      "takenAt": "2026-05-15T12:00:00.000Z",
+      "stationId": "STA-0005",
+      "km": 0,
+      "potentialV": -1.241,
+      "takenAt": "2026-05-14T12:00:00.000Z",
       "level": "WARNING"
     },
     {
       "id": "CAT-0233",
       "segmentId": "SEG-0002",
-      "stationId": "STA-0006",
-      "km": 96.8,
-      "potentialV": -1.084,
-      "takenAt": "2026-06-11T12:00:00.000Z",
-      "level": "OK"
+      "stationId": "STA-0005",
+      "km": 0,
+      "potentialV": -1.274,
+      "takenAt": "2026-05-20T12:00:00.000Z",
+      "level": "WARNING"
     },
     {
       "id": "CAT-0234",
-      "segmentId": "SEG-0003",
-      "stationId": "STA-0006",
-      "km": 96.8,
-      "potentialV": -0.946,
-      "takenAt": "2026-05-20T12:00:00.000Z",
-      "level": "OK"
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 0,
+      "potentialV": -1.24,
+      "takenAt": "2026-05-26T12:00:00.000Z",
+      "level": "WARNING"
     },
     {
       "id": "CAT-0235",
-      "segmentId": "SEG-0003",
-      "stationId": "STA-0007",
-      "km": 114.7,
-      "potentialV": -1.198,
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 0,
+      "potentialV": -1.276,
       "takenAt": "2026-06-01T12:00:00.000Z",
-      "level": "OK"
+      "level": "WARNING"
     },
     {
       "id": "CAT-0236",
-      "segmentId": "SEG-0003",
-      "stationId": "STA-0007",
-      "km": 132.6,
-      "potentialV": -0.872,
-      "takenAt": "2026-05-19T12:00:00.000Z",
-      "level": "OK"
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 0,
+      "potentialV": -1.228,
+      "takenAt": "2026-06-06T12:00:00.000Z",
+      "level": "WARNING"
     },
     {
       "id": "CAT-0237",
-      "segmentId": "SEG-0003",
-      "stationId": "STA-0007",
-      "km": 150.6,
-      "potentialV": -1.06,
-      "takenAt": "2026-05-15T12:00:00.000Z",
-      "level": "OK"
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 0,
+      "potentialV": -1.258,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "WARNING"
     },
     {
       "id": "CAT-0238",
-      "segmentId": "SEG-0003",
-      "stationId": "STA-0007",
-      "km": 168.5,
-      "potentialV": -1.011,
-      "takenAt": "2026-05-18T12:00:00.000Z",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -1.18,
+      "takenAt": "2026-04-18T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0239",
-      "segmentId": "SEG-0003",
-      "stationId": "STA-0008",
-      "km": 186.4,
-      "potentialV": -1.043,
-      "takenAt": "2026-06-06T12:00:00.000Z",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -1.167,
+      "takenAt": "2026-04-23T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0240",
-      "segmentId": "SEG-0004",
-      "stationId": "STA-0008",
-      "km": 186.4,
-      "potentialV": -1.058,
-      "takenAt": "2026-06-08T12:00:00.000Z",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -1.164,
+      "takenAt": "2026-04-29T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0241",
-      "segmentId": "SEG-0004",
-      "stationId": "STA-0008",
-      "km": 203.1,
-      "potentialV": -0.866,
-      "takenAt": "2026-05-24T12:00:00.000Z",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -1.157,
+      "takenAt": "2026-05-04T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0242",
-      "segmentId": "SEG-0004",
-      "stationId": "STA-0008",
-      "km": 219.8,
-      "potentialV": -1.18,
-      "takenAt": "2026-06-04T12:00:00.000Z",
-      "level": "OK"
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -1.21,
+      "takenAt": "2026-05-10T12:00:00.000Z",
+      "level": "WARNING"
     },
     {
       "id": "CAT-0243",
-      "segmentId": "SEG-0004",
-      "stationId": "STA-0008",
-      "km": 236.6,
-      "potentialV": -1.183,
-      "takenAt": "2026-06-12T12:00:00.000Z",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -1.188,
+      "takenAt": "2026-05-15T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0244",
-      "segmentId": "SEG-0004",
-      "stationId": "STA-0009",
-      "km": 253.3,
-      "potentialV": -0.991,
-      "takenAt": "2026-05-29T12:00:00.000Z",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -1.189,
+      "takenAt": "2026-05-21T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0245",
-      "segmentId": "SEG-0004",
-      "stationId": "STA-0009",
-      "km": 270,
-      "potentialV": -1.117,
-      "takenAt": "2026-06-03T12:00:00.000Z",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -1.154,
+      "takenAt": "2026-05-26T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0246",
       "segmentId": "SEG-0002",
-      "stationId": "STA-0005",
-      "km": 1,
-      "potentialV": -0.9,
-      "takenAt": "2026-06-09T12:00:00.000Z",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -1.162,
+      "takenAt": "2026-06-01T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0247",
       "segmentId": "SEG-0002",
-      "stationId": "STA-0005",
-      "km": 1,
-      "potentialV": -0.87,
-      "takenAt": "2026-06-10T12:00:00.000Z",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -1.175,
+      "takenAt": "2026-06-06T12:00:00.000Z",
       "level": "OK"
     },
     {
       "id": "CAT-0248",
       "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 32.3,
+      "potentialV": -1.186,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0249",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 64.5,
+      "potentialV": -0.85,
+      "takenAt": "2026-04-28T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0250",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 64.5,
+      "potentialV": -0.859,
+      "takenAt": "2026-05-04T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0251",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 64.5,
+      "potentialV": -0.875,
+      "takenAt": "2026-05-09T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0252",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 64.5,
+      "potentialV": -0.888,
+      "takenAt": "2026-05-15T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0253",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 64.5,
+      "potentialV": -0.851,
+      "takenAt": "2026-05-20T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0254",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 64.5,
+      "potentialV": -0.874,
+      "takenAt": "2026-05-26T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0255",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 64.5,
+      "potentialV": -0.877,
+      "takenAt": "2026-06-01T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0256",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 64.5,
+      "potentialV": -0.892,
+      "takenAt": "2026-06-06T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0257",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 64.5,
+      "potentialV": -0.842,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0258",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -1.001,
+      "takenAt": "2026-04-28T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0259",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.988,
+      "takenAt": "2026-05-04T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0260",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.984,
+      "takenAt": "2026-05-09T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0261",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -1.002,
+      "takenAt": "2026-05-15T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0262",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -1.004,
+      "takenAt": "2026-05-20T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0263",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.985,
+      "takenAt": "2026-05-26T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0264",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.968,
+      "takenAt": "2026-06-01T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0265",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.975,
+      "takenAt": "2026-06-06T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0266",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.948,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0267",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.958,
+      "takenAt": "2026-04-28T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0268",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.927,
+      "takenAt": "2026-05-04T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0269",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.976,
+      "takenAt": "2026-05-09T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0270",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.957,
+      "takenAt": "2026-05-15T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0271",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.969,
+      "takenAt": "2026-05-20T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0272",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.964,
+      "takenAt": "2026-05-26T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0273",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.953,
+      "takenAt": "2026-06-01T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0274",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.941,
+      "takenAt": "2026-06-06T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0275",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0006",
+      "km": 96.8,
+      "potentialV": -0.936,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0276",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 141.6,
+      "potentialV": -0.929,
+      "takenAt": "2026-05-13T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0277",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 141.6,
+      "potentialV": -0.885,
+      "takenAt": "2026-05-19T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0278",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 141.6,
+      "potentialV": -0.918,
+      "takenAt": "2026-05-25T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0279",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 141.6,
+      "potentialV": -0.933,
+      "takenAt": "2026-05-31T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0280",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 141.6,
+      "potentialV": -0.915,
+      "takenAt": "2026-06-06T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0281",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0007",
+      "km": 141.6,
+      "potentialV": -0.92,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0282",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -0.989,
+      "takenAt": "2026-04-13T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0283",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.004,
+      "takenAt": "2026-04-18T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0284",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.014,
+      "takenAt": "2026-04-24T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0285",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.026,
+      "takenAt": "2026-04-29T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0286",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.008,
+      "takenAt": "2026-05-05T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0287",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.034,
+      "takenAt": "2026-05-10T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0288",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.007,
+      "takenAt": "2026-05-16T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0289",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -0.997,
+      "takenAt": "2026-05-21T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0290",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.022,
+      "takenAt": "2026-05-27T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0291",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.002,
+      "takenAt": "2026-06-01T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0292",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -0.997,
+      "takenAt": "2026-06-07T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0293",
+      "segmentId": "SEG-0003",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.006,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0294",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.02,
+      "takenAt": "2026-04-28T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0295",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.018,
+      "takenAt": "2026-05-04T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0296",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.017,
+      "takenAt": "2026-05-09T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0297",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -0.978,
+      "takenAt": "2026-05-15T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0298",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.012,
+      "takenAt": "2026-05-20T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0299",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -0.987,
+      "takenAt": "2026-05-26T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0300",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -1.014,
+      "takenAt": "2026-06-01T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0301",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -0.986,
+      "takenAt": "2026-06-06T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0302",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 186.4,
+      "potentialV": -0.999,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0303",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 207.3,
+      "potentialV": -0.8,
+      "takenAt": "2026-05-03T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0304",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 207.3,
+      "potentialV": -0.783,
+      "takenAt": "2026-05-09T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0305",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 207.3,
+      "potentialV": -0.823,
+      "takenAt": "2026-05-14T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0306",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 207.3,
+      "potentialV": -0.798,
+      "takenAt": "2026-05-20T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0307",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 207.3,
+      "potentialV": -0.796,
+      "takenAt": "2026-05-26T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0308",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 207.3,
+      "potentialV": -0.816,
+      "takenAt": "2026-06-01T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0309",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 207.3,
+      "potentialV": -0.766,
+      "takenAt": "2026-06-06T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0310",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 207.3,
+      "potentialV": -0.811,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0311",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 228.2,
+      "potentialV": -0.856,
+      "takenAt": "2026-05-08T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0312",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 228.2,
+      "potentialV": -0.859,
+      "takenAt": "2026-05-14T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0313",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 228.2,
+      "potentialV": -0.864,
+      "takenAt": "2026-05-20T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0314",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 228.2,
+      "potentialV": -0.868,
+      "takenAt": "2026-05-25T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0315",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 228.2,
+      "potentialV": -0.847,
+      "takenAt": "2026-05-31T12:00:00.000Z",
+      "level": "WARNING"
+    },
+    {
+      "id": "CAT-0316",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 228.2,
+      "potentialV": -0.855,
+      "takenAt": "2026-06-06T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0317",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0008",
+      "km": 228.2,
+      "potentialV": -0.855,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0318",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 249.1,
+      "potentialV": -1.013,
+      "takenAt": "2026-05-08T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0319",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 249.1,
+      "potentialV": -1.034,
+      "takenAt": "2026-05-14T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0320",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 249.1,
+      "potentialV": -1.055,
+      "takenAt": "2026-05-20T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0321",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 249.1,
+      "potentialV": -1.051,
+      "takenAt": "2026-05-25T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0322",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 249.1,
+      "potentialV": -1.015,
+      "takenAt": "2026-05-31T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0323",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 249.1,
+      "potentialV": -1.044,
+      "takenAt": "2026-06-06T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0324",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 249.1,
+      "potentialV": -1.05,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0325",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 270,
+      "potentialV": -1.134,
+      "takenAt": "2026-04-18T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0326",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 270,
+      "potentialV": -1.102,
+      "takenAt": "2026-04-23T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0327",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 270,
+      "potentialV": -1.117,
+      "takenAt": "2026-04-29T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0328",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 270,
+      "potentialV": -1.114,
+      "takenAt": "2026-05-04T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0329",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 270,
+      "potentialV": -1.159,
+      "takenAt": "2026-05-10T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0330",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 270,
+      "potentialV": -1.106,
+      "takenAt": "2026-05-15T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0331",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 270,
+      "potentialV": -1.158,
+      "takenAt": "2026-05-21T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0332",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 270,
+      "potentialV": -1.159,
+      "takenAt": "2026-05-26T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0333",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 270,
+      "potentialV": -1.116,
+      "takenAt": "2026-06-01T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0334",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 270,
+      "potentialV": -1.151,
+      "takenAt": "2026-06-06T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0335",
+      "segmentId": "SEG-0004",
+      "stationId": "STA-0009",
+      "km": 270,
+      "potentialV": -1.123,
+      "takenAt": "2026-06-12T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0336",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 1,
+      "potentialV": -0.93,
+      "takenAt": "2026-05-08T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0337",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 1,
+      "potentialV": -0.93,
+      "takenAt": "2026-05-13T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0338",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 1,
+      "potentialV": -0.93,
+      "takenAt": "2026-05-18T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0339",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 1,
+      "potentialV": -0.93,
+      "takenAt": "2026-05-23T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0340",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 1,
+      "potentialV": -0.93,
+      "takenAt": "2026-05-28T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0341",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 1,
+      "potentialV": -0.9,
+      "takenAt": "2026-06-02T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0342",
+      "segmentId": "SEG-0002",
+      "stationId": "STA-0005",
+      "km": 1,
+      "potentialV": -0.87,
+      "takenAt": "2026-06-07T12:00:00.000Z",
+      "level": "OK"
+    },
+    {
+      "id": "CAT-0343",
+      "segmentId": "SEG-0002",
       "stationId": "STA-0005",
       "km": 1,
       "potentialV": -0.84,
-      "takenAt": "2026-06-11T12:00:00.000Z",
+      "takenAt": "2026-06-12T12:00:00.000Z",
       "level": "WARNING"
     }
   ],
   "telemetry": [
     {
-      "id": "TEL-0249",
+      "id": "TEL-0344",
       "metric": "LEVEL",
       "sourceId": "TNK-0010",
-      "value": 25015,
+      "value": 25077,
       "unit": "mm",
-      "timestamp": "2026-06-12T21:00:00.000Z"
+      "timestamp": "2026-06-12T07:00:00.000Z"
     },
     {
-      "id": "TEL-0250",
+      "id": "TEL-0345",
       "metric": "LEVEL",
       "sourceId": "TNK-0010",
-      "value": 25355,
+      "value": 24953,
       "unit": "mm",
-      "timestamp": "2026-06-11T12:00:00.000Z"
+      "timestamp": "2026-06-11T20:00:00.000Z"
     },
     {
-      "id": "TEL-0251",
+      "id": "TEL-0346",
       "metric": "LEVEL",
       "sourceId": "TNK-0010",
-      "value": 24857,
+      "value": 24868,
       "unit": "mm",
-      "timestamp": "2026-06-10T05:00:00.000Z"
+      "timestamp": "2026-06-10T21:00:00.000Z"
     },
     {
-      "id": "TEL-0252",
+      "id": "TEL-0347",
       "metric": "LEVEL",
       "sourceId": "TNK-0010",
-      "value": 24731,
-      "unit": "mm",
-      "timestamp": "2026-06-09T08:00:00.000Z"
-    },
-    {
-      "id": "TEL-0253",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0010",
-      "value": 25123,
-      "unit": "mm",
-      "timestamp": "2026-06-08T14:00:00.000Z"
-    },
-    {
-      "id": "TEL-0254",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0010",
-      "value": 25415,
-      "unit": "mm",
-      "timestamp": "2026-06-07T21:00:00.000Z"
-    },
-    {
-      "id": "TEL-0255",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0010",
-      "value": 24606,
-      "unit": "mm",
-      "timestamp": "2026-06-07T00:00:00.000Z"
-    },
-    {
-      "id": "TEL-0256",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0011",
-      "value": 10579,
-      "unit": "mm",
-      "timestamp": "2026-06-12T06:00:00.000Z"
-    },
-    {
-      "id": "TEL-0257",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0011",
-      "value": 10241,
-      "unit": "mm",
-      "timestamp": "2026-06-11T10:00:00.000Z"
-    },
-    {
-      "id": "TEL-0258",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0011",
-      "value": 10335,
-      "unit": "mm",
-      "timestamp": "2026-06-10T11:00:00.000Z"
-    },
-    {
-      "id": "TEL-0259",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0011",
-      "value": 10470,
-      "unit": "mm",
-      "timestamp": "2026-06-09T17:00:00.000Z"
-    },
-    {
-      "id": "TEL-0260",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0011",
-      "value": 10569,
-      "unit": "mm",
-      "timestamp": "2026-06-09T03:00:00.000Z"
-    },
-    {
-      "id": "TEL-0261",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0011",
-      "value": 10393,
-      "unit": "mm",
-      "timestamp": "2026-06-07T16:00:00.000Z"
-    },
-    {
-      "id": "TEL-0262",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0011",
-      "value": 10436,
-      "unit": "mm",
-      "timestamp": "2026-06-06T07:00:00.000Z"
-    },
-    {
-      "id": "TEL-0263",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0012",
-      "value": 17131,
-      "unit": "mm",
-      "timestamp": "2026-06-12T04:00:00.000Z"
-    },
-    {
-      "id": "TEL-0264",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0012",
-      "value": 16963,
-      "unit": "mm",
-      "timestamp": "2026-06-11T19:00:00.000Z"
-    },
-    {
-      "id": "TEL-0265",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0012",
-      "value": 17248,
-      "unit": "mm",
-      "timestamp": "2026-06-10T17:00:00.000Z"
-    },
-    {
-      "id": "TEL-0266",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0012",
-      "value": 17251,
-      "unit": "mm",
-      "timestamp": "2026-06-09T15:00:00.000Z"
-    },
-    {
-      "id": "TEL-0267",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0012",
-      "value": 17187,
-      "unit": "mm",
-      "timestamp": "2026-06-09T01:00:00.000Z"
-    },
-    {
-      "id": "TEL-0268",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0012",
-      "value": 16948,
-      "unit": "mm",
-      "timestamp": "2026-06-07T15:00:00.000Z"
-    },
-    {
-      "id": "TEL-0269",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0012",
-      "value": 16978,
-      "unit": "mm",
-      "timestamp": "2026-06-06T10:00:00.000Z"
-    },
-    {
-      "id": "TEL-0270",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0013",
-      "value": 32290,
-      "unit": "mm",
-      "timestamp": "2026-06-13T01:00:00.000Z"
-    },
-    {
-      "id": "TEL-0271",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0013",
-      "value": 32237,
-      "unit": "mm",
-      "timestamp": "2026-06-11T22:00:00.000Z"
-    },
-    {
-      "id": "TEL-0272",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0013",
-      "value": 32572,
-      "unit": "mm",
-      "timestamp": "2026-06-10T22:00:00.000Z"
-    },
-    {
-      "id": "TEL-0273",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0013",
-      "value": 32540,
-      "unit": "mm",
-      "timestamp": "2026-06-09T05:00:00.000Z"
-    },
-    {
-      "id": "TEL-0274",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0013",
-      "value": 32263,
-      "unit": "mm",
-      "timestamp": "2026-06-08T17:00:00.000Z"
-    },
-    {
-      "id": "TEL-0275",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0013",
-      "value": 32724,
-      "unit": "mm",
-      "timestamp": "2026-06-07T13:00:00.000Z"
-    },
-    {
-      "id": "TEL-0276",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0013",
-      "value": 32400,
-      "unit": "mm",
-      "timestamp": "2026-06-06T04:00:00.000Z"
-    },
-    {
-      "id": "TEL-0277",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0014",
-      "value": 58689,
-      "unit": "mm",
-      "timestamp": "2026-06-12T14:00:00.000Z"
-    },
-    {
-      "id": "TEL-0278",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0014",
-      "value": 58882,
-      "unit": "mm",
-      "timestamp": "2026-06-12T02:00:00.000Z"
-    },
-    {
-      "id": "TEL-0279",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0014",
-      "value": 60765,
-      "unit": "mm",
-      "timestamp": "2026-06-11T01:00:00.000Z"
-    },
-    {
-      "id": "TEL-0280",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0014",
-      "value": 59392,
-      "unit": "mm",
-      "timestamp": "2026-06-09T08:00:00.000Z"
-    },
-    {
-      "id": "TEL-0281",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0014",
-      "value": 59056,
-      "unit": "mm",
-      "timestamp": "2026-06-08T12:00:00.000Z"
-    },
-    {
-      "id": "TEL-0282",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0014",
-      "value": 59759,
-      "unit": "mm",
-      "timestamp": "2026-06-07T09:00:00.000Z"
-    },
-    {
-      "id": "TEL-0283",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0014",
-      "value": 59406,
-      "unit": "mm",
-      "timestamp": "2026-06-06T14:00:00.000Z"
-    },
-    {
-      "id": "TEL-0284",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0015",
-      "value": 42668,
-      "unit": "mm",
-      "timestamp": "2026-06-12T12:00:00.000Z"
-    },
-    {
-      "id": "TEL-0285",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0015",
-      "value": 43358,
-      "unit": "mm",
-      "timestamp": "2026-06-11T08:00:00.000Z"
-    },
-    {
-      "id": "TEL-0286",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0015",
-      "value": 42172,
-      "unit": "mm",
-      "timestamp": "2026-06-10T16:00:00.000Z"
-    },
-    {
-      "id": "TEL-0287",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0015",
-      "value": 43294,
-      "unit": "mm",
-      "timestamp": "2026-06-09T09:00:00.000Z"
-    },
-    {
-      "id": "TEL-0288",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0015",
-      "value": 42300,
-      "unit": "mm",
-      "timestamp": "2026-06-08T12:00:00.000Z"
-    },
-    {
-      "id": "TEL-0289",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0015",
-      "value": 42205,
-      "unit": "mm",
-      "timestamp": "2026-06-07T17:00:00.000Z"
-    },
-    {
-      "id": "TEL-0290",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0015",
-      "value": 42613,
-      "unit": "mm",
-      "timestamp": "2026-06-06T22:00:00.000Z"
-    },
-    {
-      "id": "TEL-0291",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0016",
-      "value": 38566,
-      "unit": "mm",
-      "timestamp": "2026-06-13T02:00:00.000Z"
-    },
-    {
-      "id": "TEL-0292",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0016",
-      "value": 37487,
-      "unit": "mm",
-      "timestamp": "2026-06-11T22:00:00.000Z"
-    },
-    {
-      "id": "TEL-0293",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0016",
-      "value": 37536,
-      "unit": "mm",
-      "timestamp": "2026-06-11T01:00:00.000Z"
-    },
-    {
-      "id": "TEL-0294",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0016",
-      "value": 38597,
-      "unit": "mm",
-      "timestamp": "2026-06-09T04:00:00.000Z"
-    },
-    {
-      "id": "TEL-0295",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0016",
-      "value": 38414,
-      "unit": "mm",
-      "timestamp": "2026-06-08T07:00:00.000Z"
-    },
-    {
-      "id": "TEL-0296",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0016",
-      "value": 38417,
-      "unit": "mm",
-      "timestamp": "2026-06-07T07:00:00.000Z"
-    },
-    {
-      "id": "TEL-0297",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0016",
-      "value": 38226,
-      "unit": "mm",
-      "timestamp": "2026-06-06T20:00:00.000Z"
-    },
-    {
-      "id": "TEL-0298",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0017",
-      "value": 40946,
-      "unit": "mm",
-      "timestamp": "2026-06-12T21:00:00.000Z"
-    },
-    {
-      "id": "TEL-0299",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0017",
-      "value": 41489,
-      "unit": "mm",
-      "timestamp": "2026-06-12T03:00:00.000Z"
-    },
-    {
-      "id": "TEL-0300",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0017",
-      "value": 41297,
-      "unit": "mm",
-      "timestamp": "2026-06-10T19:00:00.000Z"
-    },
-    {
-      "id": "TEL-0301",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0017",
-      "value": 40972,
-      "unit": "mm",
-      "timestamp": "2026-06-09T05:00:00.000Z"
-    },
-    {
-      "id": "TEL-0302",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0017",
-      "value": 40540,
-      "unit": "mm",
-      "timestamp": "2026-06-08T06:00:00.000Z"
-    },
-    {
-      "id": "TEL-0303",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0017",
-      "value": 40511,
-      "unit": "mm",
-      "timestamp": "2026-06-07T19:00:00.000Z"
-    },
-    {
-      "id": "TEL-0304",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0017",
-      "value": 41426,
-      "unit": "mm",
-      "timestamp": "2026-06-06T13:00:00.000Z"
-    },
-    {
-      "id": "TEL-0305",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0018",
-      "value": 29117,
-      "unit": "mm",
-      "timestamp": "2026-06-12T15:00:00.000Z"
-    },
-    {
-      "id": "TEL-0306",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0018",
-      "value": 29963,
-      "unit": "mm",
-      "timestamp": "2026-06-11T18:00:00.000Z"
-    },
-    {
-      "id": "TEL-0307",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0018",
-      "value": 29259,
-      "unit": "mm",
-      "timestamp": "2026-06-11T03:00:00.000Z"
-    },
-    {
-      "id": "TEL-0308",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0018",
-      "value": 29885,
-      "unit": "mm",
-      "timestamp": "2026-06-09T05:00:00.000Z"
-    },
-    {
-      "id": "TEL-0309",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0018",
-      "value": 29975,
-      "unit": "mm",
-      "timestamp": "2026-06-08T22:00:00.000Z"
-    },
-    {
-      "id": "TEL-0310",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0018",
-      "value": 30120,
-      "unit": "mm",
-      "timestamp": "2026-06-08T03:00:00.000Z"
-    },
-    {
-      "id": "TEL-0311",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0018",
-      "value": 29873,
-      "unit": "mm",
-      "timestamp": "2026-06-06T16:00:00.000Z"
-    },
-    {
-      "id": "TEL-0312",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0019",
-      "value": 43121,
-      "unit": "mm",
-      "timestamp": "2026-06-12T12:00:00.000Z"
-    },
-    {
-      "id": "TEL-0313",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0019",
-      "value": 43125,
-      "unit": "mm",
-      "timestamp": "2026-06-12T00:00:00.000Z"
-    },
-    {
-      "id": "TEL-0314",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0019",
-      "value": 42712,
-      "unit": "mm",
-      "timestamp": "2026-06-10T20:00:00.000Z"
-    },
-    {
-      "id": "TEL-0315",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0019",
-      "value": 42943,
-      "unit": "mm",
-      "timestamp": "2026-06-10T00:00:00.000Z"
-    },
-    {
-      "id": "TEL-0316",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0019",
-      "value": 42830,
-      "unit": "mm",
-      "timestamp": "2026-06-09T01:00:00.000Z"
-    },
-    {
-      "id": "TEL-0317",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0019",
-      "value": 43691,
-      "unit": "mm",
-      "timestamp": "2026-06-07T07:00:00.000Z"
-    },
-    {
-      "id": "TEL-0318",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0019",
-      "value": 42867,
-      "unit": "mm",
-      "timestamp": "2026-06-06T15:00:00.000Z"
-    },
-    {
-      "id": "TEL-0319",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0020",
-      "value": 82186,
-      "unit": "mm",
-      "timestamp": "2026-06-12T23:00:00.000Z"
-    },
-    {
-      "id": "TEL-0320",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0020",
-      "value": 81908,
-      "unit": "mm",
-      "timestamp": "2026-06-11T17:00:00.000Z"
-    },
-    {
-      "id": "TEL-0321",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0020",
-      "value": 80762,
-      "unit": "mm",
-      "timestamp": "2026-06-10T05:00:00.000Z"
-    },
-    {
-      "id": "TEL-0322",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0020",
-      "value": 82956,
-      "unit": "mm",
-      "timestamp": "2026-06-09T15:00:00.000Z"
-    },
-    {
-      "id": "TEL-0323",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0020",
-      "value": 81439,
-      "unit": "mm",
-      "timestamp": "2026-06-08T08:00:00.000Z"
-    },
-    {
-      "id": "TEL-0324",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0020",
-      "value": 81621,
-      "unit": "mm",
-      "timestamp": "2026-06-07T11:00:00.000Z"
-    },
-    {
-      "id": "TEL-0325",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0020",
-      "value": 82038,
-      "unit": "mm",
-      "timestamp": "2026-06-06T08:00:00.000Z"
-    },
-    {
-      "id": "TEL-0326",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0021",
-      "value": 19222,
-      "unit": "mm",
-      "timestamp": "2026-06-12T05:00:00.000Z"
-    },
-    {
-      "id": "TEL-0327",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0021",
-      "value": 19746,
-      "unit": "mm",
-      "timestamp": "2026-06-11T16:00:00.000Z"
-    },
-    {
-      "id": "TEL-0328",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0021",
-      "value": 19413,
-      "unit": "mm",
-      "timestamp": "2026-06-10T11:00:00.000Z"
-    },
-    {
-      "id": "TEL-0329",
-      "metric": "LEVEL",
-      "sourceId": "TNK-0021",
-      "value": 19567,
+      "value": 25198,
       "unit": "mm",
       "timestamp": "2026-06-10T03:00:00.000Z"
     },
     {
-      "id": "TEL-0330",
+      "id": "TEL-0348",
       "metric": "LEVEL",
-      "sourceId": "TNK-0021",
-      "value": 19163,
+      "sourceId": "TNK-0010",
+      "value": 25081,
       "unit": "mm",
-      "timestamp": "2026-06-08T04:00:00.000Z"
+      "timestamp": "2026-06-08T19:00:00.000Z"
     },
     {
-      "id": "TEL-0331",
+      "id": "TEL-0349",
       "metric": "LEVEL",
-      "sourceId": "TNK-0021",
-      "value": 19632,
+      "sourceId": "TNK-0010",
+      "value": 24884,
+      "unit": "mm",
+      "timestamp": "2026-06-07T05:00:00.000Z"
+    },
+    {
+      "id": "TEL-0350",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0010",
+      "value": 24622,
+      "unit": "mm",
+      "timestamp": "2026-06-06T06:00:00.000Z"
+    },
+    {
+      "id": "TEL-0351",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10296,
+      "unit": "mm",
+      "timestamp": "2026-06-12T19:00:00.000Z"
+    },
+    {
+      "id": "TEL-0352",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10529,
+      "unit": "mm",
+      "timestamp": "2026-06-11T13:00:00.000Z"
+    },
+    {
+      "id": "TEL-0353",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10297,
+      "unit": "mm",
+      "timestamp": "2026-06-10T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0354",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10596,
+      "unit": "mm",
+      "timestamp": "2026-06-09T18:00:00.000Z"
+    },
+    {
+      "id": "TEL-0355",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10347,
+      "unit": "mm",
+      "timestamp": "2026-06-09T03:00:00.000Z"
+    },
+    {
+      "id": "TEL-0356",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10568,
+      "unit": "mm",
+      "timestamp": "2026-06-07T05:00:00.000Z"
+    },
+    {
+      "id": "TEL-0357",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0011",
+      "value": 10600,
+      "unit": "mm",
+      "timestamp": "2026-06-06T22:00:00.000Z"
+    },
+    {
+      "id": "TEL-0358",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 17479,
+      "unit": "mm",
+      "timestamp": "2026-06-13T03:00:00.000Z"
+    },
+    {
+      "id": "TEL-0359",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 17335,
+      "unit": "mm",
+      "timestamp": "2026-06-11T16:00:00.000Z"
+    },
+    {
+      "id": "TEL-0360",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 17164,
+      "unit": "mm",
+      "timestamp": "2026-06-10T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0361",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 17166,
+      "unit": "mm",
+      "timestamp": "2026-06-10T00:00:00.000Z"
+    },
+    {
+      "id": "TEL-0362",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 17001,
+      "unit": "mm",
+      "timestamp": "2026-06-08T20:00:00.000Z"
+    },
+    {
+      "id": "TEL-0363",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 17093,
+      "unit": "mm",
+      "timestamp": "2026-06-08T00:00:00.000Z"
+    },
+    {
+      "id": "TEL-0364",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0012",
+      "value": 17048,
+      "unit": "mm",
+      "timestamp": "2026-06-07T01:00:00.000Z"
+    },
+    {
+      "id": "TEL-0365",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32954,
+      "unit": "mm",
+      "timestamp": "2026-06-12T07:00:00.000Z"
+    },
+    {
+      "id": "TEL-0366",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32332,
+      "unit": "mm",
+      "timestamp": "2026-06-11T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0367",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32476,
+      "unit": "mm",
+      "timestamp": "2026-06-10T23:00:00.000Z"
+    },
+    {
+      "id": "TEL-0368",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32366,
+      "unit": "mm",
+      "timestamp": "2026-06-09T17:00:00.000Z"
+    },
+    {
+      "id": "TEL-0369",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 31913,
+      "unit": "mm",
+      "timestamp": "2026-06-08T05:00:00.000Z"
+    },
+    {
+      "id": "TEL-0370",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32780,
+      "unit": "mm",
+      "timestamp": "2026-06-07T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0371",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0013",
+      "value": 32181,
+      "unit": "mm",
+      "timestamp": "2026-06-06T08:00:00.000Z"
+    },
+    {
+      "id": "TEL-0372",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 59150,
+      "unit": "mm",
+      "timestamp": "2026-06-12T11:00:00.000Z"
+    },
+    {
+      "id": "TEL-0373",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 59453,
+      "unit": "mm",
+      "timestamp": "2026-06-11T08:00:00.000Z"
+    },
+    {
+      "id": "TEL-0374",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 58893,
+      "unit": "mm",
+      "timestamp": "2026-06-10T05:00:00.000Z"
+    },
+    {
+      "id": "TEL-0375",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 60500,
+      "unit": "mm",
+      "timestamp": "2026-06-09T16:00:00.000Z"
+    },
+    {
+      "id": "TEL-0376",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 59479,
+      "unit": "mm",
+      "timestamp": "2026-06-08T11:00:00.000Z"
+    },
+    {
+      "id": "TEL-0377",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 59953,
+      "unit": "mm",
+      "timestamp": "2026-06-08T03:00:00.000Z"
+    },
+    {
+      "id": "TEL-0378",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0014",
+      "value": 58713,
+      "unit": "mm",
+      "timestamp": "2026-06-06T04:00:00.000Z"
+    },
+    {
+      "id": "TEL-0379",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 43133,
+      "unit": "mm",
+      "timestamp": "2026-06-12T04:00:00.000Z"
+    },
+    {
+      "id": "TEL-0380",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 41907,
+      "unit": "mm",
+      "timestamp": "2026-06-11T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0381",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 42821,
+      "unit": "mm",
+      "timestamp": "2026-06-10T11:00:00.000Z"
+    },
+    {
+      "id": "TEL-0382",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 42400,
+      "unit": "mm",
+      "timestamp": "2026-06-10T01:00:00.000Z"
+    },
+    {
+      "id": "TEL-0383",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 43044,
+      "unit": "mm",
+      "timestamp": "2026-06-08T07:00:00.000Z"
+    },
+    {
+      "id": "TEL-0384",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 43344,
+      "unit": "mm",
+      "timestamp": "2026-06-07T16:00:00.000Z"
+    },
+    {
+      "id": "TEL-0385",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0015",
+      "value": 42426,
+      "unit": "mm",
+      "timestamp": "2026-06-06T11:00:00.000Z"
+    },
+    {
+      "id": "TEL-0386",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 37809,
+      "unit": "mm",
+      "timestamp": "2026-06-13T02:00:00.000Z"
+    },
+    {
+      "id": "TEL-0387",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 38751,
+      "unit": "mm",
+      "timestamp": "2026-06-11T05:00:00.000Z"
+    },
+    {
+      "id": "TEL-0388",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 38636,
+      "unit": "mm",
+      "timestamp": "2026-06-11T02:00:00.000Z"
+    },
+    {
+      "id": "TEL-0389",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 38802,
+      "unit": "mm",
+      "timestamp": "2026-06-09T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0390",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 38792,
+      "unit": "mm",
+      "timestamp": "2026-06-08T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0391",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 38484,
+      "unit": "mm",
+      "timestamp": "2026-06-07T08:00:00.000Z"
+    },
+    {
+      "id": "TEL-0392",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0016",
+      "value": 38904,
+      "unit": "mm",
+      "timestamp": "2026-06-06T18:00:00.000Z"
+    },
+    {
+      "id": "TEL-0393",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 41510,
+      "unit": "mm",
+      "timestamp": "2026-06-13T03:00:00.000Z"
+    },
+    {
+      "id": "TEL-0394",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 41327,
+      "unit": "mm",
+      "timestamp": "2026-06-11T19:00:00.000Z"
+    },
+    {
+      "id": "TEL-0395",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 41675,
+      "unit": "mm",
+      "timestamp": "2026-06-10T16:00:00.000Z"
+    },
+    {
+      "id": "TEL-0396",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 40439,
+      "unit": "mm",
+      "timestamp": "2026-06-09T19:00:00.000Z"
+    },
+    {
+      "id": "TEL-0397",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 41320,
+      "unit": "mm",
+      "timestamp": "2026-06-09T02:00:00.000Z"
+    },
+    {
+      "id": "TEL-0398",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 40442,
+      "unit": "mm",
+      "timestamp": "2026-06-07T08:00:00.000Z"
+    },
+    {
+      "id": "TEL-0399",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0017",
+      "value": 40689,
+      "unit": "mm",
+      "timestamp": "2026-06-06T06:00:00.000Z"
+    },
+    {
+      "id": "TEL-0400",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29112,
+      "unit": "mm",
+      "timestamp": "2026-06-12T11:00:00.000Z"
+    },
+    {
+      "id": "TEL-0401",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29166,
+      "unit": "mm",
+      "timestamp": "2026-06-11T10:00:00.000Z"
+    },
+    {
+      "id": "TEL-0402",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29242,
+      "unit": "mm",
+      "timestamp": "2026-06-11T03:00:00.000Z"
+    },
+    {
+      "id": "TEL-0403",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29970,
+      "unit": "mm",
+      "timestamp": "2026-06-09T20:00:00.000Z"
+    },
+    {
+      "id": "TEL-0404",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29517,
+      "unit": "mm",
+      "timestamp": "2026-06-08T22:00:00.000Z"
+    },
+    {
+      "id": "TEL-0405",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29204,
+      "unit": "mm",
+      "timestamp": "2026-06-07T16:00:00.000Z"
+    },
+    {
+      "id": "TEL-0406",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0018",
+      "value": 29752,
+      "unit": "mm",
+      "timestamp": "2026-06-06T17:00:00.000Z"
+    },
+    {
+      "id": "TEL-0407",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 43818,
+      "unit": "mm",
+      "timestamp": "2026-06-12T10:00:00.000Z"
+    },
+    {
+      "id": "TEL-0408",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 42857,
+      "unit": "mm",
+      "timestamp": "2026-06-11T07:00:00.000Z"
+    },
+    {
+      "id": "TEL-0409",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 43319,
+      "unit": "mm",
+      "timestamp": "2026-06-10T14:00:00.000Z"
+    },
+    {
+      "id": "TEL-0410",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 43590,
+      "unit": "mm",
+      "timestamp": "2026-06-09T12:00:00.000Z"
+    },
+    {
+      "id": "TEL-0411",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 43261,
+      "unit": "mm",
+      "timestamp": "2026-06-09T02:00:00.000Z"
+    },
+    {
+      "id": "TEL-0412",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 42409,
+      "unit": "mm",
+      "timestamp": "2026-06-08T01:00:00.000Z"
+    },
+    {
+      "id": "TEL-0413",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0019",
+      "value": 43684,
+      "unit": "mm",
+      "timestamp": "2026-06-06T06:00:00.000Z"
+    },
+    {
+      "id": "TEL-0414",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 81485,
+      "unit": "mm",
+      "timestamp": "2026-06-12T10:00:00.000Z"
+    },
+    {
+      "id": "TEL-0415",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 81061,
+      "unit": "mm",
+      "timestamp": "2026-06-11T20:00:00.000Z"
+    },
+    {
+      "id": "TEL-0416",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 83815,
+      "unit": "mm",
+      "timestamp": "2026-06-10T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0417",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 81356,
+      "unit": "mm",
+      "timestamp": "2026-06-10T00:00:00.000Z"
+    },
+    {
+      "id": "TEL-0418",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 81787,
+      "unit": "mm",
+      "timestamp": "2026-06-08T16:00:00.000Z"
+    },
+    {
+      "id": "TEL-0419",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 81611,
       "unit": "mm",
       "timestamp": "2026-06-07T04:00:00.000Z"
     },
     {
-      "id": "TEL-0332",
+      "id": "TEL-0420",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0020",
+      "value": 82673,
+      "unit": "mm",
+      "timestamp": "2026-06-06T18:00:00.000Z"
+    },
+    {
+      "id": "TEL-0421",
       "metric": "LEVEL",
       "sourceId": "TNK-0021",
-      "value": 19074,
+      "value": 19692,
       "unit": "mm",
-      "timestamp": "2026-06-06T15:00:00.000Z"
+      "timestamp": "2026-06-12T10:00:00.000Z"
     },
     {
-      "id": "TEL-0333",
+      "id": "TEL-0422",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19755,
+      "unit": "mm",
+      "timestamp": "2026-06-11T04:00:00.000Z"
+    },
+    {
+      "id": "TEL-0423",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19503,
+      "unit": "mm",
+      "timestamp": "2026-06-10T19:00:00.000Z"
+    },
+    {
+      "id": "TEL-0424",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19057,
+      "unit": "mm",
+      "timestamp": "2026-06-09T13:00:00.000Z"
+    },
+    {
+      "id": "TEL-0425",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19448,
+      "unit": "mm",
+      "timestamp": "2026-06-08T15:00:00.000Z"
+    },
+    {
+      "id": "TEL-0426",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19231,
+      "unit": "mm",
+      "timestamp": "2026-06-07T16:00:00.000Z"
+    },
+    {
+      "id": "TEL-0427",
+      "metric": "LEVEL",
+      "sourceId": "TNK-0021",
+      "value": 19343,
+      "unit": "mm",
+      "timestamp": "2026-06-06T07:00:00.000Z"
+    },
+    {
+      "id": "TEL-0428",
       "metric": "PRESSURE",
       "sourceId": "SEG-0002",
-      "value": 25.9,
+      "value": 28.2,
       "unit": "kg/cm²",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
     {
-      "id": "TEL-0334",
+      "id": "TEL-0429",
       "metric": "PRESSURE",
       "sourceId": "SEG-0002",
-      "value": 31.2,
+      "value": 21.7,
       "unit": "kg/cm²",
       "timestamp": "2026-06-11T12:00:00.000Z"
     },
     {
-      "id": "TEL-0335",
+      "id": "TEL-0430",
       "metric": "PRESSURE",
       "sourceId": "SEG-0002",
-      "value": 38,
+      "value": 20.3,
       "unit": "kg/cm²",
       "timestamp": "2026-06-10T12:00:00.000Z"
     },
     {
-      "id": "TEL-0336",
+      "id": "TEL-0431",
       "metric": "PRESSURE",
       "sourceId": "SEG-0003",
-      "value": 26.3,
+      "value": 26.9,
       "unit": "kg/cm²",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
     {
-      "id": "TEL-0337",
+      "id": "TEL-0432",
       "metric": "PRESSURE",
       "sourceId": "SEG-0003",
-      "value": 23.1,
+      "value": 32.9,
       "unit": "kg/cm²",
       "timestamp": "2026-06-11T12:00:00.000Z"
     },
     {
-      "id": "TEL-0338",
+      "id": "TEL-0433",
       "metric": "PRESSURE",
       "sourceId": "SEG-0003",
-      "value": 33.8,
+      "value": 21.3,
       "unit": "kg/cm²",
       "timestamp": "2026-06-10T12:00:00.000Z"
     },
     {
-      "id": "TEL-0339",
+      "id": "TEL-0434",
       "metric": "PRESSURE",
       "sourceId": "SEG-0004",
-      "value": 30.8,
+      "value": 22.7,
       "unit": "kg/cm²",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
     {
-      "id": "TEL-0340",
+      "id": "TEL-0435",
       "metric": "PRESSURE",
       "sourceId": "SEG-0004",
-      "value": 37.3,
+      "value": 25.5,
       "unit": "kg/cm²",
       "timestamp": "2026-06-11T12:00:00.000Z"
     },
     {
-      "id": "TEL-0341",
+      "id": "TEL-0436",
       "metric": "PRESSURE",
       "sourceId": "SEG-0004",
-      "value": 26.5,
+      "value": 36.9,
       "unit": "kg/cm²",
       "timestamp": "2026-06-10T12:00:00.000Z"
     },
     {
-      "id": "TEL-0342",
+      "id": "TEL-0437",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0023",
-      "value": 694,
+      "value": 968,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
     {
-      "id": "TEL-0343",
+      "id": "TEL-0438",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0027",
-      "value": 1443,
+      "value": 1132,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
     {
-      "id": "TEL-0344",
+      "id": "TEL-0439",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0028",
-      "value": 559,
+      "value": 436,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
     {
-      "id": "TEL-0345",
+      "id": "TEL-0440",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0040",
-      "value": 398,
+      "value": 583,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
     {
-      "id": "TEL-0346",
+      "id": "TEL-0441",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0045",
-      "value": 1299,
+      "value": 668,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
     {
-      "id": "TEL-0347",
+      "id": "TEL-0442",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0046",
-      "value": 1446,
+      "value": 646,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
     {
-      "id": "TEL-0348",
+      "id": "TEL-0443",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0049",
-      "value": 1208,
+      "value": 849,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     },
     {
-      "id": "TEL-0349",
+      "id": "TEL-0444",
       "metric": "FLOW_RATE",
       "sourceId": "EQP-0058",
-      "value": 860,
+      "value": 1009,
       "unit": "m³/h",
       "timestamp": "2026-06-12T12:00:00.000Z"
     }

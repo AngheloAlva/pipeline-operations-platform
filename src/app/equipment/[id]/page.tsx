@@ -301,7 +301,7 @@ function EquipmentPageBody() {
           Section 1: Maintenance (F4-2-R4, R8)
           ================================================================ */}
       <SectionPanel
-        title="Mantenimiento"
+        title="Mantención"
         subtitle={`Equipo ${equipment.tag} · ${equipmentBoardRows.length} tarea(s) · ${equipmentWorkOrders.length} orden(es) de trabajo`}
       >
         {/* Maintenance tasks table */}

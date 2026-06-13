@@ -60,9 +60,12 @@ export interface PipelineMapProps {
 /**
  * Horizontal SVG pipeline map.
  *
- * SVG sizing uses the phase-1 proven recipe:
- *   style={{ display:'block', aspectRatio:`${VB_WIDTH} / ${VB_HEIGHT}`, maxWidth:`${VB_WIDTH}px` }}
- *   className="mx-auto block w-full"
+ * SVG sizing: full-width recipe (ADR-7 thin-map exception).
+ *   style={{ display:'block', aspectRatio:`${VB_WIDTH} / ${VB_HEIGHT}` }}
+ *   className="block w-full"
+ * No maxWidth cap — the 1080×80 strip is too thin for the cap to matter; at
+ * 1900px it only grows ~50px in height, which is acceptable. The cap is kept
+ * for tall diagrams (FlowDiagram 1080×320) but removed here to fill the panel.
  * NO fixed px height, NO Recharts ResponsiveContainer (that is for TimeSeriesChart only, ADR-7).
  */
 export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
@@ -163,17 +166,21 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
         </h2>
       </header>
 
-      {/* SVG: phase-1 aspect-ratio recipe (ADR-7) */}
+      {/* SVG: full-width recipe for thin horizontal maps (ADR-7 exception).
+          PipelineMap is a thin strip (1080×80, ~13.5:1 ratio). Unlike the
+          tall FlowDiagram (1080×320), stretching this to full container width
+          only increases height by ~50px at 1900px viewport — acceptable and
+          desired. maxWidth cap removed so markers span the full panel width
+          with no dead side space. FlowDiagram and PkRuler keep their caps. */}
       <svg
         viewBox={`0 0 ${VB_WIDTH} ${VB_HEIGHT}`}
         preserveAspectRatio="xMidYMid meet"
         role="img"
         aria-label="Pipeline cathodic integrity map"
-        className="mx-auto block w-full"
+        className="block w-full"
         style={{
           display: "block",
           aspectRatio: `${VB_WIDTH} / ${VB_HEIGHT}`,
-          maxWidth: `${VB_WIDTH}px`,
         }}
       >
         {/* Baseline */}

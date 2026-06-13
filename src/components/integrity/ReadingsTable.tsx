@@ -9,7 +9,7 @@
  * Default sort: km ascending.
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { DataTable, SORT_DIR } from "@/components/ui/DataTable";
 import type { DataTableColumn } from "@/components/ui/DataTable";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -123,7 +123,9 @@ type SortKey = keyof ReadingTableRow;
  * isRowSelected + inline style override (no additional CSS needed).
  */
 export function ReadingsTable({ world }: ReadingsTableProps) {
-  const rows = buildReadingTableRows(world);
+  // Memoize expensive O(n log n) selector — only re-runs when world changes,
+  // not on every sort-state update (column header clicks).
+  const rows = useMemo(() => buildReadingTableRows(world), [world]);
   const selectEntity = useSelectionStore((s) => s.selectEntity);
   const { selectedEntityId, selectedEntityType } = useSelection();
 

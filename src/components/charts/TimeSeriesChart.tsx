@@ -104,7 +104,7 @@ export function TimeSeriesChart({
       : CATHODIC_WARN + 0.05;
 
   return (
-    <div style={{ height }} className="w-full">
+    <div style={{ height, minWidth: 0 }} className="w-full">
       {isEmpty ? (
         <div
           className="flex h-full items-center justify-center"

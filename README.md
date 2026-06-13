@@ -2,6 +2,8 @@
 
 Plataforma web de operación de un oleoducto que unifica tres dominios en una sola aplicación: **monitoreo de flujo en tiempo cuasi-real (Cockpit)**, **gestión de mantenimiento (CMMS)** e **integridad y protección catódica del trazado**. Proyecto de portafolio orientado al sector energía/operaciones industriales, con foco en frontend, lógica de dominio y arquitectura.
 
+**🔗 Demo en vivo: [pipeline-operations-platform.vercel.app](https://pipeline-operations-platform.vercel.app/)**
+
 > Los datos son 100 % sintéticos, generados por código con seed fija. No se usa ningún dato real de operadores o clientes.
 
 ---
@@ -255,4 +257,4 @@ docs/
 | Fase 2 — CMMS | Árbol de equipos, scheduling, calendario, órdenes de trabajo | Completa |
 | Fase 3 — Integrity Map | Mapa lineal, evaluación catódica, sparklines, serie histórica | Completa |
 | Fase 4 — Integración | `?focus=` URL, `resolveEntity`, `/equipment/[id]`, `CrossNavLinks` | Completa |
-| Fase 5 — Pulido | UI polish, README de portafolio, deploy en Vercel | En curso |
+| Fase 5 — Pulido y entrega | UI polish, README de portafolio, deploy en Vercel | Completa |

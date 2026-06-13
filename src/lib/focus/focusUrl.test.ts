@@ -19,8 +19,7 @@ function makeEntity(
 ): ResolvedEntity {
   return {
     id: "EQP-0012",
-    type: overrides.type,
-    stationId: overrides.stationId ?? "STA-0005",
+    stationId: "STA-0005",
     ...overrides,
   };
 }

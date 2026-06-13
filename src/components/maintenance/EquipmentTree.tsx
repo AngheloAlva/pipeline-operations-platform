@@ -144,7 +144,8 @@ function TreeNode({
   // Indentation — 16px per level
   const paddingLeft = 8 + depth * 16;
 
-  function handleClick() {
+  function handleClick(e: React.MouseEvent<HTMLDivElement>) {
+    e.stopPropagation();
     if (isLeaf) {
       onSelect(node);
     } else {
@@ -182,7 +183,7 @@ function TreeNode({
       aria-level={node.level}
       tabIndex={tabIndex}
       data-treeid={node.id}
-      onClick={handleClick}
+      onClick={(e) => handleClick(e)}
       onKeyDown={(e) => onKeyDown(e, node)}
       style={{ paddingLeft }}
       className={cn(
@@ -348,6 +349,14 @@ export function EquipmentTree() {
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLElement>, node: EquipmentTreeNode) {
+    // Stop propagation for all handled keys so nested treeitems don't fire ancestor handlers.
+    // Child role="group" is nested inside parent role="treeitem" (correct ARIA), which means
+    // child keydown events bubble up to ancestor onKeyDown handlers — we must stop them here.
+    const handledKeys = ["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft", "Home", "End", "Enter", " "];
+    if (handledKeys.includes(e.key)) {
+      e.stopPropagation();
+    }
+
     const currentIndex = flatVisible.findIndex((fn) => fn.node.id === node.id);
 
     switch (e.key) {

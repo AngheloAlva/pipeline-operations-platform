@@ -3,15 +3,16 @@
 /**
  * MaintenanceKpis — 4 KpiCard row for the maintenance dashboard (SR-207).
  *
- * KPI values from computeMaintenanceKpis(world, now).
+ * KPI values from computeMaintenanceKpis(world, now, overrides).
  * now = real-world date (NOT simulatedTime).
- * Memoized: recomputes only when world changes.
+ * Memoized: recomputes when world or now changes.
  * No imports from simulationStore or useSimulationLoop.
  */
 
 import { useMemo } from "react";
 import type { PipelineWorld } from "@/lib/domain";
 import { computeMaintenanceKpis } from "@/lib/maintenance/selectors";
+import { useMaintenanceStore } from "@/store/maintenanceStore";
 import { KpiCard } from "@/components/ui/KpiCard";
 
 // ---------------------------------------------------------------------------
@@ -33,14 +34,15 @@ interface MaintenanceKpisProps {
  *   Vencidas | Próximas | OT Abiertas | Equipos Críticos
  *
  * SR-207 §3: now is the real-world date, NOT simulatedTime.
- * SR-207 §6: computeMaintenanceKpis is wrapped in useMemo([world]).
+ * SR-207 §6: computeMaintenanceKpis is wrapped in useMemo([world, now]).
  */
 export function MaintenanceKpis({ world, now }: MaintenanceKpisProps) {
-  // Memoized KPI computation (SR-207 §6)
+  const overrides = useMaintenanceStore((s) => s.overrides);
+
+  // Memoized KPI computation — recomputes when world, now, or overrides change (SR-207 §6)
   const kpis = useMemo(
-    () => computeMaintenanceKpis(world, now),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [world],
+    () => computeMaintenanceKpis(world, now, overrides),
+    [world, now, overrides],
   );
 
   return (

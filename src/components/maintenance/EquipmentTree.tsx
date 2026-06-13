@@ -14,7 +14,7 @@
  *   Enter/Space — select equipment node (level-3)
  *   Home/End — first/last visible node
  *
- * Selection: level-3 → selectEntity(EQUIPMENT); level-1/2 → setBoardFilter.
+ * Selection: level-3 → selectEntity(EQUIPMENT); level-1/2 → clearSelection + setBoardFilter.
  * No third-party tree library.
  */
 
@@ -122,6 +122,7 @@ interface TreeNodeProps {
   onSelect: (node: EquipmentTreeNode) => void;
   onKeyDown: (e: KeyboardEvent<HTMLElement>, node: EquipmentTreeNode) => void;
   nodeRef: (el: HTMLElement | null, id: string) => void;
+  children?: React.ReactNode;
 }
 
 function TreeNode({
@@ -135,9 +136,10 @@ function TreeNode({
   onSelect,
   onKeyDown,
   nodeRef,
+  children,
 }: TreeNodeProps) {
   const isLeaf = node.level === 3;
-  const hasMemo = node.children.length > 0;
+  const hasChildren = node.children.length > 0;
 
   // Indentation — 16px per level
   const paddingLeft = 8 + depth * 16;
@@ -152,7 +154,7 @@ function TreeNode({
   }
 
   // Expand/collapse chevron for branch nodes
-  const Chevron = hasMemo ? (
+  const Chevron = hasChildren ? (
     <span
       aria-hidden="true"
       className={cn(
@@ -175,7 +177,7 @@ function TreeNode({
     <div
       ref={(el) => nodeRef(el, node.id)}
       role="treeitem"
-      aria-expanded={hasMemo ? isExpanded : undefined}
+      aria-expanded={node.level < 3 ? isExpanded : undefined}
       aria-selected={isSelected}
       aria-level={node.level}
       tabIndex={tabIndex}
@@ -184,20 +186,28 @@ function TreeNode({
       onKeyDown={(e) => onKeyDown(e, node)}
       style={{ paddingLeft }}
       className={cn(
-        "flex items-center gap-2 py-1.5 pr-3 text-sm cursor-pointer select-none",
+        "flex flex-col",
         "border-b border-border-subtle",
-        "focus:outline-none focus:bg-surface-interactive",
-        "hover:bg-surface-interactive",
-        isSelected
-          ? "bg-accent-dim text-ink-primary"
-          : "text-ink-secondary hover:text-ink-primary",
+        "focus:outline-none",
       )}
     >
-      {Chevron}
-      <span className="flex-1 truncate text-[12px] font-medium tracking-[0.03em]">
-        {label}
-      </span>
-      <StatusBadge variant={statusVariant} className="ml-auto text-[9px]" />
+      <div
+        className={cn(
+          "flex items-center gap-2 py-1.5 pr-3 text-sm cursor-pointer select-none",
+          "focus:bg-surface-interactive",
+          "hover:bg-surface-interactive",
+          isSelected
+            ? "bg-accent-dim text-ink-primary"
+            : "text-ink-secondary hover:text-ink-primary",
+        )}
+      >
+        {Chevron}
+        <span className="flex-1 truncate text-[12px] font-medium tracking-[0.03em]">
+          {label}
+        </span>
+        <StatusBadge variant={statusVariant} className="ml-auto text-[9px]" />
+      </div>
+      {children}
     </div>
   );
 }
@@ -209,12 +219,13 @@ function TreeNode({
 /**
  * ARIA tree with 3 levels (station → category → equipment).
  * Level-3 nodes select the equipment in selectionStore.
- * Level-1/2 nodes set the board filter in maintenanceStore.
+ * Level-1/2 nodes clear selectionStore and set the board filter in maintenanceStore.
  * Keyboard: Down/Up/Left/Right/Home/End/Enter/Space.
  */
 export function EquipmentTree() {
   const { world } = useWorldData();
   const setBoardFilter = useMaintenanceStore((s) => s.setBoardFilter);
+  const activeBoardFilter = useMaintenanceStore((s) => s.activeBoardFilter);
   const overrides = useMaintenanceStore((s) => s.overrides);
   const now = useMemo(
     () => new Date().toISOString().slice(0, 10),
@@ -222,7 +233,9 @@ export function EquipmentTree() {
   );
 
   const selectEntity = useSelectionStore((s) => s.selectEntity);
+  const clearSelection = useSelectionStore((s) => s.clearSelection);
   const selectedEntityId = useSelectionStore((s) => s.selectedEntityId);
+  const selectedEntityType = useSelectionStore((s) => s.selectedEntityType);
 
   // Expansion state — all level-1 expanded by default
   const [expanded, setExpanded] = useState<Set<string>>(() => {
@@ -303,7 +316,6 @@ export function EquipmentTree() {
   }
 
   function handleSelect(node: EquipmentTreeNode) {
-    setActiveId(node.id);
     if (node.level === 3 && node.equipmentId) {
       // Equipment leaf: select in selectionStore (SR-206 §6)
       selectEntity(node.equipmentId, EntityType.EQUIPMENT);
@@ -315,7 +327,8 @@ export function EquipmentTree() {
         selectionEquipmentType: node.equipmentType,
       });
     } else if (node.level === 1) {
-      // Station node: filter by station (SR-206 §7)
+      // Station node: clear equipment selection so board filter takes effect (CRITICAL-2)
+      clearSelection();
       setBoardFilter({
         selectionId: node.id,
         selectionLevel: "station",
@@ -323,7 +336,8 @@ export function EquipmentTree() {
         selectionEquipmentType: undefined,
       });
     } else if (node.level === 2) {
-      // Category node: filter by station + equipmentType (SR-206 §7, SR-204 §11)
+      // Category node: clear equipment selection so board filter takes effect (CRITICAL-2)
+      clearSelection();
       setBoardFilter({
         selectionId: node.id,
         selectionLevel: "category",
@@ -419,53 +433,62 @@ export function EquipmentTree() {
       {treeNodes.map((station) => {
         const stationStatus = getNodeStatus(station);
         const stationExpanded = expanded.has(station.id);
-        const stationSelected = selectedEntityId === station.id;
+        // Station is highlighted when activeBoardFilter targets this station (WARNING-3)
+        const stationSelected =
+          selectedEntityType !== EntityType.EQUIPMENT &&
+          activeBoardFilter.selectionId === station.id &&
+          activeBoardFilter.selectionLevel === "station";
         const stationActive = activeId === station.id;
 
         return (
-          <div key={station.id} role="group">
-            <TreeNode
-              node={station}
-              depth={0}
-              parentId={null}
-              isExpanded={stationExpanded}
-              isSelected={stationSelected}
-              tabIndex={stationActive || (activeId === null && station === treeNodes[0]) ? 0 : -1}
-              statusVariant={taskStatusToVariant(stationStatus)}
-              onToggle={toggleExpand}
-              onSelect={handleSelect}
-              onKeyDown={handleKeyDown}
-              nodeRef={nodeRef}
-            />
-
+          <TreeNode
+            key={station.id}
+            node={station}
+            depth={0}
+            parentId={null}
+            isExpanded={stationExpanded}
+            isSelected={stationSelected}
+            tabIndex={stationActive || (activeId === null && station === treeNodes[0]) ? 0 : -1}
+            statusVariant={taskStatusToVariant(stationStatus)}
+            onToggle={toggleExpand}
+            onSelect={(node) => { focusNode(node.id); handleSelect(node); }}
+            onKeyDown={handleKeyDown}
+            nodeRef={nodeRef}
+          >
             {stationExpanded && (
               <div role="group">
                 {station.children.map((category) => {
                   const catStatus = getNodeStatus(category);
                   const catExpanded = expanded.has(category.id);
                   const catActive = activeId === category.id;
+                  // Category is highlighted when activeBoardFilter targets this category (WARNING-3)
+                  const catSelected =
+                    selectedEntityType !== EntityType.EQUIPMENT &&
+                    activeBoardFilter.selectionId === category.id &&
+                    activeBoardFilter.selectionLevel === "category";
 
                   return (
-                    <div key={category.id} role="group">
-                      <TreeNode
-                        node={category}
-                        depth={1}
-                        parentId={station.id}
-                        isExpanded={catExpanded}
-                        isSelected={false}
-                        tabIndex={catActive ? 0 : -1}
-                        statusVariant={taskStatusToVariant(catStatus)}
-                        onToggle={toggleExpand}
-                        onSelect={handleSelect}
-                        onKeyDown={handleKeyDown}
-                        nodeRef={nodeRef}
-                      />
-
+                    <TreeNode
+                      key={category.id}
+                      node={category}
+                      depth={1}
+                      parentId={station.id}
+                      isExpanded={catExpanded}
+                      isSelected={catSelected}
+                      tabIndex={catActive ? 0 : -1}
+                      statusVariant={taskStatusToVariant(catStatus)}
+                      onToggle={toggleExpand}
+                      onSelect={(node) => { focusNode(node.id); handleSelect(node); }}
+                      onKeyDown={handleKeyDown}
+                      nodeRef={nodeRef}
+                    >
                       {catExpanded && (
                         <div role="group">
                           {category.children.map((eqNode) => {
                             const eqStatus = getNodeStatus(eqNode);
+                            // Equipment is selected via selectionStore (WARNING-3)
                             const isEqSelected =
+                              selectedEntityType === EntityType.EQUIPMENT &&
                               selectedEntityId === eqNode.equipmentId;
                             const eqActive = activeId === eqNode.id;
 
@@ -480,7 +503,7 @@ export function EquipmentTree() {
                                 tabIndex={eqActive ? 0 : -1}
                                 statusVariant={taskStatusToVariant(eqStatus)}
                                 onToggle={toggleExpand}
-                                onSelect={handleSelect}
+                                onSelect={(node) => { focusNode(node.id); handleSelect(node); }}
                                 onKeyDown={handleKeyDown}
                                 nodeRef={nodeRef}
                               />
@@ -488,12 +511,12 @@ export function EquipmentTree() {
                           })}
                         </div>
                       )}
-                    </div>
+                    </TreeNode>
                   );
                 })}
               </div>
             )}
-          </div>
+          </TreeNode>
         );
       })}
     </div>

@@ -11,7 +11,7 @@
  * Reads overrides from maintenanceStore; reads selection from selectionStore.
  */
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PipelineWorld } from "@/lib/domain";
 import {
   deriveMaintenanceBoardRows,
@@ -228,6 +228,11 @@ export function MaintenanceBoard({ world, now }: MaintenanceBoardProps) {
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
+  // Cleanup debounce timer on unmount (CRITICAL-3)
+  useEffect(() => () => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+  }, []);
+
   function handleSearchChange(value: string) {
     setSearchInput(value);
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
@@ -261,10 +266,11 @@ export function MaintenanceBoard({ world, now }: MaintenanceBoardProps) {
     [world, now, overrides],
   );
 
-  // Compose the effective filter by merging selectionStore + store filter + local state
+  // Compose the effective filter by merging selectionStore + store filter + local state.
+  // EQUIPMENT selections from selectionStore take precedence over activeBoardFilter.
+  // Station/category selections clear selectionStore (via EquipmentTree handleSelect),
+  // so activeBoardFilter is the sole source for those levels.
   const effectiveFilter = useMemo(() => {
-    // Start from the store filter (handles tree clicks directly)
-    // If selectionStore has an EQUIPMENT selection, override the selection part
     const selectionFilter =
       selectedEntityId && selectedEntityType === EntityType.EQUIPMENT
         ? {
@@ -273,19 +279,12 @@ export function MaintenanceBoard({ world, now }: MaintenanceBoardProps) {
             stationId: activeBoardFilter.stationId,
             selectionEquipmentType: activeBoardFilter.selectionEquipmentType,
           }
-        : selectedEntityId && selectedEntityType === EntityType.STATION
-          ? {
-              selectionId: selectedEntityId,
-              selectionLevel: "station" as const,
-              stationId: selectedEntityId,
-              selectionEquipmentType: undefined,
-            }
-          : {
-              selectionId: activeBoardFilter.selectionId,
-              selectionLevel: activeBoardFilter.selectionLevel,
-              stationId: activeBoardFilter.stationId,
-              selectionEquipmentType: activeBoardFilter.selectionEquipmentType,
-            };
+        : {
+            selectionId: activeBoardFilter.selectionId,
+            selectionLevel: activeBoardFilter.selectionLevel,
+            stationId: activeBoardFilter.stationId,
+            selectionEquipmentType: activeBoardFilter.selectionEquipmentType,
+          };
 
     return {
       ...selectionFilter,

@@ -126,15 +126,17 @@ function canTransition(currentStatus: WorkOrderStatus, newStatus: WorkOrderStatu
  *
  * - vencidas: OVERDUE tasks across active plans (equipment-level plans use equipment.operatingHours)
  * - proximas: UPCOMING tasks across active plans
- * - otAbiertas: WorkOrders in {PLANNED, IN_PROGRESS, ON_HOLD}
+ * - otAbiertas: WorkOrders in {PLANNED, IN_PROGRESS, ON_HOLD} — respects session overrides
  * - equiposCriticos: Equipment with criticality === CRITICAL
  *
  * @param world - Full pipeline world state
  * @param now - Current date as ISO string (YYYY-MM-DD)
+ * @param overrides - Session overrides; WO status override takes precedence over seed status
  */
 export function computeMaintenanceKpis(
   world: PipelineWorld,
   now: string,
+  overrides: MaintenanceOverrides = { workOrderStatuses: {}, completedTasks: {} },
 ): MaintenanceKpis {
   // Build equipment lookup map for fast access
   const equipmentById = new Map(world.equipment.map((e) => [e.id, e]));
@@ -156,13 +158,17 @@ export function computeMaintenanceKpis(
     }
   }
 
-  // otAbiertas: WOs with open status (SR-204 §4)
+  // otAbiertas: WOs with open status (SR-204 §4) — override takes precedence over seed
   const openStatuses = new Set<WorkOrderStatus>([
     WorkOrderStatusValues.PLANNED,
     WorkOrderStatusValues.IN_PROGRESS,
     WorkOrderStatusValues.ON_HOLD,
   ]);
-  const otAbiertas = world.workOrders.filter((wo) => openStatuses.has(wo.status)).length;
+  const otAbiertas = world.workOrders.filter((wo) => {
+    const effectiveStatus: WorkOrderStatus =
+      wo.id in overrides.workOrderStatuses ? overrides.workOrderStatuses[wo.id] : wo.status;
+    return openStatuses.has(effectiveStatus);
+  }).length;
 
   // equiposCriticos: equipment with CRITICAL criticality (SR-204 §5)
   const equiposCriticos = world.equipment.filter(

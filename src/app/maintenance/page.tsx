@@ -72,7 +72,7 @@ export default function MaintenancePage() {
 
       {/* Tab bar (SR-212 §2) */}
       <Tabs
-        tabs={TABS as unknown as { id: string; label: string }[]}
+        tabs={TABS}
         activeTab={activeTab}
         onTabChange={(id) => setActiveTab(id as typeof activeTab)}
         className="px-4"

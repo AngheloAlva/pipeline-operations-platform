@@ -249,9 +249,9 @@ export function MaintenanceCalendar({ world, now }: MaintenanceCalendarProps) {
                         {cell.day}
                       </div>
                       <div className="flex flex-col gap-0.5 overflow-hidden">
-                        {dayBuckets.map((b, bIdx) => (
+                        {dayBuckets.map((b) => (
                           <TaskDot
-                            key={`${b.planId}:${b.taskId}:${bIdx}`}
+                            key={`${b.planId}:${b.taskId}`}
                             bucket={b}
                             onClickTask={handleTaskClick}
                           />

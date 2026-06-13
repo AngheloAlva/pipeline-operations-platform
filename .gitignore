@@ -42,3 +42,6 @@ next-env.d.ts
 
 # agent tooling metadata (machine-local)
 .atl/
+
+# playwright mcp scratch (screenshots, console logs)
+.playwright-mcp/

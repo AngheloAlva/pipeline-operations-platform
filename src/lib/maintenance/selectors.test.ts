@@ -909,3 +909,24 @@ describe("deriveMaintenanceBoardRows — SR-204 §8–10", () => {
     expect(rows[0].taskStatus).toBe(TaskStatus.OK);
   });
 });
+
+// ============================================================================
+// S-2 regression: applyTaskCompletion must return same reference on not-found paths
+// ============================================================================
+describe("applyTaskCompletion — S-2: same-reference contract on not-found paths", () => {
+  it("S-2 regression: returns same overrides reference when plan is not found", () => {
+    const world: PipelineWorld = { ...emptyWorld(), maintenancePlans: [] };
+    const original = emptyOverrides();
+    const result = applyTaskCompletion(world, "PLN-NONEXISTENT", "TSK-001", "2026-06-12", original);
+    expect(result).toBe(original); // same reference — no Zustand churn
+  });
+
+  it("S-2 regression: returns same overrides reference when task is not found in plan", () => {
+    const equipment = makeEquipment({ id: "EQP-001" });
+    const plan = makePlan({ id: "PLN-001", equipmentId: "EQP-001", tasks: [] }); // empty tasks
+    const world: PipelineWorld = { ...emptyWorld(), equipment: [equipment], maintenancePlans: [plan] };
+    const original = emptyOverrides();
+    const result = applyTaskCompletion(world, "PLN-001", "TSK-NONEXISTENT", "2026-06-12", original);
+    expect(result).toBe(original); // same reference
+  });
+});

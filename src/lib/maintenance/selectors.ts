@@ -519,10 +519,10 @@ export function applyTaskCompletion(
 ): MaintenanceOverrides {
   // Find the task
   const plan = world.maintenancePlans.find((p) => p.id === planId);
-  if (!plan) return { ...overrides };
+  if (!plan) return overrides;
 
   const task = plan.tasks.find((t) => t.id === taskId);
-  if (!task) return { ...overrides };
+  if (!task) return overrides;
 
   const key = taskKey(planId, taskId);
 

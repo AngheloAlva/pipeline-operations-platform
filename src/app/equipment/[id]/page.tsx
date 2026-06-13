@@ -315,42 +315,42 @@ function EquipmentPageBody() {
         ) : (
           /* overflow-x-auto: fixed-column grid scrolls horizontally on mobile (B-2) */
           <div className="overflow-x-auto">
-          <div className="flex flex-col gap-1 min-w-[480px]">
-            {/* Column headers */}
-            <div className="grid grid-cols-[1fr_120px_140px_100px] gap-3 border-b border-border-subtle pb-2">
-              {["Tarea", "Estado", "Próximo vencimiento", "Frecuencia"].map((h) => (
-                <span
-                  key={h}
-                  className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink-muted"
-                  style={{ fontFamily: "var(--font-mono), monospace" }}
+            <div className="flex flex-col gap-1 min-w-[480px]">
+              {/* Column headers */}
+              <div className="grid grid-cols-[1fr_120px_140px_100px] gap-3 border-b border-border-subtle pb-2">
+                {["Tarea", "Estado", "Próximo vencimiento", "Frecuencia"].map((h) => (
+                  <span
+                    key={h}
+                    className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink-muted"
+                    style={{ fontFamily: "var(--font-mono), monospace" }}
+                  >
+                    {h}
+                  </span>
+                ))}
+              </div>
+              {/* Task rows */}
+              {equipmentBoardRows.map((row) => (
+                <div
+                  key={`${row.planId}:${row.taskId}`}
+                  className="grid grid-cols-[1fr_120px_140px_100px] gap-3 border-b border-border-subtle py-2"
                 >
-                  {h}
-                </span>
+                  <span className="text-[13px] text-ink-primary">{row.taskName}</span>
+                  <span
+                    className="text-[12px] font-medium"
+                    style={{ color: TASK_STATUS_COLORS[row.taskStatus] ?? "var(--ink-secondary)" }}
+                  >
+                    {TASK_STATUS_LABELS[row.taskStatus] ?? row.taskStatus}
+                  </span>
+                  <span
+                    className="text-[12px] tabular-nums text-ink-secondary"
+                    style={{ fontFamily: "var(--font-mono), monospace" }}
+                  >
+                    {row.nextDueDate || "—"}
+                  </span>
+                  <span className="text-[12px] text-ink-muted">{row.frequency}</span>
+                </div>
               ))}
             </div>
-            {/* Task rows */}
-            {equipmentBoardRows.map((row) => (
-              <div
-                key={`${row.planId}:${row.taskId}`}
-                className="grid grid-cols-[1fr_120px_140px_100px] gap-3 border-b border-border-subtle py-2"
-              >
-                <span className="text-[13px] text-ink-primary">{row.taskName}</span>
-                <span
-                  className="text-[12px] font-medium"
-                  style={{ color: TASK_STATUS_COLORS[row.taskStatus] ?? "var(--ink-secondary)" }}
-                >
-                  {TASK_STATUS_LABELS[row.taskStatus] ?? row.taskStatus}
-                </span>
-                <span
-                  className="text-[12px] tabular-nums text-ink-secondary"
-                  style={{ fontFamily: "var(--font-mono), monospace" }}
-                >
-                  {row.nextDueDate || "—"}
-                </span>
-                <span className="text-[12px] text-ink-muted">{row.frequency}</span>
-              </div>
-            ))}
-          </div>
           </div>
         )}
 
@@ -506,57 +506,57 @@ function EquipmentPageBody() {
             {/* Readings table — all points for this station */}
             {/* overflow-x-auto: fixed-column grid scrolls horizontally on mobile (B-4) */}
             <div className="overflow-x-auto">
-            <div className="flex flex-col gap-1 min-w-[380px]">
-              <div className="grid grid-cols-[80px_1fr_120px_80px] gap-3 border-b border-border-subtle pb-2">
-                {["km", "Punto", "Último (V)", "Nivel"].map((h) => (
-                  <span
-                    key={h}
-                    className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink-muted"
-                    style={{ fontFamily: "var(--font-mono), monospace" }}
+              <div className="flex flex-col gap-1 min-w-[380px]">
+                <div className="grid grid-cols-[80px_1fr_120px_80px] gap-3 border-b border-border-subtle pb-2">
+                  {["km", "Punto", "Último (V)", "Nivel"].map((h) => (
+                    <span
+                      key={h}
+                      className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink-muted"
+                      style={{ fontFamily: "var(--font-mono), monospace" }}
+                    >
+                      {h}
+                    </span>
+                  ))}
+                </div>
+                {integrityRows.map((row) => (
+                  <div
+                    key={row.pointKey}
+                    className="grid grid-cols-[80px_1fr_120px_80px] gap-3 border-b border-border-subtle py-1.5"
                   >
-                    {h}
-                  </span>
+                    <span
+                      className="text-[12px] tabular-nums text-ink-secondary"
+                      style={{ fontFamily: "var(--font-mono), monospace" }}
+                    >
+                      {row.km.toFixed(1)}
+                    </span>
+                    <span
+                      className="text-[12px] text-ink-primary truncate"
+                      style={{ fontFamily: "var(--font-mono), monospace" }}
+                    >
+                      {row.pointKey}
+                    </span>
+                    <span
+                      className={cn(
+                        "text-[12px] tabular-nums font-medium",
+                        row.level === "OK"
+                          ? "text-[var(--status-ok)]"
+                          : row.level === "WARNING"
+                            ? "text-[var(--amber-safety)]"
+                            : "text-[var(--alarm-red)]",
+                      )}
+                      style={{ fontFamily: "var(--font-mono), monospace" }}
+                    >
+                      {row.latestPotentialV.toFixed(3)}
+                    </span>
+                    <span
+                      className="text-[11px] text-ink-muted"
+                      style={{ fontFamily: "var(--font-mono), monospace" }}
+                    >
+                      {row.level}
+                    </span>
+                  </div>
                 ))}
               </div>
-              {integrityRows.map((row) => (
-                <div
-                  key={row.pointKey}
-                  className="grid grid-cols-[80px_1fr_120px_80px] gap-3 border-b border-border-subtle py-1.5"
-                >
-                  <span
-                    className="text-[12px] tabular-nums text-ink-secondary"
-                    style={{ fontFamily: "var(--font-mono), monospace" }}
-                  >
-                    {row.km.toFixed(1)}
-                  </span>
-                  <span
-                    className="text-[12px] text-ink-primary truncate"
-                    style={{ fontFamily: "var(--font-mono), monospace" }}
-                  >
-                    {row.pointKey}
-                  </span>
-                  <span
-                    className={cn(
-                      "text-[12px] tabular-nums font-medium",
-                      row.level === "OK"
-                        ? "text-[var(--status-ok)]"
-                        : row.level === "WARNING"
-                          ? "text-[var(--amber-safety)]"
-                          : "text-[var(--alarm-red)]",
-                    )}
-                    style={{ fontFamily: "var(--font-mono), monospace" }}
-                  >
-                    {row.latestPotentialV.toFixed(3)}
-                  </span>
-                  <span
-                    className="text-[11px] text-ink-muted"
-                    style={{ fontFamily: "var(--font-mono), monospace" }}
-                  >
-                    {row.level}
-                  </span>
-                </div>
-              ))}
-            </div>
             </div>
           </div>
         )}

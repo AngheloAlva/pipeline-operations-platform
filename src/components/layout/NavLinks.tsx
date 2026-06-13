@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
@@ -69,12 +69,23 @@ function MobileNav() {
     setOpen(false);
   }
 
+  // Close on Escape while open — keyboard accessibility
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+    // TODO(a11y): focus trap + focus return on open/close
+  }, [open]);
+
   return (
     <div className="flex items-center gap-2 md:hidden">
       {/* Hamburger toggle */}
       <button
         type="button"
-        aria-label="Abrir navegación"
+        aria-label={open ? "Cerrar navegación" : "Abrir navegación"}
         aria-expanded={open}
         aria-controls="mobile-nav-menu"
         onClick={() => setOpen((v) => !v)}
@@ -122,11 +133,10 @@ function MobileNav() {
             onClick={close}
           />
 
-          {/* Menu panel */}
+          {/* Menu panel — no role="dialog" here: no focus trap implemented.
+              Semantics come from the inner <nav aria-label="...">. */}
           <div
             id="mobile-nav-menu"
-            role="dialog"
-            aria-label="Menú de navegación"
             className={cn(
               "absolute right-4 top-12 z-50 min-w-[160px]",
               "border border-border-mid bg-surface-raised shadow-lg",

@@ -38,6 +38,17 @@ export function EquipmentTreeDrawer() {
     setOpen(false);
   }
 
+  // Close on Escape while open — keyboard accessibility
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+    // TODO(a11y): focus trap + focus return on open/close
+  }, [open]);
+
   return (
     // Only visible below md — the static aside rail handles md+ in the layout
     <div className="md:hidden">
@@ -79,20 +90,20 @@ export function EquipmentTreeDrawer() {
       {/* Overlay drawer */}
       {open && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop — z-40 sits above the sticky header (z-40 same layer, drawer wins) */}
           <div
-            className="fixed inset-0 z-30 bg-black/40"
+            className="fixed inset-0 z-40 bg-black/40"
             aria-hidden="true"
             onClick={close}
           />
 
-          {/* Drawer panel — slides in from the left */}
+          {/* Drawer panel — z-50 explicitly above header (z-40) regardless of DOM order */}
           <div
             id="equipment-tree-drawer"
             role="dialog"
             aria-label="Panel de equipos"
             className={cn(
-              "fixed left-0 top-0 z-40 flex h-full w-64 flex-col",
+              "fixed left-0 top-0 z-50 flex h-full w-64 flex-col",
               "border-r border-border-mid bg-surface-raised shadow-xl",
             )}
           >

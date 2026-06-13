@@ -11,6 +11,9 @@ import { useSelectionStore } from "@/store/selectionStore";
 import type { PipelineWorld, Tank, Station } from "@/lib/domain";
 import { TELEMETRY_BLUE, STATUS_WARNING, AMBER_SAFETY } from "@/lib/charts/palette";
 import { formatPk } from "@/lib/format";
+import { CrossNavLinks } from "@/components/shared/CrossNavLinks";
+import type { ResolvedEntity } from "@/lib/domain/resolveEntity";
+import { EntityType } from "@/store/selectionStore";
 
 // ============================================================================
 // TYPES
@@ -44,9 +47,10 @@ function getLevelColor(ratio: number): string {
 
 interface TankDetailProps {
   tank: Tank;
+  resolvedEntity: ResolvedEntity;
 }
 
-function TankDetail({ tank }: TankDetailProps) {
+function TankDetail({ tank, resolvedEntity }: TankDetailProps) {
   const ratio = tank.currentLevelM3 / tank.capacityM3;
   const fillPercent = ratio * 100;
   const levelColor = getLevelColor(ratio);
@@ -133,6 +137,9 @@ function TankDetail({ tank }: TankDetailProps) {
           ⚠ Alarma nivel alto
         </div>
       )}
+
+      {/* F4-3-R1: cross-module navigation — exclude cockpit (current module) */}
+      <CrossNavLinks entity={resolvedEntity} exclude={["cockpit"]} />
     </div>
   );
 }
@@ -144,9 +151,10 @@ function TankDetail({ tank }: TankDetailProps) {
 interface StationDetailProps {
   station: Station;
   world: PipelineWorld;
+  resolvedEntity: ResolvedEntity;
 }
 
-function StationDetail({ station, world }: StationDetailProps) {
+function StationDetail({ station, world, resolvedEntity }: StationDetailProps) {
   const stationTanks = world.tanks.filter((t) => t.stationId === station.id);
   const monoStyle = { fontFamily: "var(--font-mono), monospace" };
 
@@ -192,6 +200,9 @@ function StationDetail({ station, world }: StationDetailProps) {
           })}
         </div>
       )}
+
+      {/* F4-3-R1: cross-module navigation — exclude cockpit (current module) */}
+      <CrossNavLinks entity={resolvedEntity} exclude={["cockpit"]} />
     </div>
   );
 }
@@ -223,6 +234,14 @@ export function ContextPanel({ world }: ContextPanelProps) {
       ? (world.stations.find((s) => s.id === selectedEntityId) ?? null)
       : null;
 
+  // Build ResolvedEntity for CrossNavLinks — construct from what the panel already knows.
+  // TANK: stationId from tank.stationId. STATION: stationId is self (s.id).
+  const resolvedEntity: ResolvedEntity | null = selectedTank
+    ? { id: selectedTank.id, type: EntityType.TANK, stationId: selectedTank.stationId }
+    : selectedStation
+      ? { id: selectedStation.id, type: EntityType.STATION, stationId: selectedStation.id }
+      : null;
+
   return (
     <aside
       className="flex flex-col gap-3 border border-border-mid bg-surface-raised p-4"
@@ -251,10 +270,12 @@ export function ContextPanel({ world }: ContextPanelProps) {
           </div>
         )}
 
-        {selectedTank && <TankDetail tank={selectedTank} />}
+        {selectedTank && resolvedEntity && (
+          <TankDetail tank={selectedTank} resolvedEntity={resolvedEntity} />
+        )}
 
-        {selectedStation && !selectedTank && (
-          <StationDetail station={selectedStation} world={world} />
+        {selectedStation && !selectedTank && resolvedEntity && (
+          <StationDetail station={selectedStation} world={world} resolvedEntity={resolvedEntity} />
         )}
 
         {selectedEntityId && !selectedTank && !selectedStation && (

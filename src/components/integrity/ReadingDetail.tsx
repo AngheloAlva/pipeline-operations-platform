@@ -11,6 +11,8 @@
 
 import dynamic from "next/dynamic";
 import { useSelection, EntityType } from "@/store/selectionStore";
+import { CrossNavLinks } from "@/components/shared/CrossNavLinks";
+import type { ResolvedEntity } from "@/lib/domain/resolveEntity";
 // CRITICAL-4: TimeSeriesChart uses ResponsiveContainer which measures a DOM
 // element during SSR and gets width=-1 → hydration flash. Import dynamically
 // with ssr:false since the chart is client-only interactive content.
@@ -99,6 +101,17 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
     selectedPointKey,
   );
 
+  // Build ResolvedEntity for CrossNavLinks — find the matching reading to get stationId.
+  // The cathodic point's stationId may be undefined; coerce to null per spec (ADR-4).
+  const matchedReading = world.cathodicReadings.find(
+    (r) => `${r.km}:${r.segmentId}` === selectedPointKey,
+  );
+  const cathodicEntity: ResolvedEntity = {
+    id: selectedPointKey,
+    type: EntityType.CATHODIC_POINT,
+    stationId: matchedReading?.stationId ?? null,
+  };
+
   return (
     <section
       className="flex flex-col border border-border-mid bg-surface-raised"
@@ -126,6 +139,12 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
           height={220}
           emptyLabel="No readings for this point"
         />
+      </div>
+
+      {/* F4-3-R5: cross-module navigation — exclude integrity (current module).
+          CrossNavLinks auto-omits cockpit/maintenance links when stationId is null. */}
+      <div className="px-4 pb-4">
+        <CrossNavLinks entity={cathodicEntity} exclude={["integrity"]} />
       </div>
     </section>
   );

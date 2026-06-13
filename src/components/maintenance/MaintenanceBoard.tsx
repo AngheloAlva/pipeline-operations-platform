@@ -25,6 +25,8 @@ import { DataTable } from "@/components/ui/DataTable";
 import type { DataTableColumn, RowVariant } from "@/components/ui/DataTable";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { cn } from "@/lib/cn";
+import { CrossNavLinks } from "@/components/shared/CrossNavLinks";
+import type { ResolvedEntity } from "@/lib/domain/resolveEntity";
 
 // ---------------------------------------------------------------------------
 // Column definitions
@@ -260,6 +262,15 @@ export function MaintenanceBoard({ world, now }: MaintenanceBoardProps) {
     );
   }
 
+  // Build ResolvedEntity for CrossNavLinks when an EQUIPMENT is selected (F4-3-T3-4).
+  // Construct from world.equipment — no cross-store import needed.
+  const equipmentEntity: ResolvedEntity | null = useMemo(() => {
+    if (selectedEntityType !== EntityType.EQUIPMENT || !selectedEntityId) return null;
+    const eq = world.equipment.find((e) => e.id === selectedEntityId);
+    if (!eq) return null;
+    return { id: eq.id, type: EntityType.EQUIPMENT, stationId: eq.stationId };
+  }, [selectedEntityId, selectedEntityType, world.equipment]);
+
   // Derive rows (memoized)
   const allRows = useMemo(
     () => deriveMaintenanceBoardRows(world, now, overrides),
@@ -379,6 +390,15 @@ export function MaintenanceBoard({ world, now }: MaintenanceBoardProps) {
           )}
         </div>
       </div>
+
+      {/* F4-3-R4: cross-module navigation when an EQUIPMENT is selected.
+          exclude=['maintenance'] so the current module link is omitted.
+          Equipment hub link (/equipment/<id>) is shown; cockpit/integrity use stationId. */}
+      {equipmentEntity && (
+        <div className="px-4 py-2 border-b border-border-subtle">
+          <CrossNavLinks entity={equipmentEntity} exclude={["maintenance"]} />
+        </div>
+      )}
 
       {/* Data table */}
       <DataTable<MaintenanceBoardRow>

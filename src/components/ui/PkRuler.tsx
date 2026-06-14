@@ -185,13 +185,15 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
                 strokeWidth="0.75"
               />
 
-              {/* Station dot — phosphor for terminal/source, border-strong for pump */}
+              {/* Station dot — cyan identity accent marks terminal/source endpoints
+                  (structural, not a status); pump stations stay hollow/neutral.
+                  Green/amber/red are reserved strictly for semantic status. */}
               <circle
                 cx={x}
                 cy={TRACK_Y}
                 r={STATION_DOT_R}
-                fill={isTerminalOrSource ? "var(--phosphor)" : "var(--surface-raised)"}
-                stroke={isTerminalOrSource ? "var(--phosphor)" : "var(--border-strong)"}
+                fill={isTerminalOrSource ? "var(--accent)" : "var(--surface-raised)"}
+                stroke={isTerminalOrSource ? "var(--accent)" : "var(--border-strong)"}
                 strokeWidth="1.5"
               />
 

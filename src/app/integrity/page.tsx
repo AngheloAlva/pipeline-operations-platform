@@ -59,29 +59,41 @@ function IntegrityPageBody() {
   }
 
   return (
-    <div className="mx-auto max-w-panel px-4 py-4 sm:px-6 flex flex-col gap-4">
-      {/* Row 1: PipelineMap — full width (F3-1) */}
-      <section>
-        <PipelineMap world={world} selectedPointKey={selectedPointKey} />
-      </section>
+    <div className="mc-deck">
+      <div className="mx-auto max-w-panel px-4 py-5 sm:px-6 flex flex-col gap-4">
+        {/* Deck module header — eyebrow + title */}
+        <header className="flex items-baseline justify-between gap-4">
+          <div>
+            <span className="mc-rail-eyebrow">Mission Control · Integridad</span>
+            <h1 className="mt-1 text-sm font-medium uppercase tracking-[0.16em] text-ink-primary">
+              Panel de Integridad
+            </h1>
+          </div>
+        </header>
 
-      {/* Row 2: IntegrityKpis (1 col) + ReadingsTable (2 cols) */}
-      <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        {/* KPI panel — 1 column */}
-        <div className="lg:col-span-1">
-          <IntegrityKpis world={world} />
-        </div>
+        {/* Row 1: PipelineMap — full width (F3-1) */}
+        <section>
+          <PipelineMap world={world} selectedPointKey={selectedPointKey} />
+        </section>
 
-        {/* Readings table — 2 columns */}
-        <div className="lg:col-span-2">
-          <ReadingsTable world={world} />
-        </div>
-      </section>
+        {/* Row 2: IntegrityKpis (1 col) + ReadingsTable (2 cols) */}
+        <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          {/* KPI panel — 1 column */}
+          <div className="lg:col-span-1">
+            <IntegrityKpis world={world} />
+          </div>
 
-      {/* Row 3: ReadingDetail — full width (F3-4) */}
-      <section>
-        <ReadingDetail world={world} />
-      </section>
+          {/* Readings table — 2 columns */}
+          <div className="lg:col-span-2">
+            <ReadingsTable world={world} />
+          </div>
+        </section>
+
+        {/* Row 3: ReadingDetail — full width (F3-4) */}
+        <section>
+          <ReadingDetail world={world} />
+        </section>
+      </div>
     </div>
   );
 }

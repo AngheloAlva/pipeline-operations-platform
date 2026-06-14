@@ -12,6 +12,7 @@
 import dynamic from "next/dynamic";
 import { useSelection, EntityType } from "@/store/selectionStore";
 import { CrossNavLinks } from "@/components/shared/CrossNavLinks";
+import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
 import type { ResolvedEntity } from "@/lib/domain/resolveEntity";
 // CRITICAL-4: TimeSeriesChart uses ResponsiveContainer which measures a DOM
 // element during SSR and gets width=-1 → hydration flash. Import dynamically
@@ -72,19 +73,12 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
 
   if (!selectedPointKey) {
     return (
-      <section
-        className="flex flex-col border border-border-mid bg-surface-raised"
-        aria-label="Cathodic point detail"
-      >
-        <header className="border-b border-border-mid px-4 py-3">
-          <h2
-            className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
-            style={{ fontFamily: "var(--font-mono), monospace" }}
-          >
-            Historial de Potencial
-          </h2>
-        </header>
-        <div className="flex items-center justify-center" style={{ height: 220 }}>
+      <InstrumentBezel label="HISTORIAL DE POTENCIAL">
+        <div
+          className="flex items-center justify-center px-4"
+          style={{ height: 220 }}
+          aria-label="Cathodic point detail"
+        >
           <p
             className="text-[12px] uppercase tracking-[0.12em] text-ink-muted"
             style={{ fontFamily: "var(--font-mono), monospace" }}
@@ -92,7 +86,7 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
             Seleccione un punto en el mapa o la tabla para ver su historial
           </p>
         </div>
-      </section>
+      </InstrumentBezel>
     );
   }
 
@@ -117,39 +111,26 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
   };
 
   return (
-    <section
-      className="flex flex-col border border-border-mid bg-surface-raised"
-      aria-label={`Cathodic point detail — ${selectedPointKey}`}
+    <InstrumentBezel
+      label="HISTORIAL DE POTENCIAL"
+      sublabel={`PUNTO ${selectedPointKey}`}
     >
-      <header className="flex items-center justify-between border-b border-border-mid px-4 py-3">
-        <h2
-          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
-          style={{ fontFamily: "var(--font-mono), monospace" }}
-        >
-          Historial de Potencial
-        </h2>
-        <span
-          className="font-mono text-[12px] tabular-nums text-ink-secondary"
-          style={{ fontFamily: "var(--font-mono), monospace" }}
-        >
-          Punto: {selectedPointKey}
-        </span>
-      </header>
+      <div aria-label={`Cathodic point detail — ${selectedPointKey}`}>
+        <div className="p-4">
+          <TimeSeriesChart
+            series={series}
+            thresholds={INTEGRITY_THRESHOLDS}
+            height={220}
+            emptyLabel="Sin lecturas para este punto"
+          />
+        </div>
 
-      <div className="p-4">
-        <TimeSeriesChart
-          series={series}
-          thresholds={INTEGRITY_THRESHOLDS}
-          height={220}
-          emptyLabel="Sin lecturas para este punto"
-        />
+        {/* F4-3-R5: cross-module navigation — exclude integrity (current module).
+            CrossNavLinks auto-omits cockpit/maintenance links when stationId is null. */}
+        <div className="px-4 pb-4">
+          <CrossNavLinks entity={cathodicEntity} exclude={["integrity"]} />
+        </div>
       </div>
-
-      {/* F4-3-R5: cross-module navigation — exclude integrity (current module).
-          CrossNavLinks auto-omits cockpit/maintenance links when stationId is null. */}
-      <div className="px-4 pb-4">
-        <CrossNavLinks entity={cathodicEntity} exclude={["integrity"]} />
-      </div>
-    </section>
+    </InstrumentBezel>
   );
 }

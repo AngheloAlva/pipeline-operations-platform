@@ -27,6 +27,7 @@ import { groupReadingsByKm } from "@/lib/integrity/selectors";
 import { useSelectionStore, EntityType } from "@/store/selectionStore";
 import { AlertLevel, EquipmentType } from "@/lib/domain/types";
 import type { PipelineWorld } from "@/lib/domain";
+import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
 
 // ============================================================================
 // Constants
@@ -165,19 +166,11 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
   }
 
   return (
-    <section
-      aria-label="Mapa de integridad catódica"
-      className="border border-border-mid bg-surface-raised p-3"
+    <InstrumentBezel
+      label="MAPA DE INTEGRIDAD"
+      sublabel="PROTECCIÓN CATÓDICA"
     >
-      <header className="mb-2 flex items-center justify-between">
-        <h2
-          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
-          style={{ fontFamily: "var(--font-mono), monospace" }}
-        >
-          Mapa de Integridad — Protección Catódica
-        </h2>
-      </header>
-
+      <div className="p-3" role="region" aria-label="Mapa de integridad catódica">
       {/* SVG: full-width recipe for thin horizontal maps (ADR-7 exception).
           PipelineMap is a thin strip (1080×80, ~13.5:1 ratio). Unlike the
           tall FlowDiagram (1080×320), stretching this to full container width
@@ -303,6 +296,7 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
         })}
       </svg>
       </div>
-    </section>
+      </div>
+    </InstrumentBezel>
   );
 }

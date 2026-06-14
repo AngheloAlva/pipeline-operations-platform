@@ -10,10 +10,10 @@
 /* ---------------------------------------------------------------------------
  * "Sala de Control" — Token Architecture
  *
- * Dark default (control room at night). Graphite base like powered-off panel
- * steel. Phosphor-green single accent (CRT telemetry alive). Safety-amber for
- * warnings. Alarm-red desaturated for dark bg. Light theme is daylight control
- * room — light graphite, same accent discipline.
+ * Dark default (control room at night). NEUTRAL graphite base (strong dark
+ * gray). Telemetry-cyan single brand accent; green/amber/red reserved strictly
+ * for semantic status (OK / WARNING / CRITICAL). Light theme is daylight
+ * control room — neutral light graphite, same accent discipline.
  *
  * Primitive layer: --graphite-*, --phosphor, --amber-safety, --alarm-*
  * Semantic layer: --surface-*, --border-*, --text-*, --accent, --status-*
@@ -25,16 +25,16 @@
  * --------------------------------------------------------------------------- */
 :root {
   /* --- Graphite primitives --- */
-  --graphite-900: #0c0e12;  /* base canvas: powered-off panel steel */
-  --graphite-800: #13161c;  /* cards, instrument panels */
-  --graphite-750: #181b22;  /* inputs, table rows */
-  --graphite-700: #1e2229;  /* hover / interactive states */
-  --graphite-600: #252b34;  /* elevated overlays */
-  --graphite-400: #4a5260;  /* muted borders */
-  --graphite-300: #6b7585;  /* secondary text */
-  --graphite-200: #9ba6b5;  /* tertiary/disabled */
-  --graphite-100: #c8d0dc;  /* secondary readouts */
-  --graphite-50:  #e8ecf2;  /* primary readouts */
+  --graphite-900: #0a0a0b;  /* base canvas: neutral charcoal */
+  --graphite-800: #171718;  /* cards, instrument panels — strong neutral gray */
+  --graphite-750: #1c1c1d;  /* inputs, table rows */
+  --graphite-700: #222223;  /* hover / interactive states */
+  --graphite-600: #2a2a2b;  /* elevated overlays */
+  --graphite-400: #4c4c50;  /* muted borders */
+  --graphite-300: #6e6e74;  /* secondary text */
+  --graphite-200: #9d9da4;  /* tertiary/disabled */
+  --graphite-100: #ccccd0;  /* secondary readouts */
+  --graphite-50:  #ececee;  /* primary readouts */
 
   /* --- Signal primitives --- */
   --phosphor:         #4ade80;  /* CRT telemetry green — system alive, OK */
@@ -48,10 +48,10 @@
   --telemetry-blue-dim: rgba(56, 189, 248, 0.14);
 
   /* --- Ink hierarchy (4 levels) --- */
-  --ink-primary:   #e8ecf2;  /* level 1 — main readouts */
-  --ink-secondary: #9ba6b5;  /* level 2 — labels, secondary */
-  --ink-tertiary:  #8892a2;  /* level 3 — metadata, timestamps — 5.91:1 on graphite-800 */
-  --ink-muted:     #4a5260;  /* level 4 — disabled, ghost */
+  --ink-primary:   #ececee;  /* level 1 — main readouts */
+  --ink-secondary: #9d9da4;  /* level 2 — labels, secondary */
+  --ink-tertiary:  #8b8b91;  /* level 3 — metadata, timestamps */
+  --ink-muted:     #4c4c50;  /* level 4 — disabled, ghost */
 
   /* --- Surface elevation (hairline steps, same graphite hue) --- */
   --surface-base:        var(--graphite-900);  /* page canvas */
@@ -60,14 +60,14 @@
   --surface-interactive: var(--graphite-700);  /* hover, focus */
 
   /* --- Borders (low-opacity rgba — technical, not harsh) --- */
-  --border-subtle: rgba(200, 208, 220, 0.08);   /* structural separation */
-  --border-mid:    rgba(200, 208, 220, 0.14);   /* panel frames */
-  --border-strong: rgba(200, 208, 220, 0.24);   /* emphasis, focused */
+  --border-subtle: rgba(255, 255, 255, 0.06);   /* structural separation */
+  --border-mid:    rgba(255, 255, 255, 0.10);   /* panel frames */
+  --border-strong: rgba(255, 255, 255, 0.18);   /* emphasis, focused */
 
-  /* --- Accent (phosphor-green as single brand channel) --- */
-  --accent:       var(--phosphor);
-  --accent-hover: #86efac;  /* green-300 — lighter on hover */
-  --accent-dim:   var(--phosphor-dim);
+  /* --- Accent (telemetry-cyan as single brand channel) --- */
+  --accent:       var(--telemetry-blue);
+  --accent-hover: #7dd3fc;  /* sky-300 — lighter on hover */
+  --accent-dim:   var(--telemetry-blue-dim);
 
   /* --- Status — 1:1 AlertLevel + panel-lamp bg --- */
   --status-ok:          var(--phosphor);
@@ -86,20 +86,20 @@
  * --------------------------------------------------------------------------- */
 :root:not(.dark) {
   /* --- Graphite inverted — cool light panel steel --- */
-  --graphite-900: #f0f2f5;
+  --graphite-900: #ececee;
   --graphite-800: #ffffff;
-  --graphite-750: #eaecf0;
-  --graphite-700: #dde0e6;
-  --graphite-600: #cfd3da;
-  --graphite-300: #5a6474;
-  --graphite-200: #7b8699;
-  --graphite-100: #374151;
-  --graphite-50:  #111827;
+  --graphite-750: #f0f0f1;
+  --graphite-700: #e2e2e4;
+  --graphite-600: #d4d4d6;
+  --graphite-300: #5c5c62;
+  --graphite-200: #7d7d84;
+  --graphite-100: #3a3a40;
+  --graphite-50:  #18181a;
 
-  --ink-primary:   #111827;
-  --ink-secondary: #374151;
-  --ink-tertiary:  #5a6474;  /* 5.33:1 on graphite-900 #f0f2f5 */
-  --ink-muted:     #9ca3af;
+  --ink-primary:   #18181a;
+  --ink-secondary: #3a3a40;
+  --ink-tertiary:  #5c5c62;
+  --ink-muted:     #9d9da4;
 
   /* --- Signal colors adjusted for light bg --- */
   --phosphor:         #15803d;  /* green-700 — 4.55:1 on white, safe for text-accent */
@@ -112,12 +112,12 @@
   --telemetry-blue:   #0284c7;  /* sky-600 */
   --telemetry-blue-dim: rgba(2, 132, 199, 0.10);
 
-  --border-subtle: rgba(17, 24, 39, 0.08);
-  --border-mid:    rgba(17, 24, 39, 0.14);
-  --border-strong: rgba(17, 24, 39, 0.24);
+  --border-subtle: rgba(24, 24, 27, 0.08);
+  --border-mid:    rgba(24, 24, 27, 0.13);
+  --border-strong: rgba(24, 24, 27, 0.22);
 
-  --accent:       var(--phosphor);
-  --accent-hover: #15803d;
+  --accent:       var(--telemetry-blue);
+  --accent-hover: #0369a1;
 }
 
 /* ---------------------------------------------------------------------------

@@ -124,9 +124,10 @@ export function Tabs({ tabs, activeTab, onTabChange, className }: TabsProps) {
             className={cn(
               // Flat buttons — no border-radius (SR-202 §9)
               "px-4 py-2.5 text-[13px] font-medium uppercase tracking-[0.1em] transition-colors",
-              // Active: bottom border accent + primary ink
+              // Mission Control deck: active tab carries the cyan identity accent
+              // (border color via --mc-cyan token, active when inside .mc-deck).
               isActive
-                ? "border-b-2 border-status-flow text-ink-primary"
+                ? "border-b-2 border-[var(--mc-cyan)] text-ink-primary"
                 : "border-b-2 border-transparent text-ink-secondary hover:text-ink-primary",
             )}
             type="button"

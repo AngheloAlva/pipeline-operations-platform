@@ -17,6 +17,7 @@ import { WorkOrderStatus, WorkOrderPriority, MaintenanceType } from "@/lib/domai
 import { useMaintenanceStore } from "@/store/maintenanceStore";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import type { StatusBadgeVariant } from "@/components/ui/StatusBadge";
+import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
 import { cn } from "@/lib/cn";
 
 // ---------------------------------------------------------------------------
@@ -208,42 +209,46 @@ export function WorkOrderList({ world }: WorkOrderListProps) {
   );
 
   return (
-    <div className="flex flex-col">
-      {/* Status filter chips */}
-      <div className="flex flex-wrap gap-2 border-b border-border-subtle bg-surface-raised px-4 py-3">
-        {STATUS_CHIP_CONFIG.map(({ status, label, variant }) => (
-          <button
-            key={status}
-            type="button"
-            onClick={() => toggleStatusFilter(status)}
-            aria-pressed={activeStatusFilters.includes(status)}
-            className={cn(
-              "transition-opacity",
-              activeStatusFilters.includes(status) ? "opacity-100" : "opacity-40",
-            )}
-          >
-            <StatusBadge variant={variant} label={label} />
-          </button>
-        ))}
-        {activeStatusFilters.length > 0 && (
-          <button
-            type="button"
-            onClick={() => setActiveStatusFilters([])}
-            className="text-[12px] uppercase tracking-[0.1em] text-ink-muted hover:text-ink-primary"
-          >
-            Todos
-          </button>
-        )}
-      </div>
+    <InstrumentBezel
+      label="ÓRDENES DE TRABAJO"
+      sublabel={`${filteredWorkOrders.length} ${filteredWorkOrders.length === 1 ? "ORDEN" : "ÓRDENES"}`}
+    >
+      <div className="flex flex-col">
+        {/* Status filter chips */}
+        <div className="flex flex-wrap gap-2 border-b border-border-subtle px-4 py-3">
+          {STATUS_CHIP_CONFIG.map(({ status, label, variant }) => (
+            <button
+              key={status}
+              type="button"
+              onClick={() => toggleStatusFilter(status)}
+              aria-pressed={activeStatusFilters.includes(status)}
+              className={cn(
+                "transition-opacity",
+                activeStatusFilters.includes(status) ? "opacity-100" : "opacity-40",
+              )}
+            >
+              <StatusBadge variant={variant} label={label} />
+            </button>
+          ))}
+          {activeStatusFilters.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setActiveStatusFilters([])}
+              className="text-[12px] uppercase tracking-[0.1em] text-ink-muted hover:text-ink-primary"
+            >
+              Todos
+            </button>
+          )}
+        </div>
 
-      {/* Work order list */}
-      <div className="flex flex-col divide-y divide-border-subtle">
-        {filteredWorkOrders.length === 0 && (
-          <div className="px-4 py-8 text-center text-sm text-ink-muted">
-            Sin órdenes de trabajo para los filtros seleccionados
-          </div>
-        )}
-        {filteredWorkOrders.map((wo) => {
+        {/* Work order list */}
+        <div className="flex flex-col divide-y divide-border-subtle">
+          {filteredWorkOrders.length === 0 && (
+            <div className="px-4 py-8 text-center text-sm text-ink-muted">
+              Sin órdenes de trabajo para los filtros seleccionados
+            </div>
+          )}
+          {filteredWorkOrders.map((wo) => {
           const effectiveStatus = effectiveStatuses[wo.id] ?? wo.status;
           const badgeVariant = statusToVariant(effectiveStatus);
           const transitions = TRANSITION_BUTTONS[effectiveStatus] ?? [];
@@ -260,7 +265,7 @@ export function WorkOrderList({ world }: WorkOrderListProps) {
           return (
             <div
               key={wo.id}
-              className="flex flex-col gap-3 bg-surface-raised px-4 py-4 hover:bg-surface-interactive"
+              className="flex flex-col gap-3 px-4 py-4 hover:bg-surface-interactive"
             >
               {/* Header row */}
               <div className="flex flex-wrap items-start justify-between gap-2">
@@ -289,7 +294,7 @@ export function WorkOrderList({ world }: WorkOrderListProps) {
 
               {/* Progress bar */}
               <div className="flex items-center gap-3">
-                <div className="h-1.5 flex-1 overflow-hidden bg-surface-base">
+                <div className="h-1.5 flex-1 overflow-hidden bg-surface-base/80">
                   <div
                     className={cn(
                       "h-full transition-all duration-300",
@@ -339,7 +344,8 @@ export function WorkOrderList({ world }: WorkOrderListProps) {
             </div>
           );
         })}
+        </div>
       </div>
-    </div>
+    </InstrumentBezel>
   );
 }

@@ -93,25 +93,26 @@ function MaintenancePageBody() {
 
   return (
     <div className="flex flex-col">
-      {/* KPI row — always visible (SR-212 §2) */}
-      <section className="border-b border-border-subtle">
+      {/* KPI row — always visible (SR-212 §2). Owns the deck module header. */}
+      <section>
         <MaintenanceKpis world={world} now={now} />
       </section>
 
-      {/* Tab bar (SR-212 §2) */}
-      <Tabs
-        tabs={TABS}
-        activeTab={activeTab}
-        onTabChange={(id) => setActiveTab(id as typeof activeTab)}
-        className="px-4"
-      />
+      {/* Tab bar (SR-212 §2) — deck-styled tablist, centered in the panel column */}
+      <div className="mx-auto w-full max-w-panel px-4 sm:px-6">
+        <Tabs
+          tabs={TABS}
+          activeTab={activeTab}
+          onTabChange={(id) => setActiveTab(id as typeof activeTab)}
+        />
+      </div>
 
       {/* Tab panel content */}
       <section
         role="tabpanel"
         id={`tabpanel-${activeTab}`}
         aria-labelledby={`tab-${activeTab}`}
-        className="flex-1"
+        className="mx-auto w-full max-w-panel flex-1 px-4 pb-8 pt-4 sm:px-6"
       >
         {activeTab === "tablero" && (
           <MaintenanceBoard world={world} now={now} />

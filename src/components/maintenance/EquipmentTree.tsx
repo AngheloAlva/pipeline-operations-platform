@@ -197,13 +197,21 @@ function TreeNode({
           "flex items-center gap-2 py-1.5 pr-3 text-sm cursor-pointer select-none",
           "focus:bg-surface-interactive",
           "hover:bg-surface-interactive",
+          // Mission Control deck: selection carries the cyan identity accent
+          // (left bar via --mc-cyan), leaf rows use mono uppercase micro-labels.
           isSelected
-            ? "bg-accent-dim text-ink-primary"
-            : "text-ink-secondary hover:text-ink-primary",
+            ? "border-l-2 border-[var(--mc-cyan)] bg-accent-dim text-ink-primary"
+            : "border-l-2 border-transparent text-ink-secondary hover:text-ink-primary",
         )}
       >
         {Chevron}
-        <span className="flex-1 truncate text-[14px] font-medium tracking-[0.03em]">
+        <span
+          className={cn(
+            "flex-1 truncate text-[12px] font-medium uppercase tracking-[0.1em]",
+            isLeaf && "tabular-nums",
+          )}
+          style={isLeaf ? { fontFamily: "var(--font-mono), monospace" } : undefined}
+        >
           {label}
         </span>
         <StatusBadge variant={statusVariant} className="ml-auto text-[11px]" />

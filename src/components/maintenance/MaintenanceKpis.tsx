@@ -1,19 +1,30 @@
 "use client";
 
 /**
- * MaintenanceKpis — 4 KpiCard row for the maintenance dashboard (SR-207).
+ * MaintenanceKpis — maintenance dashboard summary (SR-207).
+ *
+ * Mission Control redesign (Slice 4): rendered as deck instruments — a module
+ * header (eyebrow + title) plus an `InstrumentBezel` framing four `ReadoutStat`
+ * readouts (Vencidas / Próximas / OT Abiertas / Equipos Críticos).
  *
  * KPI values from computeMaintenanceKpis(world, now, overrides).
  * now = real-world date (NOT simulatedTime).
  * Memoized: recomputes when world or now changes.
  * No imports from simulationStore or useSimulationLoop.
+ *
+ * Status mapping is preserved byte-for-byte from the previous KpiCard version:
+ *   Vencidas         → CRITICAL when > 0, else OK
+ *   Próximas         → WARNING  when > 0, else OK
+ *   OT Abiertas      → no status (informational)
+ *   Equipos Críticos → WARNING  when > 0, else OK
  */
 
 import { useMemo } from "react";
-import type { PipelineWorld } from "@/lib/domain";
+import type { PipelineWorld, AlertLevel } from "@/lib/domain";
 import { computeMaintenanceKpis } from "@/lib/maintenance/selectors";
 import { useMaintenanceStore } from "@/store/maintenanceStore";
-import { KpiCard } from "@/components/ui/KpiCard";
+import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
+import { ReadoutStat } from "@/components/shared/ReadoutStat";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -30,7 +41,7 @@ interface MaintenanceKpisProps {
 // ---------------------------------------------------------------------------
 
 /**
- * Renders 4 KpiCard instances in a horizontal row:
+ * Renders the module header and four maintenance readouts:
  *   Vencidas | Próximas | OT Abiertas | Equipos Críticos
  *
  * SR-207 §3: now is the real-world date, NOT simulatedTime.
@@ -45,38 +56,75 @@ export function MaintenanceKpis({ world, now }: MaintenanceKpisProps) {
     [world, now, overrides],
   );
 
+  // Status mapping preserved exactly from the prior implementation.
+  const vencidasStatus: AlertLevel = kpis.vencidas > 0 ? "CRITICAL" : "OK";
+  const proximasStatus: AlertLevel = kpis.proximas > 0 ? "WARNING" : "OK";
+  const equiposCriticosStatus: AlertLevel = kpis.equiposCriticos > 0 ? "WARNING" : "OK";
+
+  // Module master status mirrors the worst KPI level so the bezel lamp is honest:
+  // any vencidas → CRITICAL; else any próximas / equipos críticos → WARNING; else OK.
+  const moduleStatus: AlertLevel =
+    vencidasStatus === "CRITICAL"
+      ? "CRITICAL"
+      : proximasStatus === "WARNING" || equiposCriticosStatus === "WARNING"
+        ? "WARNING"
+        : "OK";
+
   return (
-    <div className="grid grid-cols-2 gap-px sm:grid-cols-4">
-      {/* Vencidas — overdue tasks (SR-207 §4: alarm-red accent) */}
-      <KpiCard
-        label="Vencidas"
-        value={String(kpis.vencidas)}
-        secondary="tareas vencidas"
-        status={kpis.vencidas > 0 ? "CRITICAL" : "OK"}
-      />
+    <div className="mx-auto w-full max-w-panel px-4 py-5 sm:px-6">
+      {/* Deck module header — eyebrow + title */}
+      <header className="mb-3 flex items-baseline justify-between gap-4">
+        <div>
+          <span className="mc-rail-eyebrow">Mission Control · Mantención</span>
+          <h1 className="mt-1 text-sm font-medium uppercase tracking-[0.16em] text-ink-primary">
+            Panel de Mantención
+          </h1>
+        </div>
+      </header>
 
-      {/* Próximas — upcoming tasks (SR-207 §4: amber-safety accent) */}
-      <KpiCard
-        label="Próximas"
-        value={String(kpis.proximas)}
-        secondary="tareas próximas"
-        status={kpis.proximas > 0 ? "WARNING" : "OK"}
-      />
+      {/* Instrument readouts */}
+      <InstrumentBezel label="INDICADORES DE MANTENCIÓN" status={moduleStatus}>
+        <div className="grid grid-cols-2 gap-px bg-border-subtle sm:grid-cols-4">
+          {/* Vencidas — overdue tasks (CRITICAL when > 0) */}
+          <div className="bg-surface-raised p-4">
+            <ReadoutStat
+              label="Vencidas"
+              value={kpis.vencidas}
+              secondary="tareas vencidas"
+              status={vencidasStatus}
+            />
+          </div>
 
-      {/* OT Abiertas — open work orders (SR-207 §4: status-flow accent) */}
-      <KpiCard
-        label="OT Abiertas"
-        value={String(kpis.otAbiertas)}
-        secondary="órdenes activas"
-      />
+          {/* Próximas — upcoming tasks (WARNING when > 0) */}
+          <div className="bg-surface-raised p-4">
+            <ReadoutStat
+              label="Próximas"
+              value={kpis.proximas}
+              secondary="tareas próximas"
+              status={proximasStatus}
+            />
+          </div>
 
-      {/* Equipos Críticos — critical equipment (SR-207 §4: amber-safety or status-warning) */}
-      <KpiCard
-        label="Equipos Críticos"
-        value={String(kpis.equiposCriticos)}
-        secondary="equipos críticos"
-        status={kpis.equiposCriticos > 0 ? "WARNING" : "OK"}
-      />
+          {/* OT Abiertas — open work orders (informational, no status lamp) */}
+          <div className="bg-surface-raised p-4">
+            <ReadoutStat
+              label="OT Abiertas"
+              value={kpis.otAbiertas}
+              secondary="órdenes activas"
+            />
+          </div>
+
+          {/* Equipos Críticos — critical equipment (WARNING when > 0) */}
+          <div className="bg-surface-raised p-4">
+            <ReadoutStat
+              label="Equipos Críticos"
+              value={kpis.equiposCriticos}
+              secondary="equipos críticos"
+              status={equiposCriticosStatus}
+            />
+          </div>
+        </div>
+      </InstrumentBezel>
     </div>
   );
 }

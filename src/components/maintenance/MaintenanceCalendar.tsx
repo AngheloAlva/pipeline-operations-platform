@@ -17,6 +17,7 @@ import type { CalendarBucket } from "@/lib/maintenance/selectors";
 import { useMaintenanceStore } from "@/store/maintenanceStore";
 import { useSelectionStore, EntityType } from "@/store/selectionStore";
 import { MaintenanceFrequency } from "@/lib/domain";
+import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
 import { cn } from "@/lib/cn";
 
 // ---------------------------------------------------------------------------
@@ -186,99 +187,103 @@ export function MaintenanceCalendar({ world, now }: MaintenanceCalendarProps) {
   const hasNoBuckets = buckets.length === 0;
 
   return (
-    <div className="flex flex-col">
-      {/* Month navigation header */}
-      <div className="flex items-center justify-between border-b border-border-mid bg-surface-raised px-4 py-2">
-        <button
-          type="button"
-          onClick={prevMonth}
-          aria-label="Mes anterior"
-          className="px-2 py-1 text-[13px] uppercase tracking-[0.1em] text-ink-secondary hover:text-ink-primary focus:outline-none"
-        >
-          ‹ Prev
-        </button>
-
-        <h2
-          className="text-[13px] font-medium uppercase tracking-[0.12em] text-ink-primary"
-          style={{ fontFamily: "var(--font-mono), monospace" }}
-        >
-          {monthLabel}
-        </h2>
-
-        <button
-          type="button"
-          onClick={nextMonth}
-          aria-label="Mes siguiente"
-          className="px-2 py-1 text-[13px] uppercase tracking-[0.1em] text-ink-secondary hover:text-ink-primary focus:outline-none"
-        >
-          Sig ›
-        </button>
-      </div>
-
-      {/* Day headers */}
-      <div className="grid grid-cols-7 border-b border-border-mid bg-surface-raised">
-        {DAY_HEADERS.map((d) => (
-          <div
-            key={d}
-            className="px-1 py-1.5 text-center text-[12px] font-medium uppercase tracking-[0.12em] text-ink-muted"
-          >
-            {d}
-          </div>
-        ))}
-      </div>
-
-      {/* Calendar grid — no border-radius on cells (SR-209 §10) */}
-      <div className="flex-1">
-        {weeks.map((week, wIdx) => (
-          <div key={wIdx} className="grid grid-cols-7 border-b border-border-subtle">
-            {week.map((cell, cIdx) => {
-              const dayBuckets = cell.day ? (bucketsByDay.get(cell.day) ?? []) : [];
-              return (
-                <div
-                  key={cIdx}
-                  className={cn(
-                    "min-h-[72px] border-r border-border-subtle p-1 last:border-r-0",
-                    cell.day === null && "bg-surface-base opacity-50",
-                    cell.day !== null && "bg-surface-raised",
-                  )}
-                >
-                  {cell.day !== null && (
-                    <>
-                      <div
-                        className="mb-1 text-right text-[12px] font-medium tabular-nums text-ink-tertiary"
-                        style={{ fontFamily: "var(--font-mono), monospace" }}
-                      >
-                        {cell.day}
-                      </div>
-                      <div className="flex flex-col gap-0.5 overflow-hidden">
-                        {dayBuckets.map((b) => (
-                          <TaskDot
-                            key={`${b.planId}:${b.taskId}`}
-                            bucket={b}
-                            onClickTask={handleTaskClick}
-                          />
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
-
-      {/* Empty state — shown when no tasks exist for the visible month */}
-      {hasNoBuckets && (
-        <div className="flex items-center justify-center py-6 border-t border-border-subtle">
-          <p
-            className="text-[12px] uppercase tracking-[0.1em] text-ink-muted"
+    <InstrumentBezel label="CALENDARIO" sublabel={monthLabel.toUpperCase()}>
+      <div className="flex flex-col">
+        {/* Month navigation header */}
+        <div className="flex items-center justify-between border-b border-border-mid px-4 py-2">
+          <button
+            type="button"
+            onClick={prevMonth}
+            aria-label="Mes anterior"
+            className="px-2 py-1 font-mono text-[12px] uppercase tracking-[0.12em] text-ink-secondary hover:text-ink-primary focus:outline-none"
             style={{ fontFamily: "var(--font-mono), monospace" }}
           >
-            Sin tareas en este período.
-          </p>
+            ‹ Prev
+          </button>
+
+          <h2
+            className="text-[13px] font-medium uppercase tracking-[0.14em] text-ink-primary tabular-nums"
+            style={{ fontFamily: "var(--font-mono), monospace" }}
+          >
+            {monthLabel}
+          </h2>
+
+          <button
+            type="button"
+            onClick={nextMonth}
+            aria-label="Mes siguiente"
+            className="px-2 py-1 font-mono text-[12px] uppercase tracking-[0.12em] text-ink-secondary hover:text-ink-primary focus:outline-none"
+            style={{ fontFamily: "var(--font-mono), monospace" }}
+          >
+            Sig ›
+          </button>
         </div>
-      )}
-    </div>
+
+        {/* Day headers */}
+        <div className="grid grid-cols-7 border-b border-border-mid">
+          {DAY_HEADERS.map((d) => (
+            <div
+              key={d}
+              className="px-1 py-1.5 text-center text-[10px] font-medium uppercase tracking-[0.16em] text-ink-tertiary"
+              style={{ fontFamily: "var(--font-mono), monospace" }}
+            >
+              {d}
+            </div>
+          ))}
+        </div>
+
+        {/* Calendar grid — no border-radius on cells (SR-209 §10) */}
+        <div className="flex-1">
+          {weeks.map((week, wIdx) => (
+            <div key={wIdx} className="grid grid-cols-7 border-b border-border-subtle last:border-b-0">
+              {week.map((cell, cIdx) => {
+                const dayBuckets = cell.day ? (bucketsByDay.get(cell.day) ?? []) : [];
+                return (
+                  <div
+                    key={cIdx}
+                    className={cn(
+                      "min-h-[72px] border-r border-border-subtle p-1 last:border-r-0",
+                      cell.day === null && "opacity-40",
+                    )}
+                  >
+                    {cell.day !== null && (
+                      <>
+                        <div
+                          className="mb-1 text-right text-[11px] font-medium tabular-nums text-ink-tertiary"
+                          style={{ fontFamily: "var(--font-mono), monospace" }}
+                        >
+                          {cell.day}
+                        </div>
+                        <div className="flex flex-col gap-0.5 overflow-hidden">
+                          {dayBuckets.map((b) => (
+                            <TaskDot
+                              key={`${b.planId}:${b.taskId}`}
+                              bucket={b}
+                              onClickTask={handleTaskClick}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+
+        {/* Empty state — shown when no tasks exist for the visible month */}
+        {hasNoBuckets && (
+          <div className="flex items-center justify-center py-6 border-t border-border-subtle">
+            <p
+              className="text-[11px] uppercase tracking-[0.14em] text-ink-muted"
+              style={{ fontFamily: "var(--font-mono), monospace" }}
+            >
+              Sin tareas en este período.
+            </p>
+          </div>
+        )}
+      </div>
+    </InstrumentBezel>
   );
 }

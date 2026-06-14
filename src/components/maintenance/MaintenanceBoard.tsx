@@ -24,6 +24,7 @@ import { useSelectionStore, EntityType } from "@/store/selectionStore";
 import { DataTable } from "@/components/ui/DataTable";
 import type { DataTableColumn, RowVariant } from "@/components/ui/DataTable";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
 import { cn } from "@/lib/cn";
 import { CrossNavLinks } from "@/components/shared/CrossNavLinks";
 import type { ResolvedEntity } from "@/lib/domain/resolveEntity";
@@ -341,78 +342,84 @@ export function MaintenanceBoard({ world, now }: MaintenanceBoardProps) {
     debouncedSearch.trim();
 
   return (
-    <div className="flex flex-col gap-0">
-      {/* Filter bar */}
-      <div className="flex flex-col gap-2 border-b border-border-subtle bg-surface-raised px-4 py-3">
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Status chips */}
-          {STATUS_CHIPS.map(({ status, label, variant }) => (
-            <button
-              key={status}
-              type="button"
-              onClick={() => toggleStatusChip(status)}
+    <InstrumentBezel
+      label="TABLERO DE TAREAS"
+      sublabel={`${sortedRows.length} ${sortedRows.length === 1 ? "TAREA" : "TAREAS"}`}
+    >
+      <div className="flex flex-col gap-0">
+        {/* Filter bar */}
+        <div className="flex flex-col gap-2 border-b border-border-subtle px-4 py-3">
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Status chips */}
+            {STATUS_CHIPS.map(({ status, label, variant }) => (
+              <button
+                key={status}
+                type="button"
+                onClick={() => toggleStatusChip(status)}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1",
+                  "text-[12px] font-medium uppercase tracking-[0.1em] transition-opacity",
+                  "border",
+                  activeStatuses.includes(status)
+                    ? "opacity-100 border-transparent"
+                    : "opacity-50 border-border-mid bg-transparent",
+                )}
+                aria-pressed={activeStatuses.includes(status)}
+              >
+                <StatusBadge variant={variant} label={label} />
+              </button>
+            ))}
+
+            {/* Text search */}
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              placeholder="Buscar equipo…"
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full px-3 py-1",
-                "text-[12px] font-medium uppercase tracking-[0.1em] transition-opacity",
-                "border",
-                activeStatuses.includes(status)
-                  ? "opacity-100 border-transparent"
-                  : "opacity-50 border-border-mid bg-transparent",
+                "ml-auto w-48 border border-border-mid bg-surface-base px-3 py-1.5",
+                "font-mono text-[13px] tracking-[0.04em] text-ink-primary placeholder:text-ink-muted",
+                "focus:border-[var(--mc-cyan)] focus:outline-none",
               )}
-              aria-pressed={activeStatuses.includes(status)}
-            >
-              <StatusBadge variant={variant} label={label} />
-            </button>
-          ))}
+              style={{ fontFamily: "var(--font-mono), monospace" }}
+            />
 
-          {/* Text search */}
-          <input
-            type="text"
-            value={searchInput}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Buscar equipo…"
-            className={cn(
-              "ml-auto w-48 border border-border-mid bg-surface-base px-3 py-1.5",
-              "text-[14px] text-ink-primary placeholder:text-ink-muted",
-              "focus:border-accent focus:outline-none",
+            {/* Reset filter */}
+            {hasActiveFilter && (
+              <button
+                type="button"
+                onClick={resetFilter}
+                className="text-[12px] uppercase tracking-[0.1em] text-ink-muted hover:text-ink-primary"
+              >
+                Limpiar
+              </button>
             )}
-          />
-
-          {/* Reset filter */}
-          {hasActiveFilter && (
-            <button
-              type="button"
-              onClick={resetFilter}
-              className="text-[12px] uppercase tracking-[0.1em] text-ink-muted hover:text-ink-primary"
-            >
-              Limpiar
-            </button>
-          )}
+          </div>
         </div>
+
+        {/* F4-3-R4: cross-module navigation when an EQUIPMENT is selected.
+            exclude=['maintenance'] so the current module link is omitted.
+            Equipment hub link (/equipment/<id>) is shown; cockpit/integrity use stationId. */}
+        {equipmentEntity && (
+          <div className="px-4 py-2 border-b border-border-subtle">
+            <CrossNavLinks entity={equipmentEntity} exclude={["maintenance"]} />
+          </div>
+        )}
+
+        {/* Data table */}
+        <DataTable<MaintenanceBoardRow>
+          columns={COLUMNS}
+          rows={sortedRows}
+          sortKey={sortKey ?? undefined}
+          sortDir={sortDir}
+          onSort={handleSort}
+          rowVariant={rowVariant}
+          getRowKey={(row) => `${row.planId}:${row.taskId}`}
+          emptyLabel="Sin tareas para los filtros seleccionados"
+          caption="Tablero de tareas de mantenimiento"
+          className="flex-1"
+        />
       </div>
-
-      {/* F4-3-R4: cross-module navigation when an EQUIPMENT is selected.
-          exclude=['maintenance'] so the current module link is omitted.
-          Equipment hub link (/equipment/<id>) is shown; cockpit/integrity use stationId. */}
-      {equipmentEntity && (
-        <div className="px-4 py-2 border-b border-border-subtle">
-          <CrossNavLinks entity={equipmentEntity} exclude={["maintenance"]} />
-        </div>
-      )}
-
-      {/* Data table */}
-      <DataTable<MaintenanceBoardRow>
-        columns={COLUMNS}
-        rows={sortedRows}
-        sortKey={sortKey ?? undefined}
-        sortDir={sortDir}
-        onSort={handleSort}
-        rowVariant={rowVariant}
-        getRowKey={(row) => `${row.planId}:${row.taskId}`}
-        emptyLabel="Sin tareas para los filtros seleccionados"
-        caption="Tablero de tareas de mantenimiento"
-        className="flex-1"
-      />
-    </div>
+    </InstrumentBezel>
   );
 }

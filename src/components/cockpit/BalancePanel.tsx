@@ -14,7 +14,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import { groupBalanceByHour } from "@/lib/volumetrics/balance";
@@ -28,6 +27,7 @@ import {
   STATUS_OK,
   CHART_FONT_MONO,
 } from "@/lib/charts/palette";
+import { ConceptInfo } from "@/components/shared/ConceptInfo";
 
 // ============================================================================
 // CHART COLORS (JS values — Recharts ignores CSS var() in inline styles)
@@ -134,12 +134,15 @@ export function BalancePanel({ movements }: BalancePanelProps) {
     >
       {/* Panel header */}
       <header className="flex items-center justify-between">
-        <h2
-          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
-          style={{ fontFamily: "var(--font-mono), monospace" }}
-        >
-          Balance Horario
-        </h2>
+        <div className="flex items-center gap-1.5">
+          <h2
+            className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+            style={{ fontFamily: "var(--font-mono), monospace" }}
+          >
+            Balance Horario
+          </h2>
+          <ConceptInfo term="balance-volumetrico" label="Balance Horario" />
+        </div>
         <span
           className="text-[12px] text-ink-muted"
           style={{ fontFamily: "var(--font-mono), monospace" }}
@@ -195,16 +198,6 @@ export function BalancePanel({ movements }: BalancePanelProps) {
                 tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
               />
               <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(200,208,220,0.04)" }} />
-              <Legend
-                wrapperStyle={{
-                  fontSize: 10,
-                  fontFamily: "var(--font-mono), monospace",
-                  color: COLORS.legendText,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  paddingTop: 4,
-                }}
-              />
               {/* SR-009 req 1: grouped bars for entradas / salidas / Δstock */}
               <Bar dataKey="entradas" name="Entradas" fill={COLORS.entradas} radius={0} />
               <Bar dataKey="salidas" name="Salidas" fill={COLORS.salidas} radius={0} />
@@ -214,6 +207,30 @@ export function BalancePanel({ movements }: BalancePanelProps) {
           </div>
         )}
       </div>
+
+      {/* Custom legend — each series carries a ConceptInfo affordance so the
+          volumetric jargon (entradas / salidas / Δstock) is explainable inline. */}
+      <ul className="flex flex-wrap items-center justify-center gap-4">
+        {[
+          { name: "Entradas", color: COLORS.entradas, term: "entradas" },
+          { name: "Salidas", color: COLORS.salidas, term: "salidas" },
+          { name: "Δ Stock", color: COLORS.delta, term: "delta-stock" },
+        ].map((item) => (
+          <li
+            key={item.term}
+            className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.08em]"
+            style={{ fontFamily: "var(--font-mono), monospace", color: "var(--ink-tertiary)" }}
+          >
+            <span
+              aria-hidden="true"
+              className="inline-block h-2.5 w-2.5 shrink-0"
+              style={{ background: item.color }}
+            />
+            {item.name}
+            <ConceptInfo term={item.term} label={item.name} />
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

@@ -32,6 +32,7 @@ import { BalancePanel } from "@/components/cockpit/BalancePanel";
 import { ContextPanel } from "@/components/cockpit/ContextPanel";
 import { WaterfallChart } from "@/components/cockpit/WaterfallChart";
 import { ConversionWidget } from "@/components/cockpit/ConversionWidget";
+import { ConceptHintBadge } from "@/components/shared/ConceptHintBadge";
 
 // ============================================================================
 // PAGE BODY (inside Suspense — useFocusSync uses useSearchParams)
@@ -92,6 +93,11 @@ function CockpitPageBody() {
       </div>
 
       <div className="mx-auto max-w-panel space-y-1.5 px-4 py-2 sm:px-6">
+        {/* Concept-help legend — signals the ConceptInfo affordance */}
+        <div className="flex justify-end">
+          <ConceptHintBadge />
+        </div>
+
         {/* PRIMARY DECK — annunciator + schematic + telemetry read as one viewport */}
         <div className="space-y-1.5">
           {/* Row 2 — Annunciator matrix (own zone, full width) */}
@@ -128,7 +134,7 @@ function CockpitPageBody() {
           <InstrumentBezel label="BALANCE HORARIO">
             <BalancePanel movements={world.movements} />
           </InstrumentBezel>
-          <InstrumentBezel label="CUMPLIMIENTO POR SHIPPER">
+          <InstrumentBezel label="CUMPLIMIENTO POR CARGADOR">
             <WaterfallChart inputs={waterfallInputs} />
           </InstrumentBezel>
         </div>

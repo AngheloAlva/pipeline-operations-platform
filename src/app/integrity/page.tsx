@@ -25,6 +25,7 @@ import { PipelineMap } from "@/components/integrity/PipelineMap";
 import { IntegrityKpis } from "@/components/integrity/IntegrityKpis";
 import { ReadingsTable } from "@/components/integrity/ReadingsTable";
 import { ReadingDetail } from "@/components/integrity/ReadingDetail";
+import { ConceptHintBadge } from "@/components/shared/ConceptHintBadge";
 
 // ---------------------------------------------------------------------------
 // Page body (inside Suspense boundary — useFocusSync uses useSearchParams)
@@ -69,6 +70,7 @@ function IntegrityPageBody() {
               Panel de Integridad
             </h1>
           </div>
+          <ConceptHintBadge />
         </header>
 
         {/* Row 1: PipelineMap — full width (F3-1) */}

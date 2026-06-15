@@ -24,6 +24,7 @@ import type { AlertLevel, PipelineWorld } from "@/lib/domain";
 import { computeIntegrityKpis } from "@/lib/integrity/selectors";
 import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
 import { ReadoutStat } from "@/components/shared/ReadoutStat";
+import { ConceptInfo } from "@/components/shared/ConceptInfo";
 
 // ============================================================================
 // Props
@@ -78,8 +79,12 @@ export function IntegrityKpis({ world }: IntegrityKpisProps) {
       <div className="grid grid-cols-1 gap-px bg-border-subtle sm:grid-cols-3 lg:grid-cols-1">
         {/* Protegidos — protected points (OK / green) */}
         <div className="bg-surface-raised p-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="mc-readout__label">Protegidos</span>
+            <ConceptInfo term="nivel-protegido" label="Protegidos" />
+          </div>
           <ReadoutStat
-            label="Protegidos"
+            label=""
             value={kpis.ok}
             secondary="OK ≤ −0.85 V"
             status={kpis.ok > 0 ? "OK" : undefined}
@@ -88,8 +93,12 @@ export function IntegrityKpis({ world }: IntegrityKpisProps) {
 
         {/* Marginales — marginal protection (WARNING / amber) */}
         <div className="bg-surface-raised p-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="mc-readout__label">Marginales</span>
+            <ConceptInfo term="nivel-marginal" label="Marginales" />
+          </div>
           <ReadoutStat
-            label="Marginales"
+            label=""
             value={kpis.warning}
             secondary="ADVERTENCIA"
             status={kpis.warning > 0 ? "WARNING" : undefined}
@@ -98,8 +107,12 @@ export function IntegrityKpis({ world }: IntegrityKpisProps) {
 
         {/* Sin Protección — unprotected points (CRITICAL / red) */}
         <div className="bg-surface-raised p-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="mc-readout__label">Sin Protección</span>
+            <ConceptInfo term="nivel-sin-proteccion" label="Sin Protección" />
+          </div>
           <ReadoutStat
-            label="Sin Protección"
+            label=""
             value={kpis.critical}
             secondary="CRÍTICO > −0.75 V"
             status={kpis.critical > 0 ? "CRITICAL" : undefined}

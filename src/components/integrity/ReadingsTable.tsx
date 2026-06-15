@@ -23,6 +23,7 @@ import {
   EntityType,
 } from "@/store/selectionStore";
 import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
+import { ConceptInfo } from "@/components/shared/ConceptInfo";
 import { AlertLevel } from "@/lib/domain/types";
 import type { PipelineWorld } from "@/lib/domain";
 
@@ -175,6 +176,28 @@ export function ReadingsTable({ world }: ReadingsTableProps) {
       label="LECTURAS CATÓDICAS"
       sublabel={`${sortedRows.length} ${sortedRows.length === 1 ? "PUNTO" : "PUNTOS"}`}
     >
+      {/* Concept info strip — column headers are string-typed, so ConceptInfo goes here */}
+      <div
+        className="flex flex-wrap items-center gap-x-4 gap-y-1 px-3 py-2"
+        style={{
+          borderBottom: "1px solid var(--mc-hairline)",
+          fontFamily: "var(--font-mono), monospace",
+          fontSize: "9px",
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: "var(--ink-tertiary)",
+        }}
+      >
+        <span className="flex items-center gap-1">
+          Potencial catódico
+          <ConceptInfo term="potencial-catodico" label="Potencial catódico" />
+        </span>
+        <span className="flex items-center gap-1">
+          Tendencia
+          <ConceptInfo term="tendencia-degradacion" label="Tendencia" />
+        </span>
+      </div>
+
       <DataTable<ReadingTableRow>
         columns={COLUMNS}
         rows={sortedRows}

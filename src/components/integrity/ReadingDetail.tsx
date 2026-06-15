@@ -12,6 +12,7 @@
 import dynamic from "next/dynamic";
 import { useSelection, EntityType } from "@/store/selectionStore";
 import { CrossNavLinks } from "@/components/shared/CrossNavLinks";
+import { ConceptInfo } from "@/components/shared/ConceptInfo";
 import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
 import type { ResolvedEntity } from "@/lib/domain/resolveEntity";
 // CRITICAL-4: TimeSeriesChart uses ResponsiveContainer which measures a DOM
@@ -117,6 +118,22 @@ export function ReadingDetail({ world }: ReadingDetailProps) {
     >
       <div aria-label={`Cathodic point detail — ${selectedPointKey}`}>
         <div className="p-4">
+          <div
+            className="flex items-center gap-1.5 mb-2"
+            style={{
+              fontFamily: "var(--font-mono), monospace",
+              fontSize: "9px",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--ink-tertiary)",
+            }}
+          >
+            <span>Potencial catódico (V)</span>
+            <ConceptInfo term="potencial-catodico" label="Potencial catódico" />
+            <span className="mx-1" style={{ color: "var(--mc-hairline)" }}>|</span>
+            <span>Criterio −0.85 V</span>
+            <ConceptInfo term="criterio-085" label="Criterio −0.85 V" />
+          </div>
           <TimeSeriesChart
             series={series}
             thresholds={INTEGRITY_THRESHOLDS}

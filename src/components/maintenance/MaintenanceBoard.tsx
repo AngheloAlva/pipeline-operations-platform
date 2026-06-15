@@ -25,6 +25,7 @@ import { DataTable } from "@/components/ui/DataTable";
 import type { DataTableColumn, RowVariant } from "@/components/ui/DataTable";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
+import { ConceptInfo } from "@/components/shared/ConceptInfo";
 import { cn } from "@/lib/cn";
 import { CrossNavLinks } from "@/components/shared/CrossNavLinks";
 import type { ResolvedEntity } from "@/lib/domain/resolveEntity";
@@ -349,6 +350,15 @@ export function MaintenanceBoard({ world, now }: MaintenanceBoardProps) {
       <div className="flex flex-col gap-0">
         {/* Filter bar */}
         <div className="flex flex-col gap-2 border-b border-border-subtle px-4 py-3">
+          {/* Column concept legend — inline info for sortable jargon columns */}
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="flex items-center gap-1 text-[11px] uppercase tracking-[0.1em] text-ink-muted">
+              Criticidad <ConceptInfo term="criticidad" label="Criticidad" />
+            </span>
+            <span className="flex items-center gap-1 text-[11px] uppercase tracking-[0.1em] text-ink-muted">
+              Frecuencia <ConceptInfo term="frecuencia-mantenimiento" label="Frecuencia" />
+            </span>
+          </div>
           <div className="flex flex-wrap items-center gap-2">
             {/* Status chips */}
             {STATUS_CHIPS.map(({ status, label, variant }) => (

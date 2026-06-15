@@ -18,6 +18,7 @@ import { useMaintenanceStore } from "@/store/maintenanceStore";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import type { StatusBadgeVariant } from "@/components/ui/StatusBadge";
 import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
+import { ConceptInfo } from "@/components/shared/ConceptInfo";
 import { cn } from "@/lib/cn";
 
 // ---------------------------------------------------------------------------
@@ -115,13 +116,19 @@ function priorityToVariant(priority: string): StatusBadgeVariant {
 }
 
 // ---------------------------------------------------------------------------
-// Type display labels
+// Type display labels and glossary term mapping
 // ---------------------------------------------------------------------------
 
 const TYPE_LABELS: Record<string, string> = {
   [MaintenanceType.PREVENTIVE]: "Preventiva",
   [MaintenanceType.CORRECTIVE]: "Correctiva",
   [MaintenanceType.PREDICTIVE]: "Predictiva",
+};
+
+const TYPE_TERM_IDS: Record<string, string> = {
+  [MaintenanceType.PREVENTIVE]: "mantenimiento-preventivo",
+  [MaintenanceType.CORRECTIVE]: "mantenimiento-correctivo",
+  [MaintenanceType.PREDICTIVE]: "mantenimiento-predictivo",
 };
 
 // ---------------------------------------------------------------------------
@@ -279,8 +286,16 @@ export function WorkOrderList({ world }: WorkOrderListProps) {
                   <span className="text-[15px] font-medium text-ink-primary">
                     {wo.description}
                   </span>
-                  <span className="text-[13px] text-ink-secondary">
-                    {TYPE_LABELS[wo.type] ?? wo.type}
+                  <span className="flex items-center gap-1">
+                    <span className="text-[13px] text-ink-secondary">
+                      {TYPE_LABELS[wo.type] ?? wo.type}
+                    </span>
+                    {TYPE_TERM_IDS[wo.type] && (
+                      <ConceptInfo
+                        term={TYPE_TERM_IDS[wo.type]}
+                        label={TYPE_LABELS[wo.type] ?? wo.type}
+                      />
+                    )}
                   </span>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">

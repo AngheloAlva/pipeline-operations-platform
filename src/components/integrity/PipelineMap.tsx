@@ -28,6 +28,7 @@ import { useSelectionStore, EntityType } from "@/store/selectionStore";
 import { AlertLevel, EquipmentType } from "@/lib/domain/types";
 import type { PipelineWorld } from "@/lib/domain";
 import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
+import { ConceptInfo } from "@/components/shared/ConceptInfo";
 
 // ============================================================================
 // Constants
@@ -296,6 +297,32 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
         })}
       </svg>
       </div>
+      </div>
+
+      {/* Concept legend strip — HTML context, supports interactive components */}
+      <div
+        className="flex flex-wrap items-center gap-x-4 gap-y-1 px-3 pb-2 pt-1"
+        style={{
+          borderTop: "1px solid var(--mc-hairline)",
+          fontFamily: "var(--font-mono), monospace",
+          fontSize: "9px",
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: "var(--ink-tertiary)",
+        }}
+      >
+        <span className="flex items-center gap-1">
+          Rectificador
+          <ConceptInfo term="rectificador" label="Rectificador" />
+        </span>
+        <span className="flex items-center gap-1">
+          Punto catódico
+          <ConceptInfo term="punto-catodico" label="Punto catódico" />
+        </span>
+        <span className="flex items-center gap-1">
+          Progresiva (km)
+          <ConceptInfo term="progresiva" label="Progresiva" />
+        </span>
       </div>
     </InstrumentBezel>
   );

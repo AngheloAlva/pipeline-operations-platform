@@ -10,7 +10,7 @@ import type { AlertLevel } from "@/lib/domain";
 // ============================================================================
 
 interface ReadoutStatProps {
-  label: string;
+  label?: string;
   value: string | number;
   unit?: string;
   secondary?: string;
@@ -40,7 +40,7 @@ export function ReadoutStat({ label, value, unit, secondary, status }: ReadoutSt
   return (
     <div className="flex flex-col gap-0.5 min-w-0">
       {/* Micro-label */}
-      <div className="mc-readout__label">{label}</div>
+      {label && <div className="mc-readout__label">{label}</div>}
 
       {/* Value row */}
       <div className="flex items-baseline gap-1.5">

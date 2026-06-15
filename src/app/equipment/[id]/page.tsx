@@ -43,6 +43,8 @@ import { useMaintenanceStore } from "@/store/maintenanceStore";
 import { TankGauge } from "@/components/cockpit/TankGauge";
 import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
 import { ReadoutStat } from "@/components/shared/ReadoutStat";
+import { ConceptInfo } from "@/components/shared/ConceptInfo";
+import { ConceptHintBadge } from "@/components/shared/ConceptHintBadge";
 
 import type { ThresholdLine } from "@/components/charts/TimeSeriesChart";
 import type { AlertLevel } from "@/lib/domain";
@@ -268,14 +270,17 @@ function EquipmentPageBody() {
             No status lamp here: equipment has no live "overall status";
             `criticality` is a static classification, NOT an AlertLevel.
             ================================================================ */}
-        <header className="flex flex-col gap-1">
-          <span className="mc-rail-eyebrow">Mission Control · Equipo</span>
-          <h1
-            className="mt-1 text-[18px] font-medium uppercase tracking-[0.14em] text-ink-primary"
-            style={{ fontFamily: "var(--font-mono), monospace" }}
-          >
-            {equipment.tag} — {equipment.name}
-          </h1>
+        <header className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-1">
+            <span className="mc-rail-eyebrow">Mission Control · Equipo</span>
+            <h1
+              className="mt-1 text-[18px] font-medium uppercase tracking-[0.14em] text-ink-primary"
+              style={{ fontFamily: "var(--font-mono), monospace" }}
+            >
+              {equipment.tag} — {equipment.name}
+            </h1>
+          </div>
+          <ConceptHintBadge />
         </header>
 
         {/* ================================================================
@@ -283,10 +288,38 @@ function EquipmentPageBody() {
             ================================================================ */}
         <InstrumentBezel label="Identificación" sublabel="Metadatos del equipo">
           <div className="grid grid-cols-2 gap-x-4 gap-y-4 p-4 sm:grid-cols-4">
-            <ReadoutStat label="Tag" value={equipment.tag} />
-            <ReadoutStat label="Tipo" value={equipment.type} />
-            <ReadoutStat label="Criticidad" value={equipment.criticality} />
-            <ReadoutStat label="Estación" value={stationName} />
+            {/* Tag */}
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-1.5">
+                <span className="mc-readout__label">Tag</span>
+                <ConceptInfo term="tag" label="Tag" />
+              </div>
+              <ReadoutStat label="" value={equipment.tag} />
+            </div>
+            {/* Tipo */}
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-1.5">
+                <span className="mc-readout__label">Tipo</span>
+                <ConceptInfo term="tipo-equipo" label="Tipo" />
+              </div>
+              <ReadoutStat label="" value={equipment.type} />
+            </div>
+            {/* Criticidad */}
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-1.5">
+                <span className="mc-readout__label">Criticidad</span>
+                <ConceptInfo term="criticidad" label="Criticidad" />
+              </div>
+              <ReadoutStat label="" value={equipment.criticality} />
+            </div>
+            {/* Estación */}
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-1.5">
+                <span className="mc-readout__label">Estación</span>
+                <ConceptInfo term="estacion" label="Estación" />
+              </div>
+              <ReadoutStat label="" value={stationName} />
+            </div>
           </div>
         </InstrumentBezel>
 
@@ -323,15 +356,33 @@ function EquipmentPageBody() {
                 <div className="flex flex-col gap-1 min-w-[480px]">
                   {/* Column headers */}
                   <div className="grid grid-cols-[1fr_120px_140px_100px] gap-3 border-b border-border-subtle pb-2">
-                    {["Tarea", "Estado", "Próximo vencimiento", "Frecuencia"].map((h) => (
-                      <span
-                        key={h}
-                        className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink-muted"
-                        style={{ fontFamily: "var(--font-mono), monospace" }}
-                      >
-                        {h}
-                      </span>
-                    ))}
+                    <span
+                      className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink-muted"
+                      style={{ fontFamily: "var(--font-mono), monospace" }}
+                    >
+                      Tarea
+                    </span>
+                    <span
+                      className="inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-[0.1em] text-ink-muted"
+                      style={{ fontFamily: "var(--font-mono), monospace" }}
+                    >
+                      Estado
+                      <ConceptInfo term="mantenimiento-vencido" label="Estado" />
+                    </span>
+                    <span
+                      className="inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-[0.1em] text-ink-muted"
+                      style={{ fontFamily: "var(--font-mono), monospace" }}
+                    >
+                      Próximo vencimiento
+                      <ConceptInfo term="mantenimiento-proximo" label="Próximo vencimiento" />
+                    </span>
+                    <span
+                      className="inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-[0.1em] text-ink-muted"
+                      style={{ fontFamily: "var(--font-mono), monospace" }}
+                    >
+                      Frecuencia
+                      <ConceptInfo term="frecuencia-mantenimiento" label="Frecuencia" />
+                    </span>
                   </div>
                   {/* Task rows */}
                   {equipmentBoardRows.map((row) => (
@@ -371,12 +422,13 @@ function EquipmentPageBody() {
               </p>
             ) : (
               <div className="mt-2 flex flex-col gap-2">
-                <p
-                  className="text-[11px] font-medium uppercase tracking-[0.1em] text-ink-secondary"
+                <div
+                  className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-ink-secondary"
                   style={{ fontFamily: "var(--font-mono), monospace" }}
                 >
                   Órdenes de trabajo ({equipmentWorkOrders.length})
-                </p>
+                  <ConceptInfo term="orden-trabajo" label="Órdenes de trabajo" />
+                </div>
                 <div className="flex flex-col gap-1">
                   {equipmentWorkOrders.map((wo) => (
                     <div
@@ -408,7 +460,28 @@ function EquipmentPageBody() {
           label="Flujo de la estación"
           sublabel={`${stationName} · ${stationTanks.length} tanque(s)`}
         >
-          <div className="p-4">
+          <div className="p-4 flex flex-col gap-3">
+            {/* Concept legend for tank readouts */}
+            <div className="flex items-center gap-3 flex-wrap">
+              <span
+                className="text-[11px] uppercase tracking-[0.08em] text-ink-tertiary"
+                style={{ fontFamily: "var(--font-mono), monospace" }}
+              >
+                Conceptos:
+              </span>
+              <div className="flex items-center gap-1 text-[11px] text-ink-muted" style={{ fontFamily: "var(--font-mono), monospace" }}>
+                Tanque <ConceptInfo term="tanque" label="Tanque" />
+              </div>
+              <div className="flex items-center gap-1 text-[11px] text-ink-muted" style={{ fontFamily: "var(--font-mono), monospace" }}>
+                Nivel <ConceptInfo term="nivel-tanque" label="Nivel de llenado" />
+              </div>
+              <div className="flex items-center gap-1 text-[11px] text-ink-muted" style={{ fontFamily: "var(--font-mono), monospace" }}>
+                Temperatura <ConceptInfo term="temperatura-producto" label="Temperatura" />
+              </div>
+              <div className="flex items-center gap-1 text-[11px] text-ink-muted" style={{ fontFamily: "var(--font-mono), monospace" }}>
+                Gravedad API <ConceptInfo term="api-gravity" label="Gravedad API" />
+              </div>
+            </div>
             {stationTanks.length === 0 ? (
               <p
                 className="text-[13px] text-ink-muted py-4 text-center"
@@ -467,24 +540,42 @@ function EquipmentPageBody() {
                     unprotected=CRITICAL. Lamps are suppressed when the count is 0
                     so a zero never lights a semantic lamp. */}
                 <div className="grid grid-cols-1 gap-x-4 gap-y-4 border border-border-subtle p-4 sm:grid-cols-3">
-                  <ReadoutStat
-                    label="Protegidos"
-                    value={integrityKpis.ok}
-                    secondary="OK ≤ −0.85 V"
-                    status={integrityKpis.ok > 0 ? "OK" : undefined}
-                  />
-                  <ReadoutStat
-                    label="Marginales"
-                    value={integrityKpis.warning}
-                    secondary="ADVERTENCIA"
-                    status={integrityKpis.warning > 0 ? "WARNING" : undefined}
-                  />
-                  <ReadoutStat
-                    label="Sin protección"
-                    value={integrityKpis.critical}
-                    secondary="CRÍTICO > −0.75 V"
-                    status={integrityKpis.critical > 0 ? "CRITICAL" : undefined}
-                  />
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <span className="mc-readout__label">Protegidos</span>
+                      <ConceptInfo term="nivel-protegido" label="Protegidos" />
+                    </div>
+                    <ReadoutStat
+                      label=""
+                      value={integrityKpis.ok}
+                      secondary="OK ≤ −0.85 V"
+                      status={integrityKpis.ok > 0 ? "OK" : undefined}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <span className="mc-readout__label">Marginales</span>
+                      <ConceptInfo term="nivel-marginal" label="Marginales" />
+                    </div>
+                    <ReadoutStat
+                      label=""
+                      value={integrityKpis.warning}
+                      secondary="ADVERTENCIA"
+                      status={integrityKpis.warning > 0 ? "WARNING" : undefined}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <span className="mc-readout__label">Sin protección</span>
+                      <ConceptInfo term="nivel-sin-proteccion" label="Sin protección" />
+                    </div>
+                    <ReadoutStat
+                      label=""
+                      value={integrityKpis.critical}
+                      secondary="CRÍTICO > −0.75 V"
+                      status={integrityKpis.critical > 0 ? "CRITICAL" : undefined}
+                    />
+                  </div>
                 </div>
 
                 {/* Point count and chart for first/most-recent point */}

@@ -25,6 +25,8 @@ import { computeMaintenanceKpis } from "@/lib/maintenance/selectors";
 import { useMaintenanceStore } from "@/store/maintenanceStore";
 import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
 import { ReadoutStat } from "@/components/shared/ReadoutStat";
+import { ConceptInfo } from "@/components/shared/ConceptInfo";
+import { ConceptHintBadge } from "@/components/shared/ConceptHintBadge";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -80,6 +82,7 @@ export function MaintenanceKpis({ world, now }: MaintenanceKpisProps) {
             Panel de Mantención
           </h1>
         </div>
+        <ConceptHintBadge />
       </header>
 
       {/* Instrument readouts */}
@@ -87,8 +90,12 @@ export function MaintenanceKpis({ world, now }: MaintenanceKpisProps) {
         <div className="grid grid-cols-2 gap-px bg-border-subtle sm:grid-cols-4">
           {/* Vencidas — overdue tasks (CRITICAL when > 0) */}
           <div className="bg-surface-raised p-4">
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="mc-readout__label">Vencidas</span>
+              <ConceptInfo term="mantenimiento-vencido" label="Vencidas" />
+            </div>
             <ReadoutStat
-              label="Vencidas"
+              label=""
               value={kpis.vencidas}
               secondary="tareas vencidas"
               status={vencidasStatus}
@@ -97,8 +104,12 @@ export function MaintenanceKpis({ world, now }: MaintenanceKpisProps) {
 
           {/* Próximas — upcoming tasks (WARNING when > 0) */}
           <div className="bg-surface-raised p-4">
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="mc-readout__label">Próximas</span>
+              <ConceptInfo term="mantenimiento-proximo" label="Próximas" />
+            </div>
             <ReadoutStat
-              label="Próximas"
+              label=""
               value={kpis.proximas}
               secondary="tareas próximas"
               status={proximasStatus}
@@ -107,8 +118,12 @@ export function MaintenanceKpis({ world, now }: MaintenanceKpisProps) {
 
           {/* OT Abiertas — open work orders (informational, no status lamp) */}
           <div className="bg-surface-raised p-4">
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="mc-readout__label">OT Abiertas</span>
+              <ConceptInfo term="orden-trabajo" label="OT Abiertas" />
+            </div>
             <ReadoutStat
-              label="OT Abiertas"
+              label=""
               value={kpis.otAbiertas}
               secondary="órdenes activas"
             />
@@ -116,8 +131,12 @@ export function MaintenanceKpis({ world, now }: MaintenanceKpisProps) {
 
           {/* Equipos Críticos — critical equipment (WARNING when > 0) */}
           <div className="bg-surface-raised p-4">
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="mc-readout__label">Equipos Críticos</span>
+              <ConceptInfo term="equipos-criticos" label="Equipos Críticos" />
+            </div>
             <ReadoutStat
-              label="Equipos Críticos"
+              label=""
               value={kpis.equiposCriticos}
               secondary="equipos críticos"
               status={equiposCriticosStatus}

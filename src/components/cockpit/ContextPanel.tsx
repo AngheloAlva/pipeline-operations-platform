@@ -14,6 +14,7 @@ import { formatPk } from "@/lib/format";
 import { CrossNavLinks } from "@/components/shared/CrossNavLinks";
 import type { ResolvedEntity } from "@/lib/domain/resolveEntity";
 import { EntityType } from "@/store/selectionStore";
+import { ConceptInfo } from "@/components/shared/ConceptInfo";
 
 // ============================================================================
 // TYPES
@@ -60,12 +61,15 @@ function TankDetail({ tank, resolvedEntity }: TankDetailProps) {
     <div className="flex flex-col gap-3">
       {/* Tank identity */}
       <div>
-        <p
-          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
-          style={monoStyle}
-        >
-          Tanque
-        </p>
+        <div className="flex items-center gap-1">
+          <p
+            className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+            style={monoStyle}
+          >
+            Tanque
+          </p>
+          <ConceptInfo term="tanque" label="Tanque" />
+        </div>
         <p className="text-sm font-medium text-ink-primary" style={monoStyle}>
           {tank.tag}
         </p>
@@ -77,12 +81,15 @@ function TankDetail({ tank, resolvedEntity }: TankDetailProps) {
       {/* Fill level bar */}
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
-          <span
-            className="text-[12px] uppercase tracking-[0.12em] text-ink-tertiary"
-            style={monoStyle}
-          >
-            Nivel
-          </span>
+          <div className="flex items-center gap-1">
+            <span
+              className="text-[12px] uppercase tracking-[0.12em] text-ink-tertiary"
+              style={monoStyle}
+            >
+              Nivel
+            </span>
+            <ConceptInfo term="nivel-tanque" label="Nivel de llenado" />
+          </div>
           <span className="text-[13px] tabular-nums" style={{ ...monoStyle, color: levelColor }}>
             {formatPercent(fillPercent)}
           </span>
@@ -107,17 +114,23 @@ function TankDetail({ tank, resolvedEntity }: TankDetailProps) {
       {/* Tank metrics */}
       <div className="grid grid-cols-2 gap-2 border-t border-border-subtle pt-2">
         <div className="flex flex-col gap-0.5">
-          <span className="text-[11px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
-            Temp.
-          </span>
+          <div className="flex items-center gap-1">
+            <span className="text-[11px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
+              Temp.
+            </span>
+            <ConceptInfo term="temperatura-producto" label="Temperatura" />
+          </div>
           <span className="text-[13px] tabular-nums text-ink-secondary" style={monoStyle}>
             {tank.temperatureF.toFixed(1)} °F
           </span>
         </div>
         <div className="flex flex-col gap-0.5">
-          <span className="text-[11px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
-            API
-          </span>
+          <div className="flex items-center gap-1">
+            <span className="text-[11px] uppercase tracking-[0.12em] text-ink-muted" style={monoStyle}>
+              API
+            </span>
+            <ConceptInfo term="api-gravity" label="Gravedad API" />
+          </div>
           <span className="text-[13px] tabular-nums text-ink-secondary" style={monoStyle}>
             {tank.apiGravity.toFixed(1)} °
           </span>
@@ -162,12 +175,15 @@ function StationDetail({ station, world, resolvedEntity }: StationDetailProps) {
     <div className="flex flex-col gap-3">
       {/* Station identity */}
       <div>
-        <p
-          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
-          style={monoStyle}
-        >
-          Estación
-        </p>
+        <div className="flex items-center gap-1">
+          <p
+            className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+            style={monoStyle}
+          >
+            Estación
+          </p>
+          <ConceptInfo term="estacion" label="Estación" />
+        </div>
         <p className="text-sm font-medium text-ink-primary" style={monoStyle}>
           {station.name}
         </p>

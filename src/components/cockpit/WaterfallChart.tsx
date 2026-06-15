@@ -29,6 +29,7 @@ import {
   INK_TERTIARY,
   CHART_FONT_MONO,
 } from "@/lib/charts/palette";
+import { ConceptInfo } from "@/components/shared/ConceptInfo";
 
 // ============================================================================
 // CHART COLORS
@@ -148,12 +149,17 @@ export function WaterfallChart({ inputs }: WaterfallChartProps) {
     >
       {/* Panel header */}
       <header className="flex items-center justify-between">
-        <h2
-          className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
-          style={{ fontFamily: "var(--font-mono), monospace" }}
-        >
-          Cumplimiento por Cargador
-        </h2>
+        <div className="flex items-center gap-1.5">
+          <h2
+            className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
+            style={{ fontFamily: "var(--font-mono), monospace" }}
+          >
+            Cumplimiento por Cargador
+          </h2>
+          <ConceptInfo term="cumplimiento" label="Cumplimiento" />
+          <ConceptInfo term="cargador" label="Cargador" />
+          <ConceptInfo term="programa" label="Programa" />
+        </div>
         <span
           className="text-[12px] text-ink-muted"
           style={{ fontFamily: "var(--font-mono), monospace" }}

@@ -71,6 +71,14 @@ function makeWorld(overrides: Partial<PipelineWorld>): PipelineWorld {
     workOrders: [],
     cathodicReadings: [],
     telemetry: [],
+    custodyDifferences: [],
+    operators: [],
+    workstations: [],
+    shiftRosters: [],
+    shiftLogEntries: [],
+    pipelineStoppages: [],
+    emissionEntries: [],
+    closingComments: [],
     ...overrides,
   };
 }

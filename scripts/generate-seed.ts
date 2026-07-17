@@ -52,10 +52,18 @@ function main(): void {
     shippers: world.shippers.length,
     movements: world.movements.length,
     volumeTargets: world.volumeTargets.length,
+    custodyDifferences: world.custodyDifferences.length,
     maintenancePlans: world.maintenancePlans.length,
     workOrders: world.workOrders.length,
     cathodicReadings: world.cathodicReadings.length,
     telemetry: world.telemetry.length,
+    operators: world.operators.length,
+    workstations: world.workstations.length,
+    shiftRosters: world.shiftRosters.length,
+    shiftLogEntries: world.shiftLogEntries.length,
+    pipelineStoppages: world.pipelineStoppages.length,
+    emissionEntries: world.emissionEntries.length,
+    closingComments: world.closingComments.length,
     segments: world.pipeline.segments.length,
   };
 

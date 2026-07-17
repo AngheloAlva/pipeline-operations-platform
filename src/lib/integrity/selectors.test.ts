@@ -56,6 +56,14 @@ function makeWorld(readings: CathodicReading[]): PipelineWorld {
     workOrders: [],
     cathodicReadings: readings,
     telemetry: [],
+    custodyDifferences: [],
+    operators: [],
+    workstations: [],
+    shiftRosters: [],
+    shiftLogEntries: [],
+    pipelineStoppages: [],
+    emissionEntries: [],
+    closingComments: [],
   };
 }
 

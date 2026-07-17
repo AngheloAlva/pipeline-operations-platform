@@ -80,6 +80,14 @@ function makeWorld(
     workOrders: [],
     cathodicReadings: [],
     telemetry: [],
+    custodyDifferences: [],
+    operators: [],
+    workstations: [],
+    shiftRosters: [],
+    shiftLogEntries: [],
+    pipelineStoppages: [],
+    emissionEntries: [],
+    closingComments: [],
   };
 }
 
@@ -502,6 +510,14 @@ describe("deriveFlowSchedule", () => {
       workOrders: [],
       cathodicReadings: [],
       telemetry: [],
+      custodyDifferences: [],
+      operators: [],
+      workstations: [],
+      shiftRosters: [],
+      shiftLogEntries: [],
+      pipelineStoppages: [],
+      emissionEntries: [],
+      closingComments: [],
     };
   }
 

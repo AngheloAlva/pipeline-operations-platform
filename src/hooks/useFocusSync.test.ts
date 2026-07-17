@@ -91,6 +91,14 @@ const TEST_WORLD: PipelineWorld = {
   workOrders: [],
   cathodicReadings: [],
   telemetry: [],
+  custodyDifferences: [],
+  operators: [],
+  workstations: [],
+  shiftRosters: [],
+  shiftLogEntries: [],
+  pipelineStoppages: [],
+  emissionEntries: [],
+  closingComments: [],
 };
 
 vi.mock("@/hooks/useWorldData", () => ({

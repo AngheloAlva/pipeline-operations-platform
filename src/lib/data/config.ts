@@ -25,6 +25,8 @@ export interface GeneratorConfig {
   shipperCount: number;
   /** Number of history days for movements and telemetry. */
   historyDays: number;
+  /** Number of monthly periods emitted for report series (targets, custody, emissions...). */
+  reportMonths: number;
   /** Telemetry sampling interval in hours. */
   telemetryIntervalHours: number;
   /** Optional seed for deterministic PRNG. If omitted, a random seed is used. */
@@ -42,5 +44,6 @@ export const DEFAULT_CONFIG: GeneratorConfig = {
   equipmentPerStation: { min: 6, max: 10 },
   shipperCount: 4,
   historyDays: 30,
+  reportMonths: 12,
   telemetryIntervalHours: 1,
 };

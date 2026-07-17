@@ -286,9 +286,7 @@ describe("validateWorld", () => {
       expect(result.valid).toBe(false);
       expect(
         result.errors.some(
-          (e) =>
-            e.includes("nonexistent-from-id") ||
-            e.toLowerCase().includes("fromnode"),
+          (e) => e.includes("nonexistent-from-id") || e.toLowerCase().includes("fromnode"),
         ),
       ).toBe(true);
     });
@@ -307,9 +305,7 @@ describe("validateWorld", () => {
       expect(result.valid).toBe(false);
       expect(
         result.errors.some(
-          (e) =>
-            e.includes("nonexistent-to-id") ||
-            e.toLowerCase().includes("tonode"),
+          (e) => e.includes("nonexistent-to-id") || e.toLowerCase().includes("tonode"),
         ),
       ).toBe(true);
     });
@@ -332,9 +328,7 @@ describe("validateWorld", () => {
       expect(result.valid).toBe(false);
       expect(
         result.errors.some(
-          (e) =>
-            e.includes("nonexistent-parent-id") ||
-            e.toLowerCase().includes("parentid"),
+          (e) => e.includes("nonexistent-parent-id") || e.toLowerCase().includes("parentid"),
         ),
       ).toBe(true);
     });
@@ -358,9 +352,7 @@ describe("validateWorld", () => {
       expect(result.valid).toBe(false);
       expect(
         result.errors.some(
-          (e) =>
-            e.toLowerCase().includes("progress") ||
-            e.toLowerCase().includes("in_progress"),
+          (e) => e.toLowerCase().includes("progress") || e.toLowerCase().includes("in_progress"),
         ),
       ).toBe(true);
     });
@@ -401,5 +393,114 @@ describe("validateWorld", () => {
       );
       expect(hasProgressError).toBe(false);
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// MV-2/MV-4: Canonical topology and new entity validation
+// ---------------------------------------------------------------------------
+describe("validateWorld — canonical topology (MV-2)", () => {
+  it("missing canonical station tag is detected", () => {
+    const world = generateWorld({ seed: 42 });
+    const tampered: PipelineWorld = {
+      ...world,
+      stations: world.stations.map((s) => (s.tag === "OTA-PH" ? { ...s, tag: undefined } : s)),
+    };
+    const result = validateWorld(tampered);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes("OTA-PH"))).toBe(true);
+  });
+
+  it("missing canonical tank tag is detected", () => {
+    const world = generateWorld({ seed: 42 });
+    const tampered: PipelineWorld = {
+      ...world,
+      tanks: world.tanks.filter((t) => t.tag !== "T-6010"),
+    };
+    const result = validateWorld(tampered);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes("T-6010"))).toBe(true);
+  });
+
+  it("missing custody manifold equipment is detected", () => {
+    const world = generateWorld({ seed: 42 });
+    const tampered: PipelineWorld = {
+      ...world,
+      equipment: world.equipment.filter((e) => e.tag !== "MOV-CUSTODY"),
+    };
+    const result = validateWorld(tampered);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes("MOV-CUSTODY"))).toBe(true);
+  });
+});
+
+describe("validateWorld — identity and report entities (MV-3/MV-4)", () => {
+  it("custody difference with unknown shipperId is detected", () => {
+    const world = generateWorld({ seed: 42 });
+    const tampered: PipelineWorld = {
+      ...world,
+      custodyDifferences: [
+        { ...world.custodyDifferences[0], shipperId: "nonexistent-shipper-id" },
+        ...world.custodyDifferences.slice(1),
+      ],
+    };
+    const result = validateWorld(tampered);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes("nonexistent-shipper-id"))).toBe(true);
+  });
+
+  it("custody difference with inconsistent diffM3 is detected", () => {
+    const world = generateWorld({ seed: 42 });
+    const record = world.custodyDifferences[0];
+    const tampered: PipelineWorld = {
+      ...world,
+      custodyDifferences: [
+        { ...record, diffM3: record.diffM3 + 100 },
+        ...world.custodyDifferences.slice(1),
+      ],
+    };
+    const result = validateWorld(tampered);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.toLowerCase().includes("custody"))).toBe(true);
+  });
+
+  it("shift roster referencing an unknown operator is detected", () => {
+    const world = generateWorld({ seed: 42 });
+    const roster = world.shiftRosters[0];
+    const tampered: PipelineWorld = {
+      ...world,
+      shiftRosters: [{ ...roster, operatorIds: [...roster.operatorIds, "nonexistent-operator"] }],
+    };
+    const result = validateWorld(tampered);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes("nonexistent-operator"))).toBe(true);
+  });
+
+  it("shift log entry referencing an unknown workstation is detected", () => {
+    const world = generateWorld({ seed: 42 });
+    if (world.shiftLogEntries.length === 0) return;
+    const tampered: PipelineWorld = {
+      ...world,
+      shiftLogEntries: [
+        { ...world.shiftLogEntries[0], workstationId: "nonexistent-workstation" },
+        ...world.shiftLogEntries.slice(1),
+      ],
+    };
+    const result = validateWorld(tampered);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes("nonexistent-workstation"))).toBe(true);
+  });
+
+  it("world without operators is detected", () => {
+    const world = generateWorld({ seed: 42 });
+    const tampered: PipelineWorld = {
+      ...world,
+      operators: [],
+      shiftRosters: [],
+      shiftLogEntries: [],
+    };
+    const result = validateWorld(tampered);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.toLowerCase().includes("operator"))).toBe(true);
   });
 });

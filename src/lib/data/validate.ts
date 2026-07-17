@@ -7,6 +7,13 @@ import type { PipelineWorld } from "@/lib/domain";
 import { WorkOrderStatus } from "@/lib/domain";
 import { evaluatePotential } from "@/lib/integrity/thresholds";
 import { computeBalance } from "@/lib/volumetrics/balance";
+import { computeCustodyDiff } from "@/lib/volumetrics/custody";
+import {
+  CANONICAL_STATIONS,
+  CANONICAL_STATION_TAGS,
+  CANONICAL_TANKS,
+  CUSTODY_MANIFOLD_TAG,
+} from "./canonical";
 
 /** Result of a world validation check. */
 export interface ValidationResult {
@@ -24,6 +31,9 @@ export interface ValidationResult {
  *  3. Station km values are strictly increasing and within [0, totalLengthKm].
  *  4. CathodicReading.level is consistent with evaluatePotential(potentialV).
  *  5. WorkOrder.progress is coherent with WorkOrder.status.
+ *  7. The canonical hero topology exists (stations, custody tanks, manifold) — MV-2.
+ *  8. Identity entities exist and their FK references resolve — MV-3/MV-4.
+ *  9. CustodyDifference records are internally consistent — MV-1/MV-4.
  *
  * @param world - The PipelineWorld to validate
  * @returns ValidationResult with valid flag and error list
@@ -300,6 +310,128 @@ export function validateWorld(world: PipelineWorld): ValidationResult {
     if (wo.status === WorkOrderStatus.IN_PROGRESS && (wo.progress <= 0 || wo.progress >= 100)) {
       errors.push(
         `WorkOrder ${wo.id} (${wo.otNumber}) is IN_PROGRESS but progress ${wo.progress} is not in (0, 100)`,
+      );
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Rule 7: Canonical hero topology (MV-2)
+  // ------------------------------------------------------------------
+  const stationByTag = new Map(
+    world.stations.filter((s) => s.tag !== undefined).map((s) => [s.tag as string, s]),
+  );
+  for (const spec of CANONICAL_STATIONS) {
+    const station = stationByTag.get(spec.tag);
+    if (!station) {
+      errors.push(`Canonical station with tag "${spec.tag}" (${spec.name}) is missing`);
+      continue;
+    }
+    if (station.kind !== spec.kind) {
+      errors.push(
+        `Canonical station "${spec.tag}" has kind ${station.kind}, expected ${spec.kind}`,
+      );
+    }
+  }
+
+  const tanksByTag = new Map(world.tanks.map((t) => [t.tag, t]));
+  for (const spec of CANONICAL_TANKS) {
+    const tank = tanksByTag.get(spec.tag);
+    if (!tank) {
+      errors.push(`Canonical tank "${spec.tag}" is missing`);
+      continue;
+    }
+    const hostStation = stationByTag.get(spec.stationTag);
+    if (hostStation && tank.stationId !== hostStation.id) {
+      errors.push(
+        `Canonical tank "${spec.tag}" is at station ${tank.stationId}, expected canonical station "${spec.stationTag}"`,
+      );
+    }
+    if (tank.volumeBasis !== spec.volumeBasis) {
+      errors.push(
+        `Canonical tank "${spec.tag}" has volumeBasis "${tank.volumeBasis}", expected "${spec.volumeBasis}"`,
+      );
+    }
+  }
+
+  const manifold = world.equipment.find((e) => e.tag === CUSTODY_MANIFOLD_TAG);
+  if (!manifold) {
+    errors.push(`Canonical custody manifold equipment "${CUSTODY_MANIFOLD_TAG}" is missing`);
+  } else {
+    const puertoHernandez = stationByTag.get(CANONICAL_STATION_TAGS.PUERTO_HERNANDEZ);
+    if (puertoHernandez && manifold.stationId !== puertoHernandez.id) {
+      errors.push(
+        `Custody manifold "${CUSTODY_MANIFOLD_TAG}" is at station ${manifold.stationId}, expected "${CANONICAL_STATION_TAGS.PUERTO_HERNANDEZ}"`,
+      );
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Rule 8: Identity entities — presence and FK integrity (MV-3/MV-4)
+  // ------------------------------------------------------------------
+  const operatorIds = new Set(world.operators.map((o) => o.id));
+  const workstationIds = new Set(world.workstations.map((w) => w.id));
+
+  if (world.operators.length === 0) {
+    errors.push("World has no operators — the capture UI needs a shift crew");
+  }
+  if (world.workstations.length === 0) {
+    errors.push("World has no workstations — the capture UI needs at least one station");
+  }
+
+  for (const roster of world.shiftRosters) {
+    if (!workstationIds.has(roster.workstationId)) {
+      errors.push(
+        `ShiftRoster ${roster.id} references non-existent workstationId: ${roster.workstationId}`,
+      );
+    }
+    for (const operatorId of roster.operatorIds) {
+      if (!operatorIds.has(operatorId)) {
+        errors.push(`ShiftRoster ${roster.id} references non-existent operatorId: ${operatorId}`);
+      }
+    }
+  }
+
+  for (const entry of world.shiftLogEntries) {
+    if (!operatorIds.has(entry.authorId)) {
+      errors.push(`ShiftLogEntry ${entry.id} references non-existent authorId: ${entry.authorId}`);
+    }
+    if (!workstationIds.has(entry.workstationId)) {
+      errors.push(
+        `ShiftLogEntry ${entry.id} references non-existent workstationId: ${entry.workstationId}`,
+      );
+    }
+    if (entry.stationId && !stationIds.has(entry.stationId)) {
+      errors.push(
+        `ShiftLogEntry ${entry.id} references non-existent stationId: ${entry.stationId}`,
+      );
+    }
+  }
+
+  for (const comment of world.closingComments) {
+    if (comment.authorId && !operatorIds.has(comment.authorId)) {
+      errors.push(
+        `ClosingComment ${comment.id} references non-existent authorId: ${comment.authorId}`,
+      );
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Rule 9: CustodyDifference FK and internal consistency (MV-1/MV-4)
+  // ------------------------------------------------------------------
+  const DIFF_EPSILON = 1e-6;
+  for (const record of world.custodyDifferences) {
+    if (!shipperIds.has(record.shipperId)) {
+      errors.push(
+        `CustodyDifference ${record.id} references non-existent shipperId: ${record.shipperId}`,
+      );
+    }
+    const expected = computeCustodyDiff(record.originVolM3, record.destVolM3);
+    if (
+      Math.abs(record.diffM3 - expected.diffM3) > DIFF_EPSILON ||
+      Math.abs(record.diffPct - expected.diffPct) > DIFF_EPSILON
+    ) {
+      errors.push(
+        `CustodyDifference ${record.id} diff fields (${record.diffM3}, ${record.diffPct}%) are inconsistent with origin/dest volumes`,
       );
     }
   }

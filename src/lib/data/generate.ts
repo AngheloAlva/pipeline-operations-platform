@@ -4,7 +4,9 @@
  * Pure TypeScript — no faker, no React, no Next.js.
  * All randomness is injected via a seeded PRNG (ADR-2).
  *
- * Runs 11 FK-ordered steps to produce a fully coherent PipelineWorld.
+ * Runs FK-ordered steps to produce a fully coherent PipelineWorld,
+ * including the canonical hero topology (MV-2), custody differences (MV-4),
+ * identity roster (MV-3), and report-only entities (MV-4).
  */
 
 import type {
@@ -16,11 +18,19 @@ import type {
   Equipment,
   Movement,
   VolumeTarget,
+  CustodyDifference,
   MaintenancePlan,
   MaintenanceTask,
   WorkOrder,
   CathodicReading,
   TelemetryPoint,
+  Operator,
+  Workstation,
+  ShiftRoster,
+  ShiftLogEntry,
+  PipelineStoppage,
+  EmissionEntry,
+  ClosingComment,
   PipelineWorld,
 } from "@/lib/domain";
 import {
@@ -34,12 +44,23 @@ import {
   TelemetryMetric,
   Criticality,
   AlertLevel,
+  VolumeBasis,
+  StoppageResponsible,
+  EmissionScope,
 } from "@/lib/domain";
 import { toVolume15C, toVolume60F, toGsv } from "@/lib/volumetrics/conversions";
+import { makeCustodyDifference } from "@/lib/volumetrics/custody";
 import { evaluatePotential } from "@/lib/integrity/thresholds";
 import { nextDueDateByCalendar } from "@/lib/maintenance/scheduling";
 import { DEFAULT_CONFIG } from "./config";
 import type { GeneratorConfig } from "./config";
+import {
+  CANONICAL_STATIONS,
+  CANONICAL_STATION_TAGS,
+  CANONICAL_TANKS,
+  CANONICAL_LOCKED_PUMP_TAG,
+  CUSTODY_MANIFOLD_TAG,
+} from "./canonical";
 import {
   createRng,
   pickInt,
@@ -172,7 +193,8 @@ function generateTanks(stations: Station[], cfg: GeneratorConfig, rng: Rng): Tan
       const maxHeightMm = 20000;
       const gaugeFactor = capacity / maxHeightMm;
       const heightMm = Math.round(currentLevelM3 / gaugeFactor);
-      const tagNum = String(tanks.length + 6010).slice(-4);
+      // Numbering starts at 7010: the 6010–6030 range is reserved for canonical custody tanks
+      const tagNum = String(tanks.length + 7010).slice(-4);
       tanks.push({
         id: nextId("TNK"),
         tag: `T-${tagNum}`,
@@ -262,6 +284,109 @@ function generateEquipment(stations: Station[], cfg: GeneratorConfig, rng: Rng):
   }
 
   return equipment;
+}
+
+// ============================================================================
+// STEP 4b — Canonical hero topology (MV-2)
+// ============================================================================
+
+/**
+ * Extend the generated world with the canonical hero topology:
+ * OTA inlets, Puerto Hernández with T-101/T-102 (15°C regime), the custody
+ * manifold valve, Terminal Concepción with T-6010/20/30 (60°F regime),
+ * Refinería Bío Bío, Terminal San Vicente, and the vessel.
+ * Also seeds one deliberately locked-out pump so every seed contains a
+ * LOTO node state (MV-5). Deterministic — no RNG draws.
+ */
+function applyCanonicalTopology(
+  pipeline: Pipeline,
+  stations: Station[],
+  tanks: Tank[],
+  equipment: Equipment[],
+): { stations: Station[]; tanks: Tank[]; equipment: Equipment[] } {
+  const totalKm = pipeline.totalLengthKm;
+  const stationByTag = new Map<string, Station>();
+
+  const extendedStations = [...stations];
+  for (const spec of CANONICAL_STATIONS) {
+    const km = spec.kmFromStart !== undefined ? spec.kmFromStart : totalKm - (spec.kmFromEnd ?? 0);
+    const station: Station = {
+      id: nextId("STA"),
+      name: spec.name,
+      kind: spec.kind,
+      km: Math.round(km * 10) / 10,
+      pipelineId: pipeline.id,
+      tag: spec.tag,
+    };
+    extendedStations.push(station);
+    stationByTag.set(spec.tag, station);
+  }
+
+  // Keep station km strictly increasing: sort ascending, then nudge collisions.
+  // Canonical kmFromEnd values stay within the final 5 km, which the generic
+  // generator never occupies (it clamps intermediates to totalKm − 5), so
+  // nudges can only happen near the head and never overflow totalKm.
+  extendedStations.sort((a, b) => a.km - b.km);
+  for (let i = 1; i < extendedStations.length; i++) {
+    if (extendedStations[i].km <= extendedStations[i - 1].km) {
+      extendedStations[i].km = Math.round((extendedStations[i - 1].km + 0.1) * 10) / 10;
+    }
+  }
+
+  const extendedTanks = [...tanks];
+  const maxHeightMm = 20000;
+  for (const spec of CANONICAL_TANKS) {
+    const station = stationByTag.get(spec.stationTag);
+    if (!station) continue; // unreachable: specs only reference canonical tags
+    const currentLevelM3 = Math.round(spec.capacityM3 * spec.levelFraction);
+    const gaugeFactor = spec.capacityM3 / maxHeightMm;
+    extendedTanks.push({
+      id: nextId("TNK"),
+      tag: spec.tag,
+      stationId: station.id,
+      capacityM3: spec.capacityM3,
+      currentLevelM3,
+      heightMm: Math.round(currentLevelM3 / gaugeFactor),
+      product: spec.volumeBasis === VolumeBasis.C15 ? "Medanito" : "OTASA-2",
+      apiGravity: 34,
+      // 15°C regime tanks sit at 59°F (= 15°C); 60°F regime tanks at 60°F
+      temperatureF: spec.volumeBasis === VolumeBasis.C15 ? 59 : 60,
+      volumeBasis: spec.volumeBasis,
+    });
+  }
+
+  const extendedEquipment = [...equipment];
+  const puertoHernandez = stationByTag.get(CANONICAL_STATION_TAGS.PUERTO_HERNANDEZ);
+  const terminalConcepcion = stationByTag.get(CANONICAL_STATION_TAGS.TERMINAL_CONCEPCION);
+
+  if (puertoHernandez) {
+    extendedEquipment.push({
+      id: nextId("EQP"),
+      tag: CUSTODY_MANIFOLD_TAG,
+      name: "Múltiple de custodia Puerto Hernández",
+      type: EquipmentType.VALVE,
+      criticality: Criticality.CRITICAL,
+      isOperational: true,
+      stationId: puertoHernandez.id,
+      operatingHours: 0,
+    });
+  }
+
+  if (terminalConcepcion) {
+    // Deliberately locked out: guarantees a LOTO node state in every seed (MV-5)
+    extendedEquipment.push({
+      id: nextId("EQP"),
+      tag: CANONICAL_LOCKED_PUMP_TAG,
+      name: "Bomba de Despacho T-6010",
+      type: EquipmentType.PUMP,
+      criticality: Criticality.HIGH,
+      isOperational: false,
+      stationId: terminalConcepcion.id,
+      operatingHours: 3200,
+    });
+  }
+
+  return { stations: extendedStations, tanks: extendedTanks, equipment: extendedEquipment };
 }
 
 // ============================================================================
@@ -403,8 +528,9 @@ function generateVolumeTargets(
   const targets: VolumeTarget[] = [];
   const today = new Date(GENERATOR_REFERENCE_DATE + "T12:00:00Z");
 
-  // Monthly periods for historyDays range
-  const monthsBack = Math.ceil(cfg.historyDays / 30);
+  // Monthly periods: at least the historyDays range, extended to the full
+  // report window so the report pages get 12 months of series (MV-4)
+  const monthsBack = Math.max(cfg.reportMonths, Math.ceil(cfg.historyDays / 30));
   for (let m = 0; m < monthsBack; m++) {
     const periodDate = new Date(today);
     periodDate.setMonth(periodDate.getMonth() - m);
@@ -447,6 +573,52 @@ function generateVolumeTargets(
 }
 
 // ============================================================================
+// STEP 7b — Custody differences (MV-1/MV-4)
+// ============================================================================
+
+/** Format a Date's year-month as "YYYY-MM". */
+function periodOf(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+/**
+ * Generate the monthly OTA↔OTC custody difference series per shipper,
+ * covering cfg.reportMonths months ending at the reference month.
+ * Origin volumes are plausible monthly shipper volumes; the destination
+ * differs by a small transit fraction (−0.4% … +0.15%).
+ */
+function generateCustodyDifferences(
+  shippers: Shipper[],
+  cfg: GeneratorConfig,
+  rng: Rng,
+): CustodyDifference[] {
+  const records: CustodyDifference[] = [];
+  const today = new Date(GENERATOR_REFERENCE_DATE + "T12:00:00Z");
+
+  for (let m = cfg.reportMonths - 1; m >= 0; m--) {
+    const periodDate = new Date(today);
+    periodDate.setMonth(periodDate.getMonth() - m);
+    const period = periodOf(periodDate);
+
+    for (const shipper of shippers) {
+      const originVolM3 = Math.round(pickFloat(rng, 20000, 60000));
+      const destVolM3 = Math.round(originVolM3 * (1 + pickFloat(rng, -0.004, 0.0015)) * 100) / 100;
+      records.push(
+        makeCustodyDifference({
+          id: nextId("CDF"),
+          period,
+          shipperId: shipper.id,
+          originVolM3,
+          destVolM3,
+        }),
+      );
+    }
+  }
+
+  return records;
+}
+
+// ============================================================================
 // STEP 8 — Maintenance Plans + Tasks
 // ============================================================================
 
@@ -459,8 +631,9 @@ const CALENDAR_FREQUENCIES: MaintenanceFrequency[] = [
 
 /** A fixed reference date used for all time-based calculations in the generator.
  * Using a fixed date ensures determinism regardless of when the generator runs.
+ * Exported so tests and consumers can anchor "now" to the same instant.
  */
-const GENERATOR_REFERENCE_DATE = "2026-06-12";
+export const GENERATOR_REFERENCE_DATE = "2026-06-12";
 
 function todayString(): string {
   return GENERATOR_REFERENCE_DATE;
@@ -668,6 +841,25 @@ function generateWorkOrders(
     });
   }
 
+  // Canonical overdue permit work order on the custody manifold (MV-5):
+  // guarantees a PERMIT node state at Puerto Hernández in every seed.
+  const manifold = equipment.find((e) => e.tag === CUSTODY_MANIFOLD_TAG);
+  if (manifold) {
+    workOrders.push({
+      id: nextId("WO"),
+      otNumber: makeOtNumber(manifold.stationId),
+      type: MaintenanceType.PREVENTIVE,
+      status: WorkOrderStatus.PLANNED,
+      priority: WorkOrderPriority.HIGH,
+      progress: 0,
+      description: "Permiso de trabajo — prueba de hermeticidad del múltiple de custodia",
+      equipmentId: manifold.id,
+      stationId: manifold.stationId,
+      programDate: offsetDate(today, -5),
+      estimatedHours: 6,
+    });
+  }
+
   return workOrders;
 }
 
@@ -845,6 +1037,175 @@ function generateTelemetry(
 }
 
 // ============================================================================
+// STEP 12 — Identity: operators, workstation, shift roster, shift log (MV-3)
+// ============================================================================
+
+/** The fixed 5-person control-room crew (deterministic, no RNG draws). */
+const OPERATOR_ROSTER: readonly { name: string; initials: string }[] = [
+  { name: "María Soto", initials: "MS" },
+  { name: "Juan Pérez", initials: "JP" },
+  { name: "Carla Muñoz", initials: "CM" },
+  { name: "Diego Herrera", initials: "DH" },
+  { name: "Ana Riquelme", initials: "AR" },
+];
+
+/**
+ * Generate the identity seed: the 5-operator crew, the permanent control-room
+ * workstation, the shift roster declared at shift start, and a couple of
+ * structured shift log entries so the capture UI has data (MV-4).
+ */
+function generateIdentity(stations: Station[]): {
+  operators: Operator[];
+  workstations: Workstation[];
+  shiftRosters: ShiftRoster[];
+  shiftLogEntries: ShiftLogEntry[];
+} {
+  const operators: Operator[] = OPERATOR_ROSTER.map((op) => ({ id: nextId("OPR"), ...op }));
+  const workstation: Workstation = { id: nextId("WST"), label: "SALA-OPS-PC1" };
+
+  const roster: ShiftRoster = {
+    id: nextId("ROS"),
+    workstationId: workstation.id,
+    operatorIds: operators.map((o) => o.id),
+    startedAt: `${GENERATOR_REFERENCE_DATE}T08:00:00.000Z`,
+  };
+
+  const puertoHernandez = stations.find((s) => s.tag === CANONICAL_STATION_TAGS.PUERTO_HERNANDEZ);
+  const shiftLogEntries: ShiftLogEntry[] = [
+    {
+      id: nextId("SLE"),
+      timestamp: `${GENERATOR_REFERENCE_DATE}T08:05:00.000Z`,
+      type: "HANDOVER",
+      description: "Recepción de turno sin novedades. Dotación completa declarada.",
+      authorId: operators[0].id,
+      workstationId: workstation.id,
+    },
+    {
+      id: nextId("SLE"),
+      timestamp: `${GENERATOR_REFERENCE_DATE}T10:30:00.000Z`,
+      type: "OPERATION",
+      description: "Alineación de múltiple para despacho desde T-101.",
+      stationId: puertoHernandez?.id,
+      authorId: operators[1].id,
+      workstationId: workstation.id,
+    },
+  ];
+
+  return { operators, workstations: [workstation], shiftRosters: [roster], shiftLogEntries };
+}
+
+// ============================================================================
+// STEP 13 — Report-only entities: stoppages, emissions, closing comments (MV-4)
+// ============================================================================
+
+const STOPPAGE_CAUSES = [
+  "Mantenimiento programado de bombas",
+  "Corte de energía en estación intermedia",
+  "Mal tiempo en terminal marítimo",
+  "Falla en bomba booster",
+  "Inspección de integridad en línea",
+] as const;
+
+const EMISSION_SOURCES: Record<EmissionScope, string> = {
+  [EmissionScope.SCOPE_1]: "Combustión en bombas y generadores",
+  [EmissionScope.SCOPE_2]: "Energía eléctrica comprada",
+  [EmissionScope.SCOPE_3]: "Transporte y servicios contratados",
+};
+
+/** Monthly CO₂e ranges (tons) per scope. */
+const EMISSION_RANGES: Record<EmissionScope, { min: number; max: number }> = {
+  [EmissionScope.SCOPE_1]: { min: 800, max: 1500 },
+  [EmissionScope.SCOPE_2]: { min: 200, max: 500 },
+  [EmissionScope.SCOPE_3]: { min: 50, max: 150 },
+};
+
+const CLOSING_AREAS = ["Operaciones", "Mantenimiento", "Integridad", "Medio Ambiente"] as const;
+
+const CLOSING_COMMENT_POOL = [
+  "Sin desviaciones relevantes; indicadores dentro de banda.",
+  "Se cumplió el programa del período con observaciones menores.",
+  "Desviación puntual gestionada; plan de acción en curso.",
+  "Resultados dentro de lo presupuestado para el período.",
+] as const;
+
+/**
+ * Generate the report-only series over cfg.reportMonths months:
+ * pipeline stoppages (with OTA/OTC/BOTH responsibility), GHG emission
+ * entries per scope, and closing comments per area.
+ */
+function generateReportEntities(
+  cfg: GeneratorConfig,
+  rng: Rng,
+  operators: Operator[],
+): {
+  pipelineStoppages: PipelineStoppage[];
+  emissionEntries: EmissionEntry[];
+  closingComments: ClosingComment[];
+} {
+  const pipelineStoppages: PipelineStoppage[] = [];
+  const emissionEntries: EmissionEntry[] = [];
+  const closingComments: ClosingComment[] = [];
+  const today = new Date(GENERATOR_REFERENCE_DATE + "T12:00:00Z");
+
+  for (let m = cfg.reportMonths - 1; m >= 0; m--) {
+    const periodDate = new Date(today);
+    periodDate.setMonth(periodDate.getMonth() - m);
+    const period = periodOf(periodDate);
+
+    // 0–2 stoppages per month
+    const stoppageCount = pickInt(rng, 0, 2);
+    for (let s = 0; s < stoppageCount; s++) {
+      const day = String(pickInt(rng, 1, 28)).padStart(2, "0");
+      const hour = String(pickInt(rng, 0, 23)).padStart(2, "0");
+      pipelineStoppages.push({
+        id: nextId("STP"),
+        period,
+        startedAt: `${period}-${day}T${hour}:00:00.000Z`,
+        durationHours: Math.round(pickFloat(rng, 0.5, 24) * 10) / 10,
+        responsible: pickOne(rng, Object.values(StoppageResponsible)),
+        cause: pickOne(rng, STOPPAGE_CAUSES),
+      });
+    }
+
+    for (const scope of Object.values(EmissionScope)) {
+      const range = EMISSION_RANGES[scope];
+      emissionEntries.push({
+        id: nextId("EMI"),
+        period,
+        scope,
+        tonsCo2e: Math.round(pickFloat(rng, range.min, range.max) * 10) / 10,
+        source: EMISSION_SOURCES[scope],
+      });
+    }
+
+    for (const area of CLOSING_AREAS) {
+      closingComments.push({
+        id: nextId("CLC"),
+        period,
+        area,
+        comment: `Cierre ${period} — ${area}: ${pickOne(rng, CLOSING_COMMENT_POOL)}`,
+        authorId: operators.length > 0 ? pickOne(rng, operators).id : undefined,
+      });
+    }
+  }
+
+  // Guarantee at least one stoppage for the report pages
+  if (pipelineStoppages.length === 0) {
+    const period = periodOf(today);
+    pipelineStoppages.push({
+      id: nextId("STP"),
+      period,
+      startedAt: `${period}-05T06:00:00.000Z`,
+      durationHours: 4,
+      responsible: StoppageResponsible.BOTH,
+      cause: STOPPAGE_CAUSES[0],
+    });
+  }
+
+  return { pipelineStoppages, emissionEntries, closingComments };
+}
+
+// ============================================================================
 // MAIN: generateWorld
 // ============================================================================
 
@@ -862,18 +1223,31 @@ export function generateWorld(config?: Partial<GeneratorConfig>): PipelineWorld 
   const seed = cfg.seed ?? 0;
   const rng = createRng(seed);
 
-  // Run 11 FK-ordered steps
+  // Run FK-ordered steps
   const pipeline = generatePipeline(cfg, rng);
-  const stations = generateStations(pipeline, cfg, rng);
-  const tanks = generateTanks(stations, cfg, rng);
-  const equipment = generateEquipment(stations, cfg, rng);
+  const baseStations = generateStations(pipeline, cfg, rng);
+  const baseTanks = generateTanks(baseStations, cfg, rng);
+  const baseEquipment = generateEquipment(baseStations, cfg, rng);
+  const { stations, tanks, equipment } = applyCanonicalTopology(
+    pipeline,
+    baseStations,
+    baseTanks,
+    baseEquipment,
+  );
   const shippers = generateShippers(cfg, rng);
   const movements = generateMovements(pipeline, stations, tanks, shippers, cfg, rng);
   const volumeTargets = generateVolumeTargets(movements, shippers, cfg, rng);
+  const custodyDifferences = generateCustodyDifferences(shippers, cfg, rng);
   const { plans: maintenancePlans, tasks } = generateMaintenancePlans(equipment, rng);
   const workOrders = generateWorkOrders(tasks, maintenancePlans, equipment, stations, rng);
   const cathodicReadings = generateCathodicReadings(pipeline, stations, rng);
   const telemetry = generateTelemetry(tanks, pipeline, equipment, cfg, rng);
+  const { operators, workstations, shiftRosters, shiftLogEntries } = generateIdentity(stations);
+  const { pipelineStoppages, emissionEntries, closingComments } = generateReportEntities(
+    cfg,
+    rng,
+    operators,
+  );
 
   return {
     pipeline,
@@ -883,9 +1257,17 @@ export function generateWorld(config?: Partial<GeneratorConfig>): PipelineWorld 
     equipment,
     movements,
     volumeTargets,
+    custodyDifferences,
     maintenancePlans,
     workOrders,
     cathodicReadings,
     telemetry,
+    operators,
+    workstations,
+    shiftRosters,
+    shiftLogEntries,
+    pipelineStoppages,
+    emissionEntries,
+    closingComments,
   };
 }

@@ -201,7 +201,7 @@ export function DataTable<T extends object>({
                     <button
                       type="button"
                       onClick={() => onSort?.(col.key)}
-                      className="inline-flex items-center hover:text-ink-primary focus:outline-none"
+                      className="inline-flex items-center uppercase hover:text-ink-primary focus:outline-none"
                     >
                       {col.label}
                       <SortIcon

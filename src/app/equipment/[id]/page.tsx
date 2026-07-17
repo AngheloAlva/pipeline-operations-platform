@@ -31,6 +31,7 @@ import { resolveEntity } from "@/lib/domain/resolveEntity";
 import { EntityType } from "@/store/selectionStore";
 import {
   deriveMaintenanceBoardRows,
+  deriveEquipmentHoursOutlook,
   filterMaintenanceBoardRows,
 } from "@/lib/maintenance/selectors";
 import {
@@ -39,6 +40,10 @@ import {
   buildReadingTableRowsFromReadings,
 } from "@/lib/integrity/selectors";
 import { useMaintenanceStore } from "@/store/maintenanceStore";
+import { useCaptureStore, CaptureRecordKind } from "@/store/captureStore";
+import type { PumpRunRecord } from "@/store/captureStore";
+import { getEffectiveRecords } from "@/lib/capture/ledger";
+import { formatHours, formatDateTime, operatorName } from "@/components/capture/formKit";
 
 import { TankGauge } from "@/components/cockpit/TankGauge";
 import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
@@ -78,6 +83,26 @@ const TASK_STATUS_LABELS: Record<string, string> = {
   OVERDUE: "Vencida",
   UPCOMING: "Próxima",
   OK: "OK",
+};
+
+// Spanish singular labels for EquipmentType (same source enum as the
+// maintenance tree's plural labels — MV-20 polish, identity readout only).
+const EQUIPMENT_TYPE_LABELS: Record<string, string> = {
+  PUMP: "Bomba",
+  AGITATOR: "Agitador",
+  VALVE: "Válvula",
+  RECTIFIER: "Rectificador",
+  MOTOR: "Motor",
+  TRANSFORMER: "Transformador",
+  OTHER: "Otro",
+};
+
+// Spanish labels for EquipmentCriticality (mirrors MaintenanceBoard).
+const CRITICALITY_LABELS: Record<string, string> = {
+  LOW: "Baja",
+  MEDIUM: "Media",
+  HIGH: "Alta",
+  CRITICAL: "Crítica",
 };
 
 // Task-status → deck status class. Maps the EXISTING task-status union
@@ -176,6 +201,25 @@ function EquipmentPageBody() {
     () => (world ? world.workOrders.filter((wo) => wo.equipmentId === id) : []),
     [world, id],
   );
+
+  // MV-19 — hours → maintenance exhibit: accumulated operating hours and the
+  // BY_HOURS outlook. Reads the same world the capture write path publishes,
+  // so a committed pump run moves these numbers in the same session.
+  const hoursOutlook = useMemo(
+    () => (world ? deriveEquipmentHoursOutlook(world, id, now) : null),
+    [world, id, now],
+  );
+
+  // MV-19 — capture provenance: latest effective pump-run capture for this
+  // equipment (if any), surfaced modestly next to the hours it produced.
+  const captureRecords = useCaptureStore((s) => s.records);
+  const lastPumpRun = useMemo(() => {
+    const runs = getEffectiveRecords(captureRecords).filter(
+      (r): r is PumpRunRecord =>
+        r.kind === CaptureRecordKind.PUMP_RUN && r.values.equipmentId === id,
+    );
+    return runs.length > 0 ? runs[runs.length - 1] : null;
+  }, [captureRecords, id]);
 
   // ---------------------------------------------------------------------------
   // Section 2: Station Flow — tanks at this station (F4-2-R4 section 2)
@@ -302,7 +346,10 @@ function EquipmentPageBody() {
                 <span className="mc-readout__label">Tipo</span>
                 <ConceptInfo term="tipo-equipo" label="Tipo" />
               </div>
-              <ReadoutStat label="" value={equipment.type} />
+              <ReadoutStat
+                label=""
+                value={EQUIPMENT_TYPE_LABELS[equipment.type as string] ?? equipment.type}
+              />
             </div>
             {/* Criticidad */}
             <div className="flex flex-col gap-0.5">
@@ -310,7 +357,10 @@ function EquipmentPageBody() {
                 <span className="mc-readout__label">Criticidad</span>
                 <ConceptInfo term="criticidad" label="Criticidad" />
               </div>
-              <ReadoutStat label="" value={equipment.criticality} />
+              <ReadoutStat
+                label=""
+                value={CRITICALITY_LABELS[equipment.criticality as string] ?? equipment.criticality}
+              />
             </div>
             {/* Estación */}
             <div className="flex flex-col gap-0.5">
@@ -342,6 +392,45 @@ function EquipmentPageBody() {
           status={maintenanceStatus}
         >
           <div className="flex flex-col gap-4 p-4">
+            {/* MV-19 — hours → maintenance exhibit. The counter that moves
+                when a pump-run capture commits: no double entry. */}
+            {hoursOutlook && (
+              <div className="flex flex-col gap-1 border border-border-subtle p-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="mc-readout__label">Horas de operación</span>
+                  <ConceptInfo term="frecuencia-mantenimiento" label="Horas de operación" />
+                </div>
+                <p
+                  className="text-[14px] font-medium tabular-nums text-ink-primary"
+                  style={{ fontFamily: "var(--font-mono), monospace" }}
+                >
+                  {formatHours(hoursOutlook.operatingHours)} acumuladas
+                </p>
+                {hoursOutlook.tasks.map((task) => (
+                  <p
+                    key={`${task.planId}:${task.taskId}`}
+                    className="text-[12px] tabular-nums text-ink-secondary"
+                    style={{ fontFamily: "var(--font-mono), monospace" }}
+                  >
+                    {task.remainingHours >= 0
+                      ? `Quedan ${formatHours(task.remainingHours)}`
+                      : `Vencida por ${formatHours(-task.remainingHours)}`}{" "}
+                    para «{task.taskName}» (a las {formatHours(task.nextDueAtHours)})
+                  </p>
+                ))}
+                {lastPumpRun && (
+                  <p
+                    className="text-[12px] text-ink-muted"
+                    style={{ fontFamily: "var(--font-mono), monospace" }}
+                  >
+                    Última captura: +{formatHours(lastPumpRun.values.hoursRun)} por{" "}
+                    {operatorName(world, lastPumpRun.captureMeta.authorId)} ·{" "}
+                    {formatDateTime(lastPumpRun.captureMeta.enteredAt)} ({lastPumpRun.id})
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Maintenance tasks table */}
             {equipmentBoardRows.length === 0 ? (
               <p

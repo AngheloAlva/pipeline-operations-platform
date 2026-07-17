@@ -42,6 +42,9 @@ vi.mock("next/dynamic", () => ({
 // ---------------------------------------------------------------------------
 import { useParams, notFound } from "next/navigation";
 import { useWorldStore } from "@/store/worldStore";
+import { useCaptureStore, INITIAL_CAPTURE_SLICE, CaptureRecordKind } from "@/store/captureStore";
+import { formatHours } from "@/components/capture/formKit";
+import { MaintenanceFrequency } from "@/lib/domain";
 import seedData from "@/lib/data/seed.json";
 import type { PipelineWorld } from "@/lib/domain";
 import EquipmentPage from "./page";
@@ -128,5 +131,74 @@ describe("EquipmentPage render tests — hooks-order regression (CRITICAL #1)", 
     // notFound spy must have been called at least once (React may call render
     // more than once in development/strict mode)
     expect(vi.mocked(notFound)).toHaveBeenCalled();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// MV-19 — hours → maintenance exhibit + capture provenance
+// ---------------------------------------------------------------------------
+
+describe("EquipmentPage — hours → maintenance exhibit (MV-19)", () => {
+  // A seed equipment carrying at least one active BY_HOURS plan task.
+  const hoursPlan = seedWorld.maintenancePlans.find(
+    (p) =>
+      p.isActive &&
+      p.equipmentId &&
+      p.tasks.some(
+        (t) => t.frequency === MaintenanceFrequency.BY_HOURS && t.nextDueAtHours !== undefined,
+      ),
+  )!;
+  const hoursEquipment = seedWorld.equipment.find((e) => e.id === hoursPlan.equipmentId)!;
+
+  beforeEach(() => {
+    useCaptureStore.setState(INITIAL_CAPTURE_SLICE);
+  });
+
+  afterEach(() => {
+    useCaptureStore.setState(INITIAL_CAPTURE_SLICE);
+  });
+
+  it("exhibits the accumulated operating hours and the usage-based outlook", async () => {
+    setParams(hoursEquipment.id);
+    await act(async () => {
+      useWorldStore.setState({ world: seedWorld, loaded: true });
+    });
+
+    render(<EquipmentPage />);
+
+    expect(screen.getByText("Horas de operación")).toBeTruthy();
+    const accumulated = screen.getByText(/acumuladas/i);
+    expect(accumulated.textContent).toContain(formatHours(hoursEquipment.operatingHours));
+    // At least one remaining-hours line for the BY_HOURS task(s)
+    expect(screen.getAllByText(/quedan|vencida por/i).length).toBeGreaterThan(0);
+  });
+
+  it("surfaces capture provenance when hours come from a committed capture", async () => {
+    setParams(hoursEquipment.id);
+    await act(async () => {
+      useWorldStore.setState({ world: seedWorld, loaded: true });
+      useCaptureStore.setState({
+        records: [
+          {
+            id: "CAP-0001",
+            kind: CaptureRecordKind.PUMP_RUN,
+            values: { equipmentId: hoursEquipment.id, hoursRun: 8 },
+            warnings: [],
+            captureMeta: {
+              authorId: seedWorld.operators[0].id,
+              workstationId: seedWorld.workstations[0].id,
+              enteredAt: "2026-06-12T20:30:00.000Z",
+            },
+          },
+        ],
+      });
+    });
+
+    render(<EquipmentPage />);
+
+    const provenance = screen.getByText(/última captura/i);
+    expect(provenance.textContent).toContain("+8 h");
+    expect(provenance.textContent).toContain("CAP-0001");
+    expect(provenance.textContent).toContain(seedWorld.operators[0].name);
   });
 });

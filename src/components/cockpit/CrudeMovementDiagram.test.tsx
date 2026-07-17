@@ -13,6 +13,7 @@ import { CANONICAL_STATION_TAGS } from "@/lib/data/canonical";
 import { computeCustodyDiff } from "@/lib/volumetrics/custody";
 import { useSimulationStore } from "@/store/simulationStore";
 import { useSelectionStore, EntityType } from "@/store/selectionStore";
+import { INITIAL_CAPTURE_SLICE, useCaptureStore } from "@/store/captureStore";
 import { CrudeMovementDiagram } from "./CrudeMovementDiagram";
 import { CUSTODY_DIFF_ANCHOR } from "./CustodyDiffPanel";
 
@@ -23,6 +24,7 @@ const phStation = stationByTag.get(CANONICAL_STATION_TAGS.PUERTO_HERNANDEZ)!;
 const tank101 = seedWorld.tanks.find((t) => t.tag === "T-101")!;
 
 beforeEach(() => {
+  useCaptureStore.setState(INITIAL_CAPTURE_SLICE);
   useSimulationStore.getState().init(seedWorld);
   useSelectionStore.getState().clearSelection();
 });
@@ -71,6 +73,26 @@ describe("live tank levels", () => {
     render(<CrudeMovementDiagram world={seedWorld} />);
     const card = screen.getByText("T-101").closest("[data-tank-id]")!;
     expect(card.textContent).toContain("60%");
+    expect(card.textContent).toContain("18.000 m³");
+    expect(card.textContent).toContain("ƒ calc");
+  });
+
+  it("coordinates the propagation highlight on the touched tank and custody chip", () => {
+    useCaptureStore.setState({
+      lastPropagation: {
+        sequence: 7,
+        recordId: "CAP-0007",
+        tankIds: [tank101.id],
+        highlightBalance: true,
+        highlightCustody: true,
+      },
+    });
+    render(<CrudeMovementDiagram world={seedWorld} />);
+    const tankCard = screen.getByText("T-101").closest("[data-tank-id]")!;
+    expect(tankCard.querySelector(".capture-propagation-highlight")).toBeTruthy();
+    expect(screen.getByRole("link", { name: /descuadre/i }).className).toContain(
+      "capture-propagation-highlight",
+    );
   });
 
   it("updates the gauge when the simulation store level changes", () => {

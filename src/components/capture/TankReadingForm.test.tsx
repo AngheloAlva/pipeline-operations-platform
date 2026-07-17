@@ -10,6 +10,7 @@ import { TankReadingForm } from "./TankReadingForm";
 import { resetCaptureStores, declareStandardRoster, MARIA } from "./captureTestFixtures";
 import { useWorldStore } from "@/store/worldStore";
 import { useCaptureStore } from "@/store/captureStore";
+import { useSimulationStore } from "@/store/simulationStore";
 
 function levelInput(): HTMLInputElement {
   return screen.getByLabelText(/nivel medido/i) as HTMLInputElement;
@@ -47,6 +48,19 @@ describe("TankReadingForm", () => {
   it("keeps confirm disabled while no level is typed", () => {
     render(<TankReadingForm />);
     expect(confirmButton().disabled).toBe(true);
+  });
+
+  it("accepts 24.421 m³ at 32 °F when it equals the live stock and explains the derived preview", () => {
+    useSimulationStore.getState().applyCapturedLevels({ "TNK-1": 24_421 });
+    render(<TankReadingForm />);
+    fireEvent.change(levelInput(), { target: { value: "24.421" } });
+    fireEvent.change(screen.getByLabelText(/temperatura/i), { target: { value: "32" } });
+
+    expect(screen.queryByText(/supera la tolerancia/i)).toBeNull();
+    expect(screen.getByText("Vista previa viva")).toBeTruthy();
+    expect(screen.getByText(/Volumen a 15 °C/i)).toBeTruthy();
+    expect(screen.getByText(/Descuadre estimado/i)).toBeTruthy();
+    expect(confirmButton().disabled).toBe(false);
   });
 
   it("renders the PIN dialog OUTSIDE the host form (nested <form> navigates in real browsers)", () => {

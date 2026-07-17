@@ -257,6 +257,27 @@ describe("captureStore", () => {
 
     // Live simulation: selectors see the new level immediately
     expect(useSimulationStore.getState().tankLevels["TNK-1"]).toBe(18_100);
+    expect(getStore().lastPropagation).toMatchObject({
+      sequence: 1,
+      recordId: "CAP-0001",
+      tankIds: ["TNK-1"],
+      highlightBalance: true,
+      highlightCustody: true,
+    });
+  });
+
+  it("validates and applies a reading from the live simulation stock, not stale world stock", () => {
+    const credential = declareStandardRoster();
+    useSimulationStore.getState().applyCapturedLevels({ "TNK-1": 24_421 });
+    const result = getStore().commitTankReading(
+      { tankId: "TNK-1", levelM3: 24_421, temperatureF: 32 },
+      credential,
+      { enteredAt: T_COMMIT },
+    );
+    expect(result.status).toBe(CommitStatus.COMMITTED);
+    if (result.status !== CommitStatus.COMMITTED) return;
+    expect(result.warnings).toEqual([]);
+    expect(getWorld().tanks.find((tank) => tank.id === "TNK-1")?.currentLevelM3).toBe(24_421);
   });
 
   it("a reading with warnings commits flagged (warns pass through)", () => {
@@ -592,6 +613,32 @@ describe("captureStore", () => {
     expect(result.status).toBe(CommitStatus.REJECTED);
     expect(getStore().records).toHaveLength(1);
     expect(getWorld().tanks.find((t) => t.id === "TNK-1")?.currentLevelM3).toBe(18_100);
+  });
+
+  it("preserves later stock movements when amending a historical tank reading", () => {
+    const credential = declareStandardRoster();
+    const reading = getStore().commitTankReading(
+      { tankId: "TNK-1", levelM3: 18_000 },
+      credential,
+      { enteredAt: T_COMMIT },
+    );
+    if (reading.status !== CommitStatus.COMMITTED) throw new Error("setup failed");
+    getStore().commitMovement(
+      { type: MovementType.TRANSFER, fromNodeId: "TNK-1", toNodeId: "STA-2", volumeM3: 100 },
+      credential,
+      { enteredAt: "2026-06-12T20:45:00.000Z" },
+    );
+    expect(getWorld().tanks.find((tank) => tank.id === "TNK-1")?.currentLevelM3).toBe(17_900);
+
+    const amended = getStore().amendRecord(
+      reading.record.id,
+      { levelM3: 19_000 },
+      credential,
+      { enteredAt: T_AMEND },
+    );
+    expect(amended.status).toBe(CommitStatus.COMMITTED);
+    expect(getWorld().tanks.find((tank) => tank.id === "TNK-1")?.currentLevelM3).toBe(18_900);
+    expect(useSimulationStore.getState().tankLevels["TNK-1"]).toBe(18_900);
   });
 
   it("amending an unknown or already-superseded record is blocked", () => {

@@ -193,6 +193,7 @@ export function hasBlockingIssue(issues: CaptureIssue[]): boolean {
 export function validateTankReading(
   world: PipelineWorld,
   input: TankReadingInput,
+  referenceLevelM3?: number,
 ): CaptureIssue[] {
   const tank = findTank(world, input.tankId);
   if (!tank) {
@@ -246,7 +247,7 @@ export function validateTankReading(
     );
   }
 
-  const bookLevel = tank.currentLevelM3;
+  const bookLevel = referenceLevelM3 ?? tank.currentLevelM3;
   const delta = Math.abs(input.levelM3 - bookLevel);
 
   if (bookLevel > 0) {
@@ -255,7 +256,7 @@ export function validateTankReading(
       issues.push(
         warn(
           CaptureIssueCode.DIFF_BEYOND_TOLERANCE,
-          `La lectura difiere ${formatPct(diffPct)} del stock registrado de ${tank.tag} (${formatM3(bookLevel)}); supera la tolerancia de ${BALANCE_TOLERANCE_WARN}%. Verifique antes de confirmar.`,
+          `La lectura difiere ${formatPct(diffPct)} del stock vivo de ${tank.tag} (${formatM3(bookLevel)}); supera la tolerancia de ${BALANCE_TOLERANCE_WARN}%. Verifique antes de confirmar.`,
         ),
       );
     }
@@ -281,7 +282,11 @@ export function validateTankReading(
  * Validate a crude movement against the current world.
  * Returns an empty array when the movement is plausible.
  */
-export function validateMovement(world: PipelineWorld, input: MovementInput): CaptureIssue[] {
+export function validateMovement(
+  world: PipelineWorld,
+  input: MovementInput,
+  liveLevels: Readonly<Record<string, number>> = {},
+): CaptureIssue[] {
   const issues: CaptureIssue[] = [];
 
   if (!Number.isFinite(input.volumeM3)) {
@@ -324,18 +329,22 @@ export function validateMovement(world: PipelineWorld, input: MovementInput): Ca
   if (hasBlockingIssue(issues)) return issues;
 
   const originTank = findTank(world, input.fromNodeId);
-  if (originTank && input.volumeM3 > originTank.currentLevelM3) {
+  const originStockM3 = originTank
+    ? (liveLevels[originTank.id] ?? originTank.currentLevelM3)
+    : null;
+  if (originTank && originStockM3 !== null && input.volumeM3 > originStockM3) {
     issues.push(
       block(
         CaptureIssueCode.ORIGIN_INSUFFICIENT_STOCK,
-        `${originTank.tag} tiene ${formatM3(originTank.currentLevelM3)} disponibles; no puede despachar ${formatM3(input.volumeM3)}.`,
+        `${originTank.tag} tiene ${formatM3(originStockM3)} disponibles en el stock vivo; no puede despachar ${formatM3(input.volumeM3)}.`,
       ),
     );
   }
 
   const destTank = findTank(world, input.toNodeId);
   if (destTank) {
-    const finalLevel = destTank.currentLevelM3 + input.volumeM3;
+    const destinationStockM3 = liveLevels[destTank.id] ?? destTank.currentLevelM3;
+    const finalLevel = destinationStockM3 + input.volumeM3;
     if (finalLevel > destTank.capacityM3) {
       issues.push(
         block(

@@ -193,6 +193,27 @@
   50%       { opacity: 0.45; }
 }
 
+/* One deterministic propagation event remounts these targets by sequence. */
+@keyframes capture-highlight {
+  0% { box-shadow: 0 0 0 1px var(--accent), 0 0 18px var(--accent-dim); background-color: var(--accent-dim); }
+  100% { box-shadow: 0 0 0 1px transparent, 0 0 0 transparent; background-color: transparent; }
+}
+
+.capture-propagation-highlight {
+  animation: capture-highlight 1.2s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@keyframes capture-highlight-reduced {
+  0%, 70% { outline: 1px solid var(--accent); background-color: var(--accent-dim); }
+  100% { outline: 1px solid transparent; background-color: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .capture-propagation-highlight {
+    animation: capture-highlight-reduced 0.9s linear both;
+  }
+}
+
 /* ---------------------------------------------------------------------------
  * Base body styles
  * --------------------------------------------------------------------------- */

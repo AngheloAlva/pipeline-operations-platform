@@ -259,3 +259,45 @@ La demo es sintética y de estado local a propósito. Para producción:
 - [ ] **Paleta corporativa OTC** (azul/verde del logo): ¿acercar el modo claro a ella para la reunión, o mantener "Sala de Control"?
 
 > Ninguno bloquea los Slices 1 y 2.
+
+---
+
+## 12. Refinamientos pre-demo (revisión de la versión construida)
+
+Punch-list sobre la primera versión ya construida (cockpit hero, captura, reportes). **Nada de esto es estructural** — la plataforma está completa. Son los detalles que separan "impresionante" de "el operador se lo cree". Ordenados por prioridad.
+
+### Verificación en vivo (recorrido interactivo, jul-2026)
+
+Recorrido completo de la versión desplegada. **Confirmado funcionando:** hero vivo; clic en nodo → panel Detalle con navegación cruzada (VER EN MANTENCIÓN / VER EN INTEGRIDAD) y deep-link `?focus=`; captura con declaración de dotación de turno; validación al ingreso (advertencia de tolerancia); identidad por PIN **por operador** (sin bug — el PIN válido confirma bien; el rechazo previo fue artefacto de automatización); propagación de la lectura al diagrama y al balance; libro del turno (Registros del turno); y **traza de enmiendas** (registro marcado VIGENTE + "CORREGIR REGISTRO VIGENTE", modelo libro contable). El corazón de la captura está sólido.
+
+**Gaps/pendientes confirmados en vivo, en orden:**
+- **MV-21 (alta) — es el faltante #1.** El formulario de captura no muestra la cuenta derivada mientras se escribe (solo la advertencia de validación). Falta el preview: volumen a 15°/60°, nuevo stock, efecto en el descuadre.
+- **Advertencia sin causa clara.** Capturar 24.421 m³ (= stock registrado) igual marcó "1 advertencia" — probablemente por la temperatura ingresada (32 °F / 0 °C). Revisar la regla para que no marque sin motivo evidente; en demo una advertencia inexplicada confunde.
+- **MV-25.** m³ en la tarjeta de estanque del hero (hoy solo % · °F · °API; los m³ ya aparecen en el panel Detalle al hacer clic).
+- **MV-26.** Waterfall "Cumplimiento por cargador" todo en rojo (real parcial del mes vs programa completo) — lee como fracaso masivo.
+- **Logística de demo.** Los PINs no se ven en pantalla; llevar tarjeta con los PINs o mostrar un hint en modo demo.
+
+### 🔴 Prioridad alta — creerse la captura (las dos dudas del cliente son la misma)
+
+El problema de fondo: la captura muestra pocos campos y **no muestra la cuenta que hace el sistema**. El "wow" (*ingresas una vez, sale en todos lados*) hoy hay que contarlo; falta que se **vea**.
+
+- **MV-21 · Vista previa viva de cálculo en el formulario de captura.** Toca: `components/capture/TankReadingForm.tsx`, `MovementForm.tsx`. Mientras se tipea, mostrar al instante: Δ vs valor anterior, volumen a 15 °C y 60 °F (usar `lib/volumetrics/conversions.ts`), nuevo stock, y *"esto mueve el descuadre a −X m³ (−Y %)"*. La cuenta aparece **antes** de confirmar. Acep: al escribir un nivel/volumen, los derivados se recalculan en vivo sin confirmar.
+- **MV-22 · Distinguir dato tipeado de dato calculado.** Toca: componentes de captura + tarjetas del hero. Marcar los valores derivados con una señal sutil (etiqueta `calc`/`ƒ` o estilo distinto) para que se lea "estos no los tipeas, los pone el sistema". Es el argumento de venta hecho visual. Acep: en cualquier formulario y en las tarjetas, se distingue crudo vs derivado.
+- **MV-23 · Un flujo de captura "profundo" (buque o batch horario).** Toca: nuevo `components/capture/VesselForm.tsx` o `BatchReadingForm.tsx`. Reproducir la riqueza real del Excel (estanque, producto, API, temperatura, flujómetro) **con los campos calculados apareciendo solos** (GSV 15°/60°, BRLS, nuevo stock). Mensaje: "el Excel te hace tipear 15 columnas, 10 son cuentas; acá tipeas 3 y las 10 salen solas". Los otros ingresos quedan como "mismo patrón, menos campos". Acep: existe ≥1 captura que demuestra que el sistema maneja la complejidad real.
+- **MV-24 · Destello de propagación al confirmar.** Toca: `store/captureStore.ts` + hero/balance. Al confirmar un ingreso, un breve highlight en el estanque del diagrama + en el balance + en el chip de descuadre. Sin esto el "aparece en todos lados" se cuenta; con esto se ve. Acep: confirmar una captura produce un cambio visible en ≥2 vistas.
+- **MV-25 · m³ en las tarjetas de estanque del hero.** Hoy muestran "60% · 59 °F · 34 °API"; agregar los **m³** (el número que al operador le importa). Toca: `TankGauge.tsx` / tarjetas del hero.
+
+### 🟠 Prioridad media — coherencia que un cliente del rubro va a notar
+
+- **MV-26 · Cumplimiento coherente (real vs programa like-for-like).** Hoy el header marca "CUMPLIMIENTO 26.3%" en rojo y el waterfall "Cumplimiento por cargador" da todo negativo (−241k … −1.057k m³). Lee como *"todos gravísimamente bajo programa"*. Causa probable: real del **mes en curso (parcial)** vs programa del **mes completo**. En el BI real daba ~100–105%. Fix: comparar real-a-la-fecha vs programa-a-la-fecha, **o** demostrar con un mes cerrado (mayo) que da ~100%. Toca: `lib/kpi/overview.ts`, `WaterfallChart` inputs, generador. Acep: el cumplimiento no lee como fracaso masivo; coherente con el descuadre (que sí está bien).
+- **MV-27 · Comentarios de cierre realistas (no placeholder).** Hoy repiten "Resultados dentro de lo presupuestado…". Sembrar 4–5 comentarios reales por área (ILI en ducto 30″, taller de mediciones volumétricas OTA-OTC, montaje rectificador KMT, estudio protección catódica pk201-270). Refuerza argumentos de venta de paso. Toca: generador (`ClosingComment`).
+- **MV-28 · Medio Ambiente: "Por Fuente" ≠ "Por Alcance".** Hoy muestran los mismos números (espejo). Diferenciar con fuentes reales (combustión en bombas, energía eléctrica, transporte). Toca: generador (`EmissionEntry`).
+- **MV-29 · Etiqueta de "tolerancia" junto al descuadre.** El chip "−298 m³ · −0,19%" en verde es correcto (dentro de ±0,5 %), pero un no-experto no sabe si es bueno. Agregar micro-rótulo "OK · dentro de tolerancia ±0,5 %". Toca: chip del hero + panel de descuadre.
+
+### 🟡 Verificar (no se ve en captura estática — confirmar en la demo)
+
+- **MV-30 · Enmienda demoable.** Corregir un valor ya capturado debe crear registro nuevo con traza (quién/cuándo/valor anterior), sin sobrescribir. Confirmar que `AmendmentTrail` se ve en el recorrido.
+- **MV-31 · Modo oscuro pulido.** El argumento "sala a las 3 AM" se cuenta mejor en oscuro; verificar que el hero, la captura y los reportes se ven bien en dark (las capturas de revisión estaban en claro).
+- **MV-32 · Roster → identidad end-to-end.** Confirmar que al declarar la dotación, el PIN al confirmar resuelve contra esos 5 nombres y estampa actor + estación + timestamp en el registro.
+
+> Regla para priorizar en la demo: si solo hay tiempo para el bloque rojo (MV-21 a MV-25), hacerlo. Es lo que convierte la captura de "se ve simple" a "me hace las cuentas y me saca trabajo".

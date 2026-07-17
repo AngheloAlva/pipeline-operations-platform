@@ -22,12 +22,12 @@ import type { Movement } from "@/lib/domain";
 import {
   TELEMETRY_BLUE,
   ALARM_RED,
-  STATUS_WARNING,
   INK_TERTIARY,
   STATUS_OK,
   CHART_FONT_MONO,
 } from "@/lib/charts/palette";
 import { ConceptInfo } from "@/components/shared/ConceptInfo";
+import { useCaptureStore } from "@/store/captureStore";
 
 // ============================================================================
 // CHART COLORS (JS values — Recharts ignores CSS var() in inline styles)
@@ -119,6 +119,7 @@ export interface BalancePanelProps {
  * SR-009.
  */
 export function BalancePanel({ movements }: BalancePanelProps) {
+  const propagation = useCaptureStore((state) => state.lastPropagation);
   // Memoized hourly data — SR-009 req 3
   const hourlyData: HourlyBalance[] = useMemo(
     () => groupBalanceByHour(movements),
@@ -129,9 +130,16 @@ export function BalancePanel({ movements }: BalancePanelProps) {
 
   return (
     <section
-      className="flex flex-col gap-3 border border-border-mid bg-surface-raised p-4"
+      className="relative flex flex-col gap-3 border border-border-mid bg-surface-raised p-4"
       aria-label="Balance Horario"
     >
+      {propagation?.highlightBalance && (
+        <span
+          key={propagation.sequence}
+          aria-hidden="true"
+          className="capture-propagation-highlight pointer-events-none absolute inset-0 z-10"
+        />
+      )}
       {/* Panel header */}
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">

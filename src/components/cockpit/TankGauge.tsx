@@ -8,6 +8,7 @@
  */
 
 import { cn } from "@/lib/cn";
+import { ValueSourceBadge, ValueSourceKind } from "@/components/capture/ValueSourceBadge";
 import { TANK_HIGH_LEVEL_ALARM } from "@/lib/simulation/types";
 
 // ============================================================================
@@ -173,12 +174,18 @@ export function TankGauge({
           </span>
           {outflow && <FlowIndicator dir="out" />}
           {inflow && <FlowIndicator dir="in" />}
+          <ValueSourceBadge kind={ValueSourceKind.CALCULATED} compact />
+        </span>
+
+        <span className="text-[12px] font-medium tabular-nums text-ink-secondary" style={monoStyle}>
+          {Math.round(level).toLocaleString("es-AR")} m³
         </span>
 
         {/* Temp · API line */}
         {tempApiLine !== null && (
-          <span className="text-[11px] tabular-nums text-ink-tertiary" style={monoStyle}>
+          <span className="flex items-center gap-1 text-[11px] tabular-nums text-ink-tertiary" style={monoStyle}>
             {tempApiLine}
+            <ValueSourceBadge kind={ValueSourceKind.ENTERED} compact />
           </span>
         )}
       </div>

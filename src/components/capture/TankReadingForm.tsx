@@ -19,11 +19,19 @@ import type { Operator, PipelineWorld } from "@/lib/domain";
 import { validateTankReading, hasBlockingIssue } from "@/lib/capture/validate";
 import type { CaptureIssue, TankReadingInput } from "@/lib/capture/validate";
 import type { OperatorCredential } from "@/lib/capture/identity";
+import {
+  deriveTankReadingPreview,
+  parseDecimalInput,
+  parseVolumeInput,
+} from "@/lib/capture/preview";
 import { useWorldStore } from "@/store/worldStore";
+import { useSimulationStore } from "@/store/simulationStore";
 import { useCaptureStore, CommitStatus, CaptureRecordKind } from "@/store/captureStore";
 import type { CaptureRecord } from "@/store/captureStore";
 import { PinPrompt } from "./PinPrompt";
 import { IssueList } from "./IssueList";
+import { DerivedPreview } from "./DerivedPreview";
+import { ValueSourceBadge, ValueSourceKind } from "./ValueSourceBadge";
 import {
   FIELD_INPUT_CLASS,
   FIELD_LABEL_CLASS,
@@ -41,11 +49,6 @@ export interface TankReadingFormProps {
 interface FeedbackMessage {
   tone: "ok" | "critical";
   text: string;
-}
-
-function parseNumber(raw: string): number | null {
-  if (raw.trim() === "") return null;
-  return Number(raw.replace(",", "."));
 }
 
 export function TankReadingForm({ amendRecordId, onCommitted }: TankReadingFormProps) {
@@ -72,8 +75,9 @@ export function TankReadingForm({ amendRecordId, onCommitted }: TankReadingFormP
   const tempFieldId = useId();
 
   const tank = world?.tanks.find((t) => t.id === tankId);
-  const parsedLevel = parseNumber(level);
-  const parsedTemp = parseNumber(temperature);
+  const liveLevel = useSimulationStore((state) => state.tankLevels[tankId]);
+  const parsedLevel = parseVolumeInput(level);
+  const parsedTemp = parseDecimalInput(temperature);
 
   const input: TankReadingInput | null =
     parsedLevel !== null && tankId !== ""
@@ -82,7 +86,12 @@ export function TankReadingForm({ amendRecordId, onCommitted }: TankReadingFormP
 
   // MV-6 — validation AT ENTRY, not in a later report. Cheap enough to run
   // on every render (array lookups over the world), so no memo bookkeeping.
-  const entryIssues: CaptureIssue[] = world && input ? validateTankReading(world, input) : [];
+  const entryIssues: CaptureIssue[] =
+    world && input ? validateTankReading(world, input, liveLevel) : [];
+  const preview =
+    world && input
+      ? deriveTankReadingPreview(world, input.tankId, input.levelM3, input.temperatureF, liveLevel)
+      : null;
 
   const blocked = hasBlockingIssue(entryIssues);
   const canConfirm = input !== null && !blocked;
@@ -150,9 +159,12 @@ export function TankReadingForm({ amendRecordId, onCommitted }: TankReadingFormP
       noValidate
     >
       <div className="flex flex-col gap-1">
-        <label htmlFor={tankFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
-          Estanque
-        </label>
+        <div className="flex items-center justify-between gap-2">
+          <label htmlFor={tankFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
+            Estanque
+          </label>
+          <ValueSourceBadge kind={ValueSourceKind.ENTERED} />
+        </div>
         <select
           id={tankFieldId}
           value={tankId}
@@ -172,22 +184,23 @@ export function TankReadingForm({ amendRecordId, onCommitted }: TankReadingFormP
         </select>
         {tank && (
           <p className="text-[12px] text-ink-muted" style={MONO_STYLE}>
-            Stock registrado: {formatM3(tank.currentLevelM3)} · Capacidad:{" "}
+            Stock vivo: {formatM3(liveLevel ?? tank.currentLevelM3)} · Capacidad:{" "}
             {formatM3(tank.capacityM3)}
           </p>
         )}
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor={levelFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
-          Nivel medido (m³)
-        </label>
+        <div className="flex items-center justify-between gap-2">
+          <label htmlFor={levelFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
+            Nivel medido (m³)
+          </label>
+          <ValueSourceBadge kind={ValueSourceKind.ENTERED} />
+        </div>
         <input
           id={levelFieldId}
-          type="number"
+          type="text"
           inputMode="decimal"
-          min="0"
-          step="any"
           value={level}
           onChange={(e) => {
             setLevel(e.target.value);
@@ -201,9 +214,12 @@ export function TankReadingForm({ amendRecordId, onCommitted }: TankReadingFormP
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor={tempFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
-          Temperatura (°F) — opcional
-        </label>
+        <div className="flex items-center justify-between gap-2">
+          <label htmlFor={tempFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
+            Temperatura (°F) — opcional
+          </label>
+          <ValueSourceBadge kind={ValueSourceKind.ENTERED} />
+        </div>
         <input
           id={tempFieldId}
           type="number"
@@ -216,6 +232,19 @@ export function TankReadingForm({ amendRecordId, onCommitted }: TankReadingFormP
           style={MONO_STYLE}
         />
       </div>
+
+      {preview && (
+        <DerivedPreview
+          rows={[
+            { label: "Δ vs anterior", value: `${preview.deltaM3 >= 0 ? "+" : ""}${formatM3(preview.deltaM3)}` },
+            { label: "Volumen a 15 °C", value: formatM3(preview.volumes.volume15CM3) },
+            { label: "Volumen a 60 °F", value: formatM3(preview.volumes.volume60FM3) },
+            { label: "Nuevo stock", value: formatM3(preview.newStockM3) },
+            { label: "Descuadre estimado", value: `${formatM3(preview.mismatch.afterM3)} (${preview.mismatch.afterPct.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%)` },
+            { label: "Base térmica", value: `${preview.temperatureF.toLocaleString("es-AR")} °F` },
+          ]}
+        />
+      )}
 
       <IssueList issues={[...entryIssues, ...commitIssues]} />
 

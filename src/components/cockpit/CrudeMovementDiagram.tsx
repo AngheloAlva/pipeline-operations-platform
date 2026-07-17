@@ -26,6 +26,8 @@ import { MODULE_PATH } from "@/lib/focus/focusUrl";
 import { CUSTODY_DIFF_ANCHOR } from "@/components/cockpit/CustodyDiffPanel";
 import { useSimulationStore, selectTankLevel, useActiveFlows } from "@/store/simulationStore";
 import { useSelectionStore, EntityType } from "@/store/selectionStore";
+import { useCaptureStore } from "@/store/captureStore";
+import { cn } from "@/lib/cn";
 import { flowRateToAnimDur } from "@/lib/diagrams/layout";
 import {
   HERO_VIEW,
@@ -44,6 +46,7 @@ import type { HeroNodeSpec, HeroEdgeSpec, HeroTankSlot, HeroFlowTags } from "@/l
 import { TANK_HIGH_LEVEL_ALARM } from "@/lib/simulation/types";
 import { HeroTankCylinder } from "./HeroTankCylinder";
 import { HeroNodeGlyph, HERO_GLYPH_METRICS } from "./HeroNodeGlyph";
+import { ValueSourceBadge, ValueSourceKind } from "@/components/capture/ValueSourceBadge";
 
 // ============================================================================
 // CONSTANTS
@@ -342,6 +345,7 @@ interface HeroTankCardProps {
   slot: HeroTankSlot;
   isSelected: boolean;
   onClick: (tankId: string) => void;
+  highlightSequence?: number;
 }
 
 const HeroTankCard = memo(function HeroTankCard({
@@ -349,6 +353,7 @@ const HeroTankCard = memo(function HeroTankCard({
   slot,
   isSelected,
   onClick,
+  highlightSequence,
 }: HeroTankCardProps) {
   // Fine-grained per-tank subscription — the tank breathes with the sim loop.
   const level = useSimulationStore(selectTankLevel(tank.id));
@@ -379,6 +384,13 @@ const HeroTankCard = memo(function HeroTankCard({
         isAlarm ? " — alarma de nivel alto" : ""
       }`}
     >
+      {highlightSequence !== undefined && (
+        <span
+          key={highlightSequence}
+          aria-hidden="true"
+          className="capture-propagation-highlight pointer-events-none absolute -inset-2"
+        />
+      )}
       {/* Tag above the roof, as on the source diagram */}
       <span
         className="text-[13px] font-semibold uppercase tracking-[0.1em]"
@@ -399,17 +411,24 @@ const HeroTankCard = memo(function HeroTankCard({
 
         {/* Readout floats beside the shell — no card frame competing with the glyph */}
         <span className="flex flex-col gap-0.5">
-          <span
-            className="text-[16px] font-medium tabular-nums leading-none"
-            style={{
-              ...MONO_STYLE,
-              color: isAlarm ? "var(--amber-safety)" : "var(--ink-primary)",
-            }}
-          >
-            {(ratio * 100).toFixed(0)}%
+          <span className="flex items-center gap-1">
+            <span
+              className="text-[16px] font-medium tabular-nums leading-none"
+              style={{
+                ...MONO_STYLE,
+                color: isAlarm ? "var(--amber-safety)" : "var(--ink-primary)",
+              }}
+            >
+              {(ratio * 100).toFixed(0)}%
+            </span>
+            <ValueSourceBadge kind={ValueSourceKind.CALCULATED} compact />
           </span>
-          <span className="text-[11px] tabular-nums text-ink-tertiary" style={MONO_STYLE}>
+          <span className="text-[12px] font-medium tabular-nums text-ink-secondary" style={MONO_STYLE}>
+            {M3_FORMAT.format(level)} m³
+          </span>
+          <span className="flex items-center gap-1 text-[11px] tabular-nums text-ink-tertiary" style={MONO_STYLE}>
             {tank.temperatureF.toFixed(0)}°F · {tank.apiGravity.toFixed(0)}°API
+            <ValueSourceBadge kind={ValueSourceKind.ENTERED} compact />
           </span>
         </span>
       </span>
@@ -434,9 +453,10 @@ interface CustodyChipData {
 
 interface CustodyChipProps {
   data: CustodyChipData;
+  highlightSequence?: number;
 }
 
-function CustodyChip({ data }: CustodyChipProps) {
+function CustodyChip({ data, highlightSequence }: CustodyChipProps) {
   const absPct = Math.abs(data.diffPct);
   const tone =
     absPct <= CUSTODY_TOLERANCE_PCT
@@ -452,7 +472,10 @@ function CustodyChip({ data }: CustodyChipProps) {
   return (
     <Link
       href={href}
-      className="absolute flex flex-col items-center gap-0.5 border bg-surface-overlay px-4 py-2 transition-colors hover:border-accent"
+      className={cn(
+        "absolute flex flex-col items-center gap-0.5 border bg-surface-overlay px-4 py-2 transition-colors hover:border-accent",
+        highlightSequence !== undefined && "capture-propagation-highlight",
+      )}
       style={{
         left: pctX(HERO_BOUNDARY.chip.x),
         top: pctY(HERO_BOUNDARY.chip.y),
@@ -498,6 +521,7 @@ export function CrudeMovementDiagram({ world }: CrudeMovementDiagramProps) {
   const activeFlows = useActiveFlows();
   const selectEntity = useSelectionStore((s) => s.selectEntity);
   const selectedEntityId = useSelectionStore((s) => s.selectedEntityId);
+  const propagation = useCaptureStore((state) => state.lastPropagation);
 
   // Simulated day (YYYY-MM-DD) — string selector re-renders only on day change.
   const simDay = useSimulationStore((s) => new Date(s.simulatedTime).toISOString().slice(0, 10));
@@ -725,18 +749,27 @@ export function CrudeMovementDiagram({ world }: CrudeMovementDiagramProps) {
             if (!tank) return null;
             return (
               <HeroTankCard
-                key={slot.tag}
+                key={`${slot.tag}-${propagation?.tankIds.includes(tank.id) ? propagation.sequence : 0}`}
                 tank={tank}
                 slot={slot}
                 isSelected={selectedEntityId === tank.id}
                 onClick={handleTankClick}
+                highlightSequence={
+                  propagation?.tankIds.includes(tank.id) ? propagation.sequence : undefined
+                }
               />
             );
           })}
 
           {/* HTML overlay — custody-difference chip on the boundary */}
           {custody && (
-            <CustodyChip data={custody} />
+            <CustodyChip
+              key={propagation?.highlightCustody ? propagation.sequence : 0}
+              data={custody}
+              highlightSequence={
+                propagation?.highlightCustody ? propagation.sequence : undefined
+              }
+            />
           )}
 
           {/* HTML overlay — equipment cross-nav under the manifold (MV-19).

@@ -155,9 +155,20 @@ interface CaptureSlice {
   activeRoster: ShiftRoster | null;
   /** The capture ledger: every committed record, amendments included. */
   records: CaptureRecord[];
+  /** Explicit propagation event consumed by hero/balance highlights (MV-24). */
+  lastPropagation: CapturePropagation | null;
   // Internal sequence counters for deterministic IDs
   _recordSeq: number;
   _rosterSeq: number;
+  _propagationSeq: number;
+}
+
+export interface CapturePropagation {
+  sequence: number;
+  recordId: string;
+  tankIds: string[];
+  highlightBalance: boolean;
+  highlightCustody: boolean;
 }
 
 export interface DeclareRosterInput {
@@ -208,8 +219,10 @@ export const INITIAL_CAPTURE_SLICE: CaptureSlice = {
   workstationId: null,
   activeRoster: null,
   records: [],
+  lastPropagation: null,
   _recordSeq: 1,
   _rosterSeq: 1,
+  _propagationSeq: 1,
 };
 
 // ---------------------------------------------------------------------------
@@ -365,7 +378,16 @@ export const useCaptureStore = create<CaptureStore>((set, get) => {
 
     // For a movement or pump-run amendment, validate against the world WITHOUT
     // the original record's effect (it is being replaced, not stacked).
-    let baseWorld = world;
+    const liveLevels = useSimulationStore.getState().tankLevels;
+    let baseWorld: PipelineWorld = {
+      ...world,
+      tanks: world.tanks.map((tank) => {
+        const liveLevelM3 = liveLevels[tank.id];
+        return liveLevelM3 === undefined || liveLevelM3 === tank.currentLevelM3
+          ? tank
+          : { ...tank, currentLevelM3: liveLevelM3 };
+      }),
+    };
     if (supersedes && kind === CaptureRecordKind.MOVEMENT) {
       const originalRecord = get().records.find((r) => r.id === supersedes.originalId);
       if (originalRecord?.kind === CaptureRecordKind.MOVEMENT) {
@@ -395,10 +417,14 @@ export const useCaptureStore = create<CaptureStore>((set, get) => {
     let issues: CaptureIssue[];
     switch (kind) {
       case CaptureRecordKind.TANK_READING:
-        issues = validateTankReading(baseWorld, values as TankReadingInput);
+        issues = validateTankReading(
+          baseWorld,
+          values as TankReadingInput,
+          liveLevels[(values as TankReadingInput).tankId],
+        );
         break;
       case CaptureRecordKind.MOVEMENT:
-        issues = validateMovement(baseWorld, values as MovementInput);
+        issues = validateMovement(baseWorld, values as MovementInput, liveLevels);
         break;
       case CaptureRecordKind.SHIFT_NOTE:
         issues = validateShiftNote(values as ShiftNoteInput);
@@ -466,12 +492,23 @@ export const useCaptureStore = create<CaptureStore>((set, get) => {
     switch (record.kind) {
       case CaptureRecordKind.TANK_READING: {
         const reading = record.values;
+        const original = supersedes
+          ? get().records.find((candidate) => candidate.id === supersedes.originalId)
+          : undefined;
+        const currentLevel = baseWorld.tanks.find((tank) => tank.id === reading.tankId)
+          ?.currentLevelM3;
+        const levelM3 =
+          original?.kind === CaptureRecordKind.TANK_READING &&
+          original.values.tankId === reading.tankId &&
+          currentLevel !== undefined
+            ? currentLevel + reading.levelM3 - original.values.levelM3
+            : reading.levelM3;
         nextWorld = {
           ...baseWorld,
           tanks: withTankLevel(
             baseWorld.tanks,
             reading.tankId,
-            reading.levelM3,
+            levelM3,
             reading.temperatureF,
           ),
         };
@@ -527,9 +564,20 @@ export const useCaptureStore = create<CaptureStore>((set, get) => {
     }
 
     propagate(nextWorld, touchedTankIds);
+    const tankIds = [...new Set(touchedTankIds)].filter((tankId) =>
+      nextWorld.tanks.some((tank) => tank.id === tankId),
+    );
     set((state) => ({
       records: [...state.records, record],
+      lastPropagation: {
+        sequence: state._propagationSeq,
+        recordId: record.id,
+        tankIds,
+        highlightBalance: true,
+        highlightCustody: true,
+      },
       _recordSeq: state._recordSeq + 1,
+      _propagationSeq: state._propagationSeq + 1,
     }));
 
     return { status: CommitStatus.COMMITTED, record, warnings };

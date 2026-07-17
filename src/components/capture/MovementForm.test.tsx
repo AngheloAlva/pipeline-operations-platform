@@ -28,6 +28,16 @@ describe("MovementForm", () => {
     expect((screen.getByLabelText("Destino") as HTMLSelectElement).value).toBe("TNK-2");
   });
 
+  it("recalculates standard volumes, stocks and mismatch before confirmation", () => {
+    render(<MovementForm />);
+    fireEvent.change(volumeInput(), { target: { value: "1.000" } });
+    fireEvent.change(screen.getByLabelText(/temperatura observada/i), { target: { value: "70" } });
+    expect(screen.getByText("Vista previa viva")).toBeTruthy();
+    expect(screen.getByText(/Volumen a 15 °C/i)).toBeTruthy();
+    expect(screen.getByText(/Nuevo stock origen/i)).toBeTruthy();
+    expect(screen.getByText(/Descuadre estimado/i)).toBeTruthy();
+  });
+
   it("hard-blocks a movement that would overfill the destination tank", () => {
     render(<MovementForm />);
     // T-6010 holds 27 500 of 50 000 m³ — 30 000 more would overfill it

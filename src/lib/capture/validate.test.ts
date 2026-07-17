@@ -141,6 +141,15 @@ describe("validateTankReading", () => {
     const issues = validateTankReading(makeWorld(), { tankId: "TNK-1", levelM3: 18_100 });
     expect(issues).toEqual([]);
   });
+
+  it("compares against the live reference level when the simulation advanced", () => {
+    const issues = validateTankReading(
+      makeWorld(),
+      { tankId: "TNK-1", levelM3: 24_421, temperatureF: 32 },
+      24_421,
+    );
+    expect(issues).toEqual([]);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -234,6 +243,16 @@ describe("validateMovement", () => {
       volumeM3: 1000,
     });
     expect(issues).toEqual([]);
+  });
+
+  it("validates movement stock against the live simulation levels", () => {
+    const issues = validateMovement(
+      makeWorld(),
+      { type: MovementType.TRANSFER, fromNodeId: "TNK-1", toNodeId: "TNK-2", volumeM3: 1000 },
+      { "TNK-1": 900, "TNK-2": 49_500 },
+    );
+    expect(codes(issues)).toContain(CaptureIssueCode.ORIGIN_INSUFFICIENT_STOCK);
+    expect(codes(issues)).toContain(CaptureIssueCode.DEST_TANK_OVERFILL);
   });
 });
 

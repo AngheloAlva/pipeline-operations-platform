@@ -18,11 +18,19 @@ import { MovementType } from "@/lib/domain";
 import { validateMovement, hasBlockingIssue } from "@/lib/capture/validate";
 import type { CaptureIssue, MovementInput } from "@/lib/capture/validate";
 import type { OperatorCredential } from "@/lib/capture/identity";
+import {
+  deriveMovementPreview,
+  parseDecimalInput,
+  parseVolumeInput,
+} from "@/lib/capture/preview";
 import { useWorldStore } from "@/store/worldStore";
+import { useSimulationStore } from "@/store/simulationStore";
 import { useCaptureStore, CommitStatus, CaptureRecordKind } from "@/store/captureStore";
 import type { CaptureRecord } from "@/store/captureStore";
 import { PinPrompt } from "./PinPrompt";
 import { IssueList } from "./IssueList";
+import { DerivedPreview } from "./DerivedPreview";
+import { ValueSourceBadge, ValueSourceKind } from "./ValueSourceBadge";
 import {
   FIELD_INPUT_CLASS,
   FIELD_LABEL_CLASS,
@@ -58,11 +66,6 @@ function buildNodeOptions(world: PipelineWorld): NodeOption[] {
   return [...tankOptions, ...stationOptions];
 }
 
-function parseNumber(raw: string): number | null {
-  if (raw.trim() === "") return null;
-  return Number(raw.replace(",", "."));
-}
-
 export function MovementForm({ amendRecordId, onCommitted }: MovementFormProps) {
   const world = useWorldStore((s) => s.world);
   const records = useCaptureStore((s) => s.records);
@@ -89,6 +92,11 @@ export function MovementForm({ amendRecordId, onCommitted }: MovementFormProps) 
   const [shipperId, setShipperId] = useState<string>(
     () => originalMovement?.values.shipperId ?? "",
   );
+  const [temperature, setTemperature] = useState<string>(() =>
+    originalMovement?.values.temperatureF !== undefined
+      ? String(originalMovement.values.temperatureF)
+      : "",
+  );
   const [pinOpen, setPinOpen] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [commitIssues, setCommitIssues] = useState<CaptureIssue[]>([]);
@@ -98,8 +106,10 @@ export function MovementForm({ amendRecordId, onCommitted }: MovementFormProps) 
   const toFieldId = useId();
   const volumeFieldId = useId();
   const shipperFieldId = useId();
+  const temperatureFieldId = useId();
 
-  const parsedVolume = parseNumber(volume);
+  const parsedVolume = parseVolumeInput(volume);
+  const parsedTemperature = parseDecimalInput(temperature);
   const input: MovementInput | null =
     parsedVolume !== null && fromNodeId !== "" && toNodeId !== ""
       ? {
@@ -108,11 +118,24 @@ export function MovementForm({ amendRecordId, onCommitted }: MovementFormProps) 
           toNodeId,
           volumeM3: parsedVolume,
           shipperId: shipperId || undefined,
+          temperatureF: parsedTemperature ?? undefined,
         }
       : null;
 
+  const originLiveLevel = useSimulationStore((state) => state.tankLevels[fromNodeId]);
+  const destinationLiveLevel = useSimulationStore((state) => state.tankLevels[toNodeId]);
+  const liveLevels: Readonly<Record<string, number>> = {
+    ...(originLiveLevel !== undefined ? { [fromNodeId]: originLiveLevel } : {}),
+    ...(destinationLiveLevel !== undefined ? { [toNodeId]: destinationLiveLevel } : {}),
+  };
+
   // MV-6 — validation AT ENTRY, cheap enough to run each render.
-  const entryIssues: CaptureIssue[] = world && input ? validateMovement(world, input) : [];
+  const entryIssues: CaptureIssue[] =
+    world && input ? validateMovement(world, input, liveLevels) : [];
+  const preview =
+    world && input
+      ? deriveMovementPreview(world, input, originLiveLevel, destinationLiveLevel)
+      : null;
   const blocked = hasBlockingIssue(entryIssues);
   const canConfirm = input !== null && !blocked;
 
@@ -178,9 +201,12 @@ export function MovementForm({ amendRecordId, onCommitted }: MovementFormProps) 
       noValidate
     >
       <div className="flex flex-col gap-1">
-        <label htmlFor={typeFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
-          Tipo de movimiento
-        </label>
+        <div className="flex items-center justify-between gap-2">
+          <label htmlFor={typeFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
+            Tipo de movimiento
+          </label>
+          <ValueSourceBadge kind={ValueSourceKind.ENTERED} />
+        </div>
         <select
           id={typeFieldId}
           value={type}
@@ -197,9 +223,12 @@ export function MovementForm({ amendRecordId, onCommitted }: MovementFormProps) 
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor={fromFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
-          Origen
-        </label>
+        <div className="flex items-center justify-between gap-2">
+          <label htmlFor={fromFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
+            Origen
+          </label>
+          <ValueSourceBadge kind={ValueSourceKind.ENTERED} />
+        </div>
         <select
           id={fromFieldId}
           value={fromNodeId}
@@ -216,9 +245,12 @@ export function MovementForm({ amendRecordId, onCommitted }: MovementFormProps) 
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor={toFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
-          Destino
-        </label>
+        <div className="flex items-center justify-between gap-2">
+          <label htmlFor={toFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
+            Destino
+          </label>
+          <ValueSourceBadge kind={ValueSourceKind.ENTERED} />
+        </div>
         <select
           id={toFieldId}
           value={toNodeId}
@@ -235,15 +267,16 @@ export function MovementForm({ amendRecordId, onCommitted }: MovementFormProps) 
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor={volumeFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
-          Volumen (m³)
-        </label>
+        <div className="flex items-center justify-between gap-2">
+          <label htmlFor={volumeFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
+            Volumen observado (m³)
+          </label>
+          <ValueSourceBadge kind={ValueSourceKind.ENTERED} />
+        </div>
         <input
           id={volumeFieldId}
-          type="number"
+          type="text"
           inputMode="decimal"
-          min="0"
-          step="any"
           value={volume}
           onChange={(e) => {
             setVolume(e.target.value);
@@ -251,6 +284,25 @@ export function MovementForm({ amendRecordId, onCommitted }: MovementFormProps) 
             setCommitIssues([]);
           }}
           placeholder="0"
+          className={FIELD_INPUT_CLASS}
+          style={MONO_STYLE}
+        />
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center justify-between gap-2">
+          <label htmlFor={temperatureFieldId} className={FIELD_LABEL_CLASS} style={MONO_STYLE}>
+            Temperatura observada (°F) — opcional
+          </label>
+          <ValueSourceBadge kind={ValueSourceKind.ENTERED} />
+        </div>
+        <input
+          id={temperatureFieldId}
+          type="text"
+          inputMode="decimal"
+          value={temperature}
+          onChange={(event) => setTemperature(event.target.value)}
+          placeholder="60"
           className={FIELD_INPUT_CLASS}
           style={MONO_STYLE}
         />
@@ -275,6 +327,19 @@ export function MovementForm({ amendRecordId, onCommitted }: MovementFormProps) 
           ))}
         </select>
       </div>
+
+      {preview && (
+        <DerivedPreview
+          rows={[
+            { label: "Volumen a 15 °C", value: formatM3(preview.volumes.volume15CM3) },
+            { label: "Volumen a 60 °F", value: formatM3(preview.volumes.volume60FM3) },
+            { label: "Nuevo stock origen", value: preview.originNewStockM3 === null ? "No aplica" : formatM3(preview.originNewStockM3) },
+            { label: "Nuevo stock destino", value: preview.destinationNewStockM3 === null ? "No aplica" : formatM3(preview.destinationNewStockM3) },
+            { label: "Δ stock sistema", value: `${preview.systemStockDeltaM3 >= 0 ? "+" : ""}${formatM3(preview.systemStockDeltaM3)}` },
+            { label: "Descuadre estimado", value: `${formatM3(preview.mismatch.afterM3)} (${preview.mismatch.afterPct.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%)` },
+          ]}
+        />
+      )}
 
       <IssueList issues={[...entryIssues, ...commitIssues]} />
 

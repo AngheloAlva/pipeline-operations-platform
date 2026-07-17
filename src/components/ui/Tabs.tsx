@@ -27,6 +27,8 @@ export interface TabsProps {
   tabs: ReadonlyArray<TabItem>;
   activeTab: string;
   onTabChange: (id: string) => void;
+  /** Accessible name for this specific tablist. */
+  ariaLabel?: string;
   /** Additional className for the tablist container. */
   className?: string;
 }
@@ -49,7 +51,13 @@ export interface TabsProps {
  * The "use client" directive is needed because we handle keyboard events.
  * The component remains stateless — all tab state lives in the parent.
  */
-export function Tabs({ tabs, activeTab, onTabChange, className }: TabsProps) {
+export function Tabs({
+  tabs,
+  activeTab,
+  onTabChange,
+  ariaLabel = "Navegación de secciones",
+  className,
+}: TabsProps) {
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   function focusTab(index: number) {
@@ -98,12 +106,9 @@ export function Tabs({ tabs, activeTab, onTabChange, className }: TabsProps) {
   return (
     <div
       role="tablist"
-      aria-label="Navegación de secciones"
+      aria-label={ariaLabel}
       aria-orientation="horizontal"
-      className={cn(
-        "flex items-end border-b border-border-mid",
-        className,
-      )}
+      className={cn("flex items-end border-b border-border-mid", className)}
     >
       {tabs.map((tab, i) => {
         const isActive = tab.id === activeTab;
@@ -123,7 +128,7 @@ export function Tabs({ tabs, activeTab, onTabChange, className }: TabsProps) {
             onKeyDown={(e) => handleKeyDown(e, i)}
             className={cn(
               // Flat buttons — no border-radius (SR-202 §9)
-              "px-4 py-2.5 text-[13px] font-medium uppercase tracking-[0.1em] transition-colors",
+              "px-4 py-2.5 text-[13px] font-medium uppercase tracking-[0.1em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent",
               // Mission Control deck: active tab carries the cyan identity accent
               // (border color via --mc-cyan token, active when inside .mc-deck).
               isActive

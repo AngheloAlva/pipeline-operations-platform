@@ -32,6 +32,14 @@ interface SimulationActions {
   setSpeed: (multiplier: (typeof SIM_SPEEDS)[number]) => void;
   reset: () => void;
   tick: (deltaMs: number) => void;
+  /**
+   * Apply operator-captured absolute levels (m³) to the live simulation.
+   * MV-9 integration hook for captureStore: a committed capture must be
+   * visible to the live gauges immediately, without a full re-init.
+   * Values are clamped to [0, capacity]. Seed levels are untouched, so
+   * reset() still restores the original seed.
+   */
+  applyCapturedLevels: (levels: Record<string, number>) => void;
 }
 
 type SimulationStore = SimulationSlice & SimulationActions;
@@ -61,8 +69,38 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
 
   // -------------------------------------------------------------------
   // init — capture seed snapshot and compute initial activeFlows
+  //
+  // MV-14 guard: captureStore republishes the world through
+  // worldStore.loadWorld() on every commit/roster declaration, which
+  // re-fires the cockpit's `init(world)` effect. Worlds DERIVED from the
+  // same seed preserve the `pipeline` object reference through spreads —
+  // that lineage marker distinguishes "same session, new derived world"
+  // (soft sync: keep live state) from "genuinely new seed" (full init).
   // -------------------------------------------------------------------
   init: (world) => {
+    const prev = get();
+
+    if (prev._world !== null && prev._world.pipeline === world.pipeline) {
+      // Soft sync — adopt the new world for schedule derivation without
+      // wiping captured levels, transport (isRunning/speed), sim clock,
+      // or the original seed snapshot (reset() still restores the seed).
+      const nextLevels = { ...prev.tankLevels };
+      const tankCapacities: Record<string, { capacityM3: number }> = {};
+      for (const tank of world.tanks) {
+        tankCapacities[tank.id] = { capacityM3: tank.capacityM3 };
+        if (!(tank.id in nextLevels)) nextLevels[tank.id] = tank.currentLevelM3;
+      }
+      const activeFlows = deriveFlowSchedule(world, prev.simulatedTime, nextLevels);
+
+      set({
+        tankLevels: nextLevels,
+        activeFlows,
+        _tankCapacities: tankCapacities,
+        _world: world,
+      });
+      return;
+    }
+
     const tankLevels: Record<string, number> = {};
     const tankCapacities: Record<string, { capacityM3: number }> = {};
 
@@ -123,6 +161,20 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
       tankLevels,
       activeFlows,
     });
+  },
+
+  // -------------------------------------------------------------------
+  // applyCapturedLevels — MV-9 capture integration (see SimulationActions)
+  // -------------------------------------------------------------------
+  applyCapturedLevels: (levels) => {
+    const { tankLevels, _tankCapacities } = get();
+    const next = { ...tankLevels };
+    for (const [tankId, level] of Object.entries(levels)) {
+      const capacity = _tankCapacities[tankId]?.capacityM3;
+      const floored = Math.max(level, 0);
+      next[tankId] = capacity !== undefined ? Math.min(floored, capacity) : floored;
+    }
+    set({ tankLevels: next });
   },
 
   // -------------------------------------------------------------------

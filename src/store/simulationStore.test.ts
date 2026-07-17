@@ -64,6 +64,14 @@ const SEED_WORLD: PipelineWorld = {
   workOrders: [],
   cathodicReadings: [],
   telemetry: [],
+  custodyDifferences: [],
+  operators: [],
+  workstations: [],
+  shiftRosters: [],
+  shiftLogEntries: [],
+  pipelineStoppages: [],
+  emissionEntries: [],
+  closingComments: [],
 };
 
 // ---------------------------------------------------------------------------
@@ -201,6 +209,28 @@ describe("simulationStore", () => {
     // _seedLevels must be empty because beforeEach resets via INITIAL_SLICE
     expect(Object.keys(state._seedLevels)).toHaveLength(0);
     expect(state._world).toBeNull();
+  });
+
+  // MV-9 — capture integration: applyCapturedLevels
+  it("applyCapturedLevels sets absolute levels for the given tanks only", () => {
+    getStore().init(SEED_WORLD);
+    getStore().applyCapturedLevels({ "T-101": 6200 });
+    expect(getStore().tankLevels["T-101"]).toBe(6200);
+    // Other tanks untouched
+    expect(getStore().tankLevels["T-6010"]).toBe(3000);
+  });
+
+  it("applyCapturedLevels clamps to [0, capacity] and does not reset seed levels", () => {
+    getStore().init(SEED_WORLD);
+    const seedBefore = { ...getStore()._seedLevels };
+    getStore().applyCapturedLevels({ "T-101": 999_999, "T-6010": -50 });
+    // T-101 capacity is 10 000; negative levels clamp to 0
+    expect(getStore().tankLevels["T-101"]).toBe(10_000);
+    expect(getStore().tankLevels["T-6010"]).toBe(0);
+    // reset() must still restore the original seed
+    expect(getStore()._seedLevels).toEqual(seedBefore);
+    getStore().reset();
+    expect(getStore().tankLevels["T-101"]).toBe(5000);
   });
 
   // start/pause
@@ -352,5 +382,98 @@ describe("simulationStore", () => {
     // Sanity: initial capture was valid
     expect(initialA).toBeGreaterThan(0);
     expect(initialB).toBeGreaterThan(0);
+  });
+
+  // -------------------------------------------------------------------------
+  // MV-14 — init guard: re-init with a world DERIVED from the same seed
+  // (capture commits / roster declarations republish the world through
+  // worldStore.loadWorld) must NOT wipe live session state. Derived worlds
+  // preserve the `pipeline` object reference through object spreads — that is
+  // the lineage marker.
+  // -------------------------------------------------------------------------
+  describe("init guard — same-seed re-init (MV-14)", () => {
+    /** World derived the way captureStore derives it: spread + tank update. */
+    function deriveWorld(overrides: Partial<PipelineWorld> = {}): PipelineWorld {
+      return { ...SEED_WORLD, ...overrides };
+    }
+
+    it("re-init with a derived world preserves captured levels, transport and sim clock", () => {
+      getStore().init(SEED_WORLD);
+      getStore().start();
+      getStore().setSpeed(60);
+      // Operator capture applied to the live sim (captureStore path)
+      getStore().applyCapturedLevels({ "T-101": 4444 });
+      const timeBefore = getStore().simulatedTime;
+
+      // captureStore publishes a derived world (same pipeline reference)
+      const derived = deriveWorld({
+        tanks: SEED_WORLD.tanks.map((t) =>
+          t.id === "T-6010" ? { ...t, currentLevelM3: 4200 } : t,
+        ),
+      });
+      getStore().init(derived);
+
+      const state = getStore();
+      // Live state survives: no reset of levels, transport, or clock
+      expect(state.tankLevels["T-101"]).toBe(4444);
+      expect(state.isRunning).toBe(true);
+      expect(state.speedMultiplier).toBe(60);
+      expect(state.simulatedTime).toBe(timeBefore);
+    });
+
+    it("re-init with a derived world adopts it for schedule derivation and capacities", () => {
+      getStore().init(SEED_WORLD);
+
+      const derived = deriveWorld({
+        tanks: [...SEED_WORLD.tanks, makeTank("T-999", 700, 1_000)],
+      });
+      getStore().init(derived);
+
+      const state = getStore();
+      // The new world is the one future ticks derive schedules from
+      expect(state._world).toBe(derived);
+      // A tank unseen at full-init is tracked with its seed level…
+      expect(state.tankLevels["T-999"]).toBe(700);
+      // …and its capacity clamps subsequent captures
+      getStore().applyCapturedLevels({ "T-999": 5_000 });
+      expect(getStore().tankLevels["T-999"]).toBe(1_000);
+    });
+
+    it("re-init with a derived world keeps the original seed snapshot for reset()", () => {
+      getStore().init(SEED_WORLD);
+      getStore().applyCapturedLevels({ "T-6010": 4200 });
+
+      const derived = deriveWorld({
+        tanks: SEED_WORLD.tanks.map((t) =>
+          t.id === "T-6010" ? { ...t, currentLevelM3: 4200 } : t,
+        ),
+      });
+      getStore().init(derived);
+
+      expect(getStore()._seedLevels["T-6010"]).toBe(3000);
+      getStore().reset();
+      expect(getStore().tankLevels["T-6010"]).toBe(3000);
+    });
+
+    it("init with a world from a DIFFERENT seed performs a full re-init", () => {
+      getStore().init(SEED_WORLD);
+      getStore().start();
+      getStore().setSpeed(60);
+      getStore().applyCapturedLevels({ "T-101": 4444 });
+
+      // A genuinely new seed: fresh pipeline object (new lineage)
+      const otherWorld: PipelineWorld = {
+        ...SEED_WORLD,
+        pipeline: { ...SEED_WORLD.pipeline, id: "p2" },
+        tanks: [makeTank("T-101", 1000, 10_000)],
+      };
+      getStore().init(otherWorld);
+
+      const state = getStore();
+      expect(state.isRunning).toBe(false);
+      expect(state.speedMultiplier).toBe(1);
+      expect(state.tankLevels["T-101"]).toBe(1000);
+      expect(state._seedLevels["T-101"]).toBe(1000);
+    });
   });
 });

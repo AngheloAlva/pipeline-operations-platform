@@ -323,6 +323,70 @@ export function deriveMaintenanceBoardRows(
 }
 
 // ============================================================================
+// MV-19 — deriveEquipmentHoursOutlook (hours → maintenance exhibit)
+// ============================================================================
+
+/** Usage outlook for one BY_HOURS task of an equipment (MV-19). */
+export interface EquipmentHoursTaskOutlook {
+  taskId: string;
+  planId: string;
+  taskName: string;
+  intervalHours: number;
+  nextDueAtHours: number;
+  /** nextDueAtHours − operatingHours (negative = past due). */
+  remainingHours: number;
+  taskStatus: TaskStatusType;
+}
+
+/** Accumulated operating hours + BY_HOURS task outlook for one equipment. */
+export interface EquipmentHoursOutlook {
+  equipmentId: string;
+  operatingHours: number;
+  tasks: EquipmentHoursTaskOutlook[];
+}
+
+/**
+ * Derive the hours→maintenance view for one equipment (MV-19): its
+ * accumulated operating hours and, per BY_HOURS task on an active plan, the
+ * remaining hours to the next due threshold and the resulting status.
+ *
+ * Reuses taskStatus (DOMAIN_RULES §4.3) — no new threshold logic. BY_HOURS
+ * tasks without intervalHours/nextDueAtHours are undatable by usage and
+ * omitted. Returns null when the equipment does not exist.
+ */
+export function deriveEquipmentHoursOutlook(
+  world: PipelineWorld,
+  equipmentId: string,
+  now: string,
+): EquipmentHoursOutlook | null {
+  const equipment = world.equipment.find((e) => e.id === equipmentId);
+  if (!equipment) return null;
+
+  const tasks: EquipmentHoursTaskOutlook[] = [];
+  for (const plan of world.maintenancePlans) {
+    if (!plan.isActive) continue;
+    if (plan.equipmentId !== equipmentId) continue;
+
+    for (const task of plan.tasks) {
+      if (task.frequency !== MaintenanceFrequency.BY_HOURS) continue;
+      if (task.intervalHours === undefined || task.nextDueAtHours === undefined) continue;
+
+      tasks.push({
+        taskId: task.id,
+        planId: plan.id,
+        taskName: task.name,
+        intervalHours: task.intervalHours,
+        nextDueAtHours: task.nextDueAtHours,
+        remainingHours: task.nextDueAtHours - equipment.operatingHours,
+        taskStatus: taskStatus(task, now, equipment.operatingHours),
+      });
+    }
+  }
+
+  return { equipmentId, operatingHours: equipment.operatingHours, tasks };
+}
+
+// ============================================================================
 // TASK 1.6 — filterMaintenanceBoardRows
 // ============================================================================
 

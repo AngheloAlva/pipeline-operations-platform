@@ -7,6 +7,7 @@ import {
   computeMaintenanceKpis,
   deriveEquipmentTree,
   deriveMaintenanceBoardRows,
+  deriveEquipmentHoursOutlook,
   filterMaintenanceBoardRows,
   bucketTasksByMonth,
   applyWorkOrderTransition,
@@ -127,6 +128,14 @@ function emptyWorld(): PipelineWorld {
     workOrders: [],
     cathodicReadings: [],
     telemetry: [],
+    custodyDifferences: [],
+    operators: [],
+    workstations: [],
+    shiftRosters: [],
+    shiftLogEntries: [],
+    pipelineStoppages: [],
+    emissionEntries: [],
+    closingComments: [],
   };
 }
 
@@ -970,5 +979,124 @@ describe("applyTaskCompletion — S-2: same-reference contract on not-found path
     const original = emptyOverrides();
     const result = applyTaskCompletion(world, "PLN-001", "TSK-NONEXISTENT", "2026-06-12", original);
     expect(result).toBe(original); // same reference
+  });
+});
+
+// ============================================================================
+// MV-19 — deriveEquipmentHoursOutlook (hours → maintenance exhibit)
+// ============================================================================
+describe("deriveEquipmentHoursOutlook — MV-19", () => {
+  const NOW = "2026-06-12";
+
+  function hoursWorld(equipment: Equipment, plans: MaintenancePlan[]): PipelineWorld {
+    return {
+      ...emptyWorld(),
+      stations: [makeStation("STA-001", 10)],
+      equipment: [equipment],
+      maintenancePlans: plans,
+    };
+  }
+
+  it("returns null for an unknown equipment", () => {
+    expect(deriveEquipmentHoursOutlook(emptyWorld(), "EQP-404", NOW)).toBeNull();
+  });
+
+  it("returns the accumulated hours with no tasks when the equipment has no BY_HOURS plan", () => {
+    const equipment = makeEquipment({ operatingHours: 1234 });
+    const calendarPlan = makePlan({ equipmentId: "EQP-001", tasks: [makeTask()] });
+    const outlook = deriveEquipmentHoursOutlook(hoursWorld(equipment, [calendarPlan]), "EQP-001", NOW);
+    expect(outlook).toEqual({ equipmentId: "EQP-001", operatingHours: 1234, tasks: [] });
+  });
+
+  it("derives remaining hours and status for a BY_HOURS task", () => {
+    const equipment = makeEquipment({ operatingHours: 1500 });
+    const plan = makePlan({
+      equipmentId: "EQP-001",
+      tasks: [
+        makeTask({
+          id: "TSK-H1",
+          frequency: MaintenanceFrequency.BY_HOURS,
+          intervalHours: 2000,
+          nextDueAtHours: 2000,
+          nextDueDate: "2026-12-31", // far future — hours drive the status
+        }),
+      ],
+    });
+    const outlook = deriveEquipmentHoursOutlook(hoursWorld(equipment, [plan]), "EQP-001", NOW);
+    expect(outlook?.operatingHours).toBe(1500);
+    expect(outlook?.tasks).toHaveLength(1);
+    expect(outlook?.tasks[0]).toMatchObject({
+      taskId: "TSK-H1",
+      planId: "PLN-001",
+      intervalHours: 2000,
+      nextDueAtHours: 2000,
+      remainingHours: 500,
+      taskStatus: TaskStatus.OK,
+    });
+  });
+
+  it("flips the task status as accumulated hours approach and cross the due threshold", () => {
+    const task = makeTask({
+      id: "TSK-H1",
+      frequency: MaintenanceFrequency.BY_HOURS,
+      intervalHours: 2000,
+      nextDueAtHours: 2000,
+      nextDueDate: "2026-12-31",
+    });
+    const plan = makePlan({ equipmentId: "EQP-001", tasks: [task] });
+
+    // Within 10% of the interval (remaining 150 ≤ 200) → UPCOMING
+    const upcoming = deriveEquipmentHoursOutlook(
+      hoursWorld(makeEquipment({ operatingHours: 1850 }), [plan]),
+      "EQP-001",
+      NOW,
+    );
+    expect(upcoming?.tasks[0].taskStatus).toBe(TaskStatus.UPCOMING);
+    expect(upcoming?.tasks[0].remainingHours).toBe(150);
+
+    // Past the threshold (remaining −8) → OVERDUE
+    const overdue = deriveEquipmentHoursOutlook(
+      hoursWorld(makeEquipment({ operatingHours: 2008 }), [plan]),
+      "EQP-001",
+      NOW,
+    );
+    expect(overdue?.tasks[0].taskStatus).toBe(TaskStatus.OVERDUE);
+    expect(overdue?.tasks[0].remainingHours).toBe(-8);
+  });
+
+  it("skips inactive plans and BY_HOURS tasks with incomplete hour metadata", () => {
+    const equipment = makeEquipment({ operatingHours: 1500 });
+    const inactive = makePlan({
+      id: "PLN-OFF",
+      equipmentId: "EQP-001",
+      isActive: false,
+      tasks: [
+        makeTask({
+          id: "TSK-OFF",
+          planId: "PLN-OFF",
+          frequency: MaintenanceFrequency.BY_HOURS,
+          intervalHours: 2000,
+          nextDueAtHours: 2000,
+        }),
+      ],
+    });
+    const incomplete = makePlan({
+      id: "PLN-INC",
+      equipmentId: "EQP-001",
+      tasks: [
+        makeTask({
+          id: "TSK-INC",
+          planId: "PLN-INC",
+          frequency: MaintenanceFrequency.BY_HOURS,
+          // no intervalHours / nextDueAtHours — undatable by usage
+        }),
+      ],
+    });
+    const outlook = deriveEquipmentHoursOutlook(
+      hoursWorld(equipment, [inactive, incomplete]),
+      "EQP-001",
+      NOW,
+    );
+    expect(outlook?.tasks).toEqual([]);
   });
 });

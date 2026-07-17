@@ -41,6 +41,27 @@ export const HeroNodeRole = {
 } as const;
 export type HeroNodeRole = (typeof HeroNodeRole)[keyof typeof HeroNodeRole];
 
+/**
+ * Which figure a node is drawn as. Separate from HeroNodeRole because role
+ * drives *layout* (label placement, footprint) and deliberately groups the
+ * three deliveries together — but a refinery, a jetty and a tanker must not
+ * look alike. Glyph is the render axis; role stays the layout axis.
+ */
+export const HeroGlyph = {
+  /** Third-party pipeline entry point. */
+  INLET: "inlet",
+  /** Custody tank farm — drawn as its transfer pump (P&ID: circle + impeller). */
+  PUMP_STATION: "pump-station",
+  /** Custody valve on the boundary. */
+  MANIFOLD: "manifold",
+  REFINERY: "refinery",
+  /** Marine loading terminal — a jetty over water. */
+  JETTY: "jetty",
+  /** Tanker under load. */
+  VESSEL: "vessel",
+} as const;
+export type HeroGlyph = (typeof HeroGlyph)[keyof typeof HeroGlyph];
+
 export interface HeroPoint {
   x: number;
   y: number;
@@ -53,6 +74,7 @@ export interface HeroNodeSpec {
   y: number;
   side: HeroSide;
   role: HeroNodeRole;
+  glyph: HeroGlyph;
 }
 
 /**
@@ -99,19 +121,19 @@ const AXIS_Y = 330;
 /** Fixed hero node layout — canonical stations + the custody manifold. */
 export const HERO_NODES: readonly HeroNodeSpec[] = [
   // OTA inlets (Argentina, left column)
-  { tag: TAGS.OLDELVAL_INLET, x: 110, y: 250, side: HeroSide.OTA, role: HeroNodeRole.SOURCE },
-  { tag: TAGS.VMON_INLET, x: 110, y: AXIS_Y, side: HeroSide.OTA, role: HeroNodeRole.SOURCE },
-  { tag: TAGS.ACTIVO_YPF_INLET, x: 110, y: 410, side: HeroSide.OTA, role: HeroNodeRole.SOURCE },
+  { tag: TAGS.OLDELVAL_INLET, x: 110, y: 250, side: HeroSide.OTA, role: HeroNodeRole.SOURCE, glyph: HeroGlyph.INLET },
+  { tag: TAGS.VMON_INLET, x: 110, y: AXIS_Y, side: HeroSide.OTA, role: HeroNodeRole.SOURCE, glyph: HeroGlyph.INLET },
+  { tag: TAGS.ACTIVO_YPF_INLET, x: 110, y: 410, side: HeroSide.OTA, role: HeroNodeRole.SOURCE, glyph: HeroGlyph.INLET },
   // OTA custody tank farm (15°C)
-  { tag: TAGS.PUERTO_HERNANDEZ, x: 330, y: AXIS_Y, side: HeroSide.OTA, role: HeroNodeRole.STORAGE },
+  { tag: TAGS.PUERTO_HERNANDEZ, x: 330, y: AXIS_Y, side: HeroSide.OTA, role: HeroNodeRole.STORAGE, glyph: HeroGlyph.PUMP_STATION },
   // Custody manifold valve — sits exactly on the boundary
-  { tag: CUSTODY_MANIFOLD_TAG, x: 540, y: AXIS_Y, side: HeroSide.BOUNDARY, role: HeroNodeRole.MANIFOLD },
+  { tag: CUSTODY_MANIFOLD_TAG, x: 540, y: AXIS_Y, side: HeroSide.BOUNDARY, role: HeroNodeRole.MANIFOLD, glyph: HeroGlyph.MANIFOLD },
   // OTC custody tank farm (60°F)
-  { tag: TAGS.TERMINAL_CONCEPCION, x: 750, y: AXIS_Y, side: HeroSide.OTC, role: HeroNodeRole.STORAGE },
-  // OTC delivery points (Chile, right column)
-  { tag: TAGS.BIO_BIO_REFINERY, x: 990, y: 250, side: HeroSide.OTC, role: HeroNodeRole.DELIVERY },
-  { tag: TAGS.SAN_VICENTE_TERMINAL, x: 990, y: AXIS_Y, side: HeroSide.OTC, role: HeroNodeRole.DELIVERY },
-  { tag: TAGS.VESSEL, x: 990, y: 410, side: HeroSide.OTC, role: HeroNodeRole.DELIVERY },
+  { tag: TAGS.TERMINAL_CONCEPCION, x: 750, y: AXIS_Y, side: HeroSide.OTC, role: HeroNodeRole.STORAGE, glyph: HeroGlyph.PUMP_STATION },
+  // OTC delivery points (Chile, right column) — one figure each, never a shared shape
+  { tag: TAGS.BIO_BIO_REFINERY, x: 990, y: 250, side: HeroSide.OTC, role: HeroNodeRole.DELIVERY, glyph: HeroGlyph.REFINERY },
+  { tag: TAGS.SAN_VICENTE_TERMINAL, x: 990, y: AXIS_Y, side: HeroSide.OTC, role: HeroNodeRole.DELIVERY, glyph: HeroGlyph.JETTY },
+  { tag: TAGS.VESSEL, x: 990, y: 410, side: HeroSide.OTC, role: HeroNodeRole.DELIVERY, glyph: HeroGlyph.VESSEL },
 ] as const;
 
 // ============================================================================
@@ -255,6 +277,39 @@ export function heroEdgePath(edge: HeroEdgeSpec): string {
   const [first, ...rest] = edge.waypoints;
   const lines = rest.map((p) => `L ${p.x} ${p.y}`).join(" ");
   return `M ${first.x} ${first.y} ${lines}`;
+}
+
+/** A flanged joint on a pipe run: where it sits and which way the pipe points. */
+export interface HeroEdgeJoint {
+  x: number;
+  y: number;
+  /** Pipe bearing at the joint, in degrees — flanges render perpendicular to it. */
+  angleDeg: number;
+}
+
+/**
+ * Flange positions along an edge: both ends plus every bend. At a bend the
+ * flange bisects the incoming and outgoing bearings, so it reads as a real
+ * mitred spool joint instead of a line crossing the corner at random.
+ */
+export function heroEdgeJoints(edge: HeroEdgeSpec): HeroEdgeJoint[] {
+  const pts = edge.waypoints;
+  const bearing = (i: number): number => {
+    const a = pts[i];
+    const b = pts[i + 1];
+    return (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
+  };
+
+  return pts.map((p, i) => {
+    if (i === 0) return { x: p.x, y: p.y, angleDeg: bearing(0) };
+    if (i === pts.length - 1) return { x: p.x, y: p.y, angleDeg: bearing(pts.length - 2) };
+    // Bend: bisect the two bearings via unit vectors, so ±180° wraps safely.
+    const incoming = (bearing(i - 1) * Math.PI) / 180;
+    const outgoing = (bearing(i) * Math.PI) / 180;
+    const bx = Math.cos(incoming) + Math.cos(outgoing);
+    const by = Math.sin(incoming) + Math.sin(outgoing);
+    return { x: p.x, y: p.y, angleDeg: (Math.atan2(by, bx) * 180) / Math.PI };
+  });
 }
 
 /** Total polyline length of an edge (viewBox units) — used for dash sizing. */

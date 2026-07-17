@@ -34,12 +34,16 @@ import {
   HERO_TANK_SLOTS,
   HERO_BOUNDARY,
   HeroNodeRole,
+  HeroGlyph,
   heroEdgePath,
   heroEdgeLength,
+  heroEdgeJoints,
   computeEdgeGroupActivity,
 } from "@/lib/diagrams/heroLayout";
 import type { HeroNodeSpec, HeroEdgeSpec, HeroTankSlot, HeroFlowTags } from "@/lib/diagrams/heroLayout";
-import { TankGauge } from "./TankGauge";
+import { TANK_HIGH_LEVEL_ALARM } from "@/lib/simulation/types";
+import { HeroTankCylinder } from "./HeroTankCylinder";
+import { HeroNodeGlyph, HERO_GLYPH_METRICS } from "./HeroNodeGlyph";
 
 // ============================================================================
 // CONSTANTS
@@ -90,34 +94,88 @@ interface HeroEdgeProps {
   flowRateM3h: number;
 }
 
+/**
+ * Pipe body is built from concentric strokes on one path: a dark casing, a
+ * lighter bore, and a thin off-centre specular line. Stacked, they read as a
+ * shaded tube at any bearing — which a stroke gradient cannot do, since SVG
+ * gradients are fixed in user space and ignore the path's direction.
+ */
+const PIPE_CASING_W = 11;
+const PIPE_BORE_W = 8.5;
+const PIPE_SHEEN_W = 2.25;
+/** Flange plate — perpendicular to the pipe bearing at each joint. */
+const FLANGE_LEN = 15;
+
 const HeroEdge = memo(function HeroEdge({ edge, isActive, flowRateM3h }: HeroEdgeProps) {
   const pathD = heroEdgePath(edge);
   const pathLen = heroEdgeLength(edge);
+  const joints = heroEdgeJoints(edge);
   const animDur = flowRateToAnimDur(flowRateM3h);
   const dashLen = pathLen * 0.15;
   const gapLen = pathLen * 0.85;
 
   return (
     <g data-edge-id={edge.id}>
-      {/* Static pipe track */}
-      <path d={pathD} fill="none" stroke="var(--border-mid)" strokeWidth="3" />
+      {/* Pipe casing — the outer wall */}
+      <path
+        d={pathD}
+        fill="none"
+        stroke="var(--border-strong)"
+        strokeWidth={PIPE_CASING_W}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Bore — the tube interior */}
+      <path
+        d={pathD}
+        fill="none"
+        stroke="var(--surface-overlay)"
+        strokeWidth={PIPE_BORE_W}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Specular sheen — the highlight that turns a line into a cylinder */}
+      <path
+        d={pathD}
+        fill="none"
+        stroke="rgb(255 255 255 / 0.14)"
+        strokeWidth={PIPE_SHEEN_W}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
 
-      {/* Active flow overlay — animated dash + travelling dot */}
+      {/* Active flow — crude travelling through the bore, not painted over it */}
       {isActive && (
         <>
           <path
             d={pathD}
             fill="none"
             stroke="var(--status-flow)"
-            strokeWidth="3.5"
+            strokeWidth={PIPE_BORE_W - 1.5}
+            strokeLinecap="round"
             strokeDasharray={`${dashLen} ${gapLen}`}
             style={{ animation: `flow-dash ${animDur}s linear infinite` }}
           />
-          <circle r="4.5" fill="var(--status-flow)" opacity="0.85">
+          <circle r="2.75" fill="var(--status-flow)" opacity="0.9">
             <animateMotion dur={`${animDur}s`} repeatCount="indefinite" path={pathD} />
           </circle>
         </>
       )}
+
+      {/* Flanged joints — bolted plates at both ends and every bend */}
+      {joints.map((j, i) => (
+        <line
+          key={i}
+          x1={j.x}
+          y1={j.y - FLANGE_LEN / 2}
+          x2={j.x}
+          y2={j.y + FLANGE_LEN / 2}
+          transform={`rotate(${j.angleDeg} ${j.x} ${j.y})`}
+          stroke="var(--border-strong)"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+      ))}
     </g>
   );
 });
@@ -141,17 +199,15 @@ const HeroStationNode = memo(function HeroStationNode({
   isSelected,
   onClick,
 }: HeroStationNodeProps) {
-  const { x, y, role } = spec;
+  const { x, y, role, glyph } = spec;
   const isStorage = role === HeroNodeRole.STORAGE;
-  const radius = isStorage ? 16 : 10;
+  const { ringR, halfH } = HERO_GLYPH_METRICS[glyph];
   const { ring, label: statusLabel } = STATUS_STYLE[status];
 
-  const fill = isSelected ? "var(--amber-safety)" : "var(--surface-raised)";
-  const stroke = isSelected ? "var(--amber-safety)" : "var(--border-strong)";
-
-  // Name above for sources/deliveries, below for the storage farms.
-  const nameY = isStorage ? y + 38 : y - 22;
-  const statusY = isStorage ? y + 58 : y + 26;
+  // Name above for sources/deliveries, below for the storage farms. Both hang
+  // off the figure's height so the inlet column stays legible at 80-unit pitch.
+  const nameY = isStorage ? y + halfH + 28 : y - halfH - 12;
+  const statusY = isStorage ? y + halfH + 48 : y + halfH + 16;
 
   function handleKeyDown(e: React.KeyboardEvent<SVGGElement>) {
     if (e.key === "Enter" || e.key === " ") {
@@ -175,7 +231,7 @@ const HeroStationNode = memo(function HeroStationNode({
         <circle
           cx={x}
           cy={y}
-          r={radius + 6}
+          r={ringR}
           fill="none"
           stroke={ring}
           strokeWidth="2.5"
@@ -184,21 +240,10 @@ const HeroStationNode = memo(function HeroStationNode({
         />
       )}
 
-      {/* Node glyph — diamond for deliveries, circle otherwise */}
-      {role === HeroNodeRole.DELIVERY ? (
-        <rect
-          x={x - radius}
-          y={y - radius}
-          width={radius * 2}
-          height={radius * 2}
-          transform={`rotate(45 ${x} ${y})`}
-          fill={fill}
-          stroke={stroke}
-          strokeWidth="2"
-        />
-      ) : (
-        <circle cx={x} cy={y} r={radius} fill={fill} stroke={stroke} strokeWidth="2" />
-      )}
+      {/* The figure itself — one per node kind (HeroGlyph) */}
+      <g transform={`translate(${x} ${y})`}>
+        <HeroNodeGlyph glyph={glyph} isSelected={isSelected} />
+      </g>
 
       {/* Station name — large, readable from across the room */}
       <text
@@ -251,9 +296,6 @@ const HeroManifold = memo(function HeroManifold({
   isSelected,
   onClick,
 }: HeroManifoldProps) {
-  const stroke = isSelected ? "var(--amber-safety)" : "var(--border-strong)";
-  const size = 14;
-
   const interactive = equipmentId !== null;
 
   return (
@@ -274,19 +316,9 @@ const HeroManifold = memo(function HeroManifold({
           }
         : {})}
     >
-      {/* Bowtie valve glyph */}
-      <polygon
-        points={`${x - size},${y - size / 1.4} ${x},${y} ${x - size},${y + size / 1.4}`}
-        fill="var(--surface-raised)"
-        stroke={stroke}
-        strokeWidth="2"
-      />
-      <polygon
-        points={`${x + size},${y - size / 1.4} ${x},${y} ${x + size},${y + size / 1.4}`}
-        fill="var(--surface-raised)"
-        stroke={stroke}
-        strokeWidth="2"
-      />
+      <g transform={`translate(${x} ${y})`}>
+        <HeroNodeGlyph glyph={HeroGlyph.MANIFOLD} isSelected={isSelected} />
+      </g>
       <text
         x={x}
         y={y + 34}
@@ -318,8 +350,11 @@ const HeroTankCard = memo(function HeroTankCard({
   isSelected,
   onClick,
 }: HeroTankCardProps) {
-  // Fine-grained per-tank subscription — the card breathes with the sim loop.
+  // Fine-grained per-tank subscription — the tank breathes with the sim loop.
   const level = useSimulationStore(selectTankLevel(tank.id));
+
+  const ratio = tank.capacityM3 > 0 ? Math.max(0, Math.min(1, level / tank.capacityM3)) : 0;
+  const isAlarm = ratio >= TANK_HIGH_LEVEL_ALARM;
 
   return (
     <div
@@ -332,24 +367,57 @@ const HeroTankCard = memo(function HeroTankCard({
           onClick(tank.id);
         }
       }}
-      className="absolute"
+      data-tank-id={tank.id}
+      className="absolute flex flex-col items-center gap-1"
       style={{
         left: pctX(slot.x),
         top: pctY(slot.y),
         width: pctX(slot.w),
-        outline: isSelected ? "1px solid var(--amber-safety)" : "none",
         cursor: "pointer",
       }}
-      aria-label={`Tanque ${tank.tag}`}
+      aria-label={`Tanque ${tank.tag} — ${(ratio * 100).toFixed(0)} por ciento${
+        isAlarm ? " — alarma de nivel alto" : ""
+      }`}
     >
-      <TankGauge
-        tankId={tank.id}
-        level={level}
-        capacity={tank.capacityM3}
-        label={tank.tag}
-        temperatureF={tank.temperatureF}
-        apiGravity={tank.apiGravity}
-      />
+      {/* Tag above the roof, as on the source diagram */}
+      <span
+        className="text-[13px] font-semibold uppercase tracking-[0.1em]"
+        style={{
+          ...MONO_STYLE,
+          color: isSelected ? "var(--amber-safety)" : "var(--ink-primary)",
+        }}
+      >
+        {tank.tag}
+      </span>
+
+      <span className="flex items-center gap-2">
+        <HeroTankCylinder
+          ratio={ratio}
+          isAlarm={isAlarm}
+          className={isSelected ? "opacity-100" : undefined}
+        />
+
+        {/* Readout floats beside the shell — no card frame competing with the glyph */}
+        <span className="flex flex-col gap-0.5">
+          <span
+            className="text-[16px] font-medium tabular-nums leading-none"
+            style={{
+              ...MONO_STYLE,
+              color: isAlarm ? "var(--amber-safety)" : "var(--ink-primary)",
+            }}
+          >
+            {(ratio * 100).toFixed(0)}%
+          </span>
+          <span className="text-[11px] tabular-nums text-ink-tertiary" style={MONO_STYLE}>
+            {tank.temperatureF.toFixed(0)}°F · {tank.apiGravity.toFixed(0)}°API
+          </span>
+        </span>
+      </span>
+
+      {/* Selection is carried by an underline rule — a box would re-add the frame */}
+      {isSelected && (
+        <span className="h-px w-2/3" style={{ backgroundColor: "var(--amber-safety)" }} />
+      )}
     </div>
   );
 });

@@ -22,8 +22,10 @@ import {
   HeroEdgeGroup,
   heroEdgePath,
   heroEdgeLength,
+  heroEdgeJoints,
   computeEdgeGroupActivity,
 } from "./heroLayout";
+import type { HeroEdgeSpec } from "./heroLayout";
 
 const PH_TAG = CANONICAL_STATION_TAGS.PUERTO_HERNANDEZ;
 const TC_TAG = CANONICAL_STATION_TAGS.TERMINAL_CONCEPCION;
@@ -314,5 +316,65 @@ describe("computeEdgeGroupActivity", () => {
     expect(activity[HeroEdgeGroup.TRUNK].flowRateM3h).toBe(1200);
     expect(activity[HeroEdgeGroup.INLETS].flowRateM3h).toBe(300);
     expect(activity[HeroEdgeGroup.DELIVERIES].flowRateM3h).toBe(1200);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Pipe joints (flange placement)
+// ---------------------------------------------------------------------------
+
+describe("heroEdgeJoints", () => {
+  const edge = (waypoints: Array<{ x: number; y: number }>): HeroEdgeSpec => ({
+    id: "test",
+    fromTag: "A",
+    toTag: "B",
+    group: HeroEdgeGroup.TRUNK,
+    waypoints,
+  });
+
+  it("places one joint per waypoint, at the waypoint", () => {
+    for (const e of HERO_EDGES) {
+      const joints = heroEdgeJoints(e);
+      expect(joints.length, e.id).toBe(e.waypoints.length);
+      joints.forEach((j, i) => {
+        expect(j.x, e.id).toBe(e.waypoints[i].x);
+        expect(j.y, e.id).toBe(e.waypoints[i].y);
+      });
+    }
+  });
+
+  it("aligns end joints with the bearing of their own segment", () => {
+    // Horizontal run left→right: both ends bear 0°.
+    const joints = heroEdgeJoints(edge([{ x: 0, y: 0 }, { x: 100, y: 0 }]));
+    expect(joints[0].angleDeg).toBeCloseTo(0);
+    expect(joints[1].angleDeg).toBeCloseTo(0);
+  });
+
+  it("bisects the two bearings at a bend", () => {
+    // 0° in, 90° out → the flange sits on the 45° mitre.
+    const joints = heroEdgeJoints(
+      edge([{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }]),
+    );
+    expect(joints[1].angleDeg).toBeCloseTo(45);
+  });
+
+  it("bisects safely across the ±180° wrap", () => {
+    // Bearings 135° in and -135° out straddle the wrap: averaging them
+    // numerically yields 0° (the opposite side). The true bisector is ±180°.
+    const joints = heroEdgeJoints(
+      edge([{ x: 200, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 0 }]),
+    );
+    expect(Math.abs(joints[1].angleDeg)).toBeCloseTo(180);
+  });
+
+  it("keeps every joint inside the viewBox", () => {
+    for (const e of HERO_EDGES) {
+      for (const j of heroEdgeJoints(e)) {
+        expect(j.x, e.id).toBeGreaterThanOrEqual(0);
+        expect(j.x, e.id).toBeLessThanOrEqual(HERO_VIEW.width);
+        expect(j.y, e.id).toBeGreaterThanOrEqual(0);
+        expect(j.y, e.id).toBeLessThanOrEqual(HERO_VIEW.height);
+      }
+    }
   });
 });

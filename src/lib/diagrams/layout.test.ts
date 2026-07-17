@@ -5,7 +5,13 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { kmToX, buildStationLayout, buildEdges, flowRateToAnimDur } from "./layout";
+import {
+  allocateAnchorAwareLanes,
+  buildEdges,
+  buildStationLayout,
+  flowRateToAnimDur,
+  kmToX,
+} from "./layout";
 
 // ============================================================================
 // kmToX
@@ -130,6 +136,45 @@ describe("buildEdges", () => {
     expect(edges[0].y1).toBe(150);
     expect(edges[0].x2).toBe(400);
     expect(edges[0].y2).toBe(200);
+  });
+});
+
+// ============================================================================
+// allocateAnchorAwareLanes
+// ============================================================================
+
+describe("allocateAnchorAwareLanes", () => {
+  it("separates a dense endpoint cluster while anchoring the endpoints inward", () => {
+    const placements = allocateAnchorAwareLanes(
+      [
+        { id: "oldelval", x: 1, width: 112 },
+        { id: "vmon", x: 3, width: 92 },
+        { id: "ypf", x: 5, width: 110 },
+        { id: "puerto", x: 8, width: 118 },
+      ],
+      { left: 0, right: 1080 },
+    );
+
+    expect(placements.map((placement) => placement.id)).toEqual([
+      "oldelval",
+      "vmon",
+      "ypf",
+      "puerto",
+    ]);
+    expect(placements[0]).toMatchObject({ textAnchor: "start", lane: 0 });
+    expect(new Set(placements.map((placement) => placement.lane)).size).toBe(4);
+  });
+
+  it("reuses a lane only after the previous label's guttered interval ends", () => {
+    const placements = allocateAnchorAwareLanes([
+      { id: "first", x: 120, width: 80 },
+      { id: "second", x: 340, width: 80 },
+      { id: "third", x: 150, width: 80 },
+    ]);
+
+    expect(placements.find((placement) => placement.id === "first")?.lane).toBe(0);
+    expect(placements.find((placement) => placement.id === "second")?.lane).toBe(0);
+    expect(placements.find((placement) => placement.id === "third")?.lane).toBe(1);
   });
 });
 

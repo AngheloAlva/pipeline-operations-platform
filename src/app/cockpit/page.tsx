@@ -138,7 +138,11 @@ function CockpitPageBody() {
               scanlines
             >
               <div className="p-2 space-y-1">
-                <PkRuler pipeline={world.pipeline} stations={world.stations} />
+                <PkRuler
+                  pipeline={world.pipeline}
+                  stations={world.stations}
+                  stationLabelLayout="collision-free"
+                />
                 <FlowDiagram world={world} />
               </div>
             </InstrumentBezel>

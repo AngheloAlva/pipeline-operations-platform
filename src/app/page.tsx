@@ -12,7 +12,7 @@
 import { useWorldData } from "@/hooks/useWorldData";
 import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
 import { ReadoutStat } from "@/components/shared/ReadoutStat";
-import { PkRuler } from "@/components/ui/PkRuler";
+import { PkRuler, StationLabelLayout } from "@/components/ui/PkRuler";
 import { totalStock, equipmentStatusCounts, latestCathodicReading } from "@/lib/kpi/overview";
 import type { AlertLevel } from "@/lib/domain";
 import { formatPk } from "@/lib/format";
@@ -123,7 +123,11 @@ export default function OverviewPage() {
             sublabel={`PK 0 → ${world.pipeline.totalLengthKm} KM`}
           >
             <div className="p-3">
-              <PkRuler pipeline={world.pipeline} stations={world.stations} />
+              <PkRuler
+                pipeline={world.pipeline}
+                stations={world.stations}
+                stationLabelLayout={StationLabelLayout.COLLISION_FREE}
+              />
             </div>
           </InstrumentBezel>
         </section>

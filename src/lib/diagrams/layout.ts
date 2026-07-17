@@ -18,6 +18,34 @@ export interface NodePosition {
   y: number;
 }
 
+export const SvgTextAnchor = {
+  START: "start",
+  MIDDLE: "middle",
+  END: "end",
+} as const;
+
+export type SvgTextAnchor = (typeof SvgTextAnchor)[keyof typeof SvgTextAnchor];
+
+export interface AnchorAwareLaneItem {
+  id: string;
+  x: number;
+  width: number;
+}
+
+export interface AnchorAwareLaneBounds {
+  left: number;
+  right: number;
+}
+
+export interface AnchorAwareLanePlacement {
+  id: string;
+  lane: number;
+  x: number;
+  textAnchor: SvgTextAnchor;
+  left: number;
+  right: number;
+}
+
 export interface EdgeEntry {
   fromNodeId: string;
   toNodeId: string;
@@ -25,6 +53,49 @@ export interface EdgeEntry {
   y1: number;
   x2: number;
   y2: number;
+}
+
+// ============================================================================
+// allocateAnchorAwareLanes — keep labels readable without dropping markers
+// ============================================================================
+
+/**
+ * Assign labels to the first lane whose guttered horizontal interval is free.
+ * Labels at either viewport edge grow inward instead of clipping beyond the SVG.
+ * The helper is deliberately domain-agnostic so every pipeline view shares the
+ * same legibility rule while retaining its own text metrics and vertical geometry.
+ */
+export function allocateAnchorAwareLanes(
+  items: readonly AnchorAwareLaneItem[],
+  bounds?: AnchorAwareLaneBounds,
+  gutter = 8,
+): AnchorAwareLanePlacement[] {
+  const laneEnds: number[] = [];
+
+  return [...items]
+    .sort((a, b) => a.x - b.x || a.id.localeCompare(b.id))
+    .map((item) => {
+      const overflowsLeft = bounds !== undefined && item.x - item.width / 2 < bounds.left;
+      const overflowsRight = bounds !== undefined && item.x + item.width / 2 > bounds.right;
+      let textAnchor: SvgTextAnchor = SvgTextAnchor.MIDDLE;
+      let textLeft = item.x - item.width / 2;
+
+      if (overflowsLeft) {
+        textAnchor = SvgTextAnchor.START;
+        textLeft = item.x;
+      } else if (overflowsRight) {
+        textAnchor = SvgTextAnchor.END;
+        textLeft = item.x - item.width;
+      }
+
+      const left = textLeft - gutter / 2;
+      const right = textLeft + item.width + gutter / 2;
+      const lane = laneEnds.findIndex((laneEnd) => laneEnd <= left);
+      const assignedLane = lane === -1 ? laneEnds.length : lane;
+      laneEnds[assignedLane] = right;
+
+      return { id: item.id, lane: assignedLane, x: item.x, textAnchor, left, right };
+    });
 }
 
 // ============================================================================

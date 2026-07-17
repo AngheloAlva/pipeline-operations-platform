@@ -15,8 +15,13 @@ import { useMemo, memo, useCallback, useState, useEffect, useRef } from "react";
 import type { PipelineWorld, Tank, Station } from "@/lib/domain";
 import { useSimulationStore, selectTankLevel, useActiveFlows } from "@/store/simulationStore";
 import { useSelectionStore, EntityType } from "@/store/selectionStore";
-import { buildStationLayout, buildEdges, flowRateToAnimDur } from "@/lib/diagrams/layout";
-import type { NodePosition } from "@/lib/diagrams/layout";
+import {
+  allocateAnchorAwareLanes,
+  buildEdges,
+  buildStationLayout,
+  flowRateToAnimDur,
+} from "@/lib/diagrams/layout";
+import type { AnchorAwareLanePlacement, NodePosition } from "@/lib/diagrams/layout";
 import { formatPk } from "@/lib/format";
 import { TankGauge } from "./TankGauge";
 
@@ -25,11 +30,14 @@ import { TankGauge } from "./TankGauge";
 // ============================================================================
 
 const VIEW_W = 1080;
-// Part 1 SVG: stations + pipes only (no tanks). Compact viewBox.
-const VIEW_H = 130;
 const PADDING = 60;
-const STATION_Y = 70;
-const PIPE_TRACK_Y = STATION_Y;
+const LABEL_Y_TOP = 18;
+const LABEL_LANE_HEIGHT = 14;
+const LABEL_TO_TRACK_GAP = 16;
+const SVG_BOTTOM_SPACE = 40;
+const STATION_NAME_CHARACTER_WIDTH = 5.2;
+const PK_CHARACTER_WIDTH = 4.5;
+const LABEL_INLINE_GAP = 4;
 // Directional lane offsets from baseline — downstream above, upstream below.
 const DOWNSTREAM_OFFSET = -7;
 const UPSTREAM_OFFSET = 7;
@@ -44,23 +52,37 @@ interface FlowDiagramProps {
   world: PipelineWorld;
 }
 
+function stationLabelWidth(station: Station): number {
+  const pkLabel = `pk${formatPk(station.km)}`;
+  return Math.max(
+    28,
+    station.name.length * STATION_NAME_CHARACTER_WIDTH +
+      LABEL_INLINE_GAP +
+      pkLabel.length * PK_CHARACTER_WIDTH,
+  );
+}
+
 // ============================================================================
 // STATION NODE
 // ============================================================================
 
 interface StationNodeProps {
   station: Station;
-  x: number;
+  placement: AnchorAwareLanePlacement;
+  stationY: number;
   isSelected: boolean;
   onClick: (stationId: string) => void;
 }
 
 const StationNode = memo(function StationNode({
   station,
-  x,
+  placement,
+  stationY,
   isSelected,
   onClick,
 }: StationNodeProps) {
+  const stationDetail = `Estación ${station.name} · pk ${formatPk(station.km)}`;
+
   function handleKeyDown(e: React.KeyboardEvent<SVGGElement>) {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -75,35 +97,38 @@ const StationNode = memo(function StationNode({
       onClick={() => onClick(station.id)}
       onKeyDown={handleKeyDown}
       style={{ cursor: "pointer" }}
-      aria-label={`Estación ${station.name}`}
+      className="outline-none focus-visible:[&_circle]:stroke-2"
+      aria-label={stationDetail}
     >
+      <title>{stationDetail}</title>
+      <line
+        x1={placement.x}
+        y1={stationY - 8}
+        x2={placement.x}
+        y2={LABEL_Y_TOP + placement.lane * LABEL_LANE_HEIGHT + 4}
+        stroke="var(--border-mid)"
+        strokeWidth="0.75"
+      />
       <circle
-        cx={x}
-        cy={STATION_Y}
+        cx={placement.x}
+        cy={stationY}
         r={8}
         fill={isSelected ? "var(--amber-safety)" : "var(--surface-raised)"}
         stroke={isSelected ? "var(--amber-safety)" : "var(--border-strong)"}
         strokeWidth="1.5"
       />
       <text
-        x={x}
-        y={STATION_Y - 14}
-        textAnchor="middle"
+        x={placement.x}
+        y={LABEL_Y_TOP + placement.lane * LABEL_LANE_HEIGHT}
+        textAnchor={placement.textAnchor}
         fontSize="8"
         fill="var(--ink-secondary)"
         fontFamily="var(--font-mono), monospace"
       >
         {station.name}
-      </text>
-      <text
-        x={x}
-        y={STATION_Y - 5}
-        textAnchor="middle"
-        fontSize="6.5"
-        fill="var(--ink-muted)"
-        fontFamily="var(--font-mono), monospace"
-      >
-        pk{formatPk(station.km)}
+        <tspan dx={LABEL_INLINE_GAP} fontSize="6.5" fill="var(--ink-muted)">
+          pk{formatPk(station.km)}
+        </tspan>
       </text>
     </g>
   );
@@ -116,6 +141,7 @@ const StationNode = memo(function StationNode({
 interface PipeEdgeProps {
   x1: number;
   x2: number;
+  trackY: number;
   /** true = downstream (x2 > x1, higher km); false = upstream (x2 < x1). */
   isDownstream: boolean;
   isActive: boolean;
@@ -126,13 +152,14 @@ interface PipeEdgeProps {
 const PipeEdge = memo(function PipeEdge({
   x1,
   x2,
+  trackY,
   isDownstream,
   isActive,
   edgeId,
   flowRateM3h = 500,
 }: PipeEdgeProps) {
   const laneOffset = isDownstream ? DOWNSTREAM_OFFSET : UPSTREAM_OFFSET;
-  const y = PIPE_TRACK_Y + laneOffset;
+  const y = trackY + laneOffset;
   // Straight horizontal path for the parallel lanes
   const pathD = `M ${x1} ${y} L ${x2} ${y}`;
   const pathLen = Math.abs(x2 - x1);
@@ -278,6 +305,28 @@ export function FlowDiagram({ world }: FlowDiagramProps) {
     return map;
   }, [stationLayout]);
 
+  const stationLabelPlacements = useMemo(
+    () =>
+      allocateAnchorAwareLanes(
+        world.stations.map((station) => ({
+          id: station.id,
+          x: stationXMap[station.id] ?? 0,
+          width: stationLabelWidth(station),
+        })),
+        { left: PADDING, right: VIEW_W - PADDING },
+      ),
+    [world.stations, stationXMap],
+  );
+  const stationLabelById = new Map(
+    stationLabelPlacements.map((placement) => [placement.id, placement]),
+  );
+  const stationLaneCount = Math.max(
+    1,
+    ...stationLabelPlacements.map((placement) => placement.lane + 1),
+  );
+  const pipeTrackY = LABEL_Y_TOP + stationLaneCount * LABEL_LANE_HEIGHT + LABEL_TO_TRACK_GAP;
+  const viewHeight = pipeTrackY + SVG_BOTTOM_SPACE;
+
   // Map stationId → km (for directional classification)
   const stationKmById = useMemo(() => {
     const map: Record<string, number> = {};
@@ -299,10 +348,10 @@ export function FlowDiagram({ world }: FlowDiagramProps) {
   const nodePositions = useMemo(() => {
     const positions: Record<string, NodePosition> = {};
     for (const station of world.stations) {
-      positions[station.id] = { x: stationXMap[station.id] ?? 0, y: STATION_Y };
+      positions[station.id] = { x: stationXMap[station.id] ?? 0, y: pipeTrackY };
     }
     return positions;
-  }, [world.stations, stationXMap]);
+  }, [world.stations, stationXMap, pipeTrackY]);
 
   // Active flow node IDs — for tank/station opacity control
   const activeNodeIds = useMemo(() => {
@@ -409,23 +458,25 @@ export function FlowDiagram({ world }: FlowDiagramProps) {
       {/* overflow-x-auto + min-w on mobile keeps SVG legible at 375px (B-6) */}
       <div className="overflow-x-auto">
       <svg
-        viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+        viewBox={`0 0 ${VIEW_W} ${viewHeight}`}
         preserveAspectRatio="xMidYMid meet"
         className="mx-auto block w-full min-w-[640px] md:min-w-0"
         style={{
           display: "block",
-          aspectRatio: `${VIEW_W} / ${VIEW_H}`,
+          aspectRatio: `${VIEW_W} / ${viewHeight}`,
           maxWidth: `${VIEW_MAX_W}px`,
           minHeight: "90px",
         }}
-        aria-hidden="true"
+        role="group"
+          aria-labelledby="flow-diagram-svg-title"
       >
-        {/* Static pipe baseline (center track) */}
+        <title id="flow-diagram-svg-title">Diagrama de flujo del oleoducto</title>
+            {/* Static pipe baseline (center track) */}
         <line
           x1={PADDING}
-          y1={PIPE_TRACK_Y}
+          y1={pipeTrackY}
           x2={VIEW_W - PADDING}
-          y2={PIPE_TRACK_Y}
+          y2={pipeTrackY}
           stroke="var(--border-mid)"
           strokeWidth="2.5"
         />
@@ -442,7 +493,8 @@ export function FlowDiagram({ world }: FlowDiagramProps) {
               key={edgeKey}
               x1={edge.x1}
               x2={edge.x2}
-              isDownstream={isDownstream}
+              trackY={pipeTrackY}
+                  isDownstream={isDownstream}
               isActive={isActive}
               edgeId={edgeKey.replace(/[^a-zA-Z0-9]/g, "-")}
             />
@@ -451,12 +503,14 @@ export function FlowDiagram({ world }: FlowDiagramProps) {
 
         {/* Station nodes */}
         {world.stations.map((station) => {
-          const x = stationXMap[station.id] ?? 0;
+          const placement = stationLabelById.get(station.id);
+              if (!placement) return null;
           return (
             <StationNode
               key={station.id}
               station={station}
-              x={x}
+              placement={placement}
+                  stationY={pipeTrackY}
               isSelected={selectedEntityId === station.id}
               onClick={handleStationClick}
             />

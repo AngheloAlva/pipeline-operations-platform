@@ -22,10 +22,11 @@ import {
   AMBER_SAFETY,
   CHART_FONT_MONO,
 } from "@/lib/charts/palette";
-import { kmToX } from "@/lib/diagrams/layout";
+import { allocateAnchorAwareLanes, kmToX } from "@/lib/diagrams/layout";
 import { groupReadingsByKm } from "@/lib/integrity/selectors";
 import { useSelectionStore, EntityType } from "@/store/selectionStore";
 import { AlertLevel, EquipmentType } from "@/lib/domain/types";
+import { formatPk } from "@/lib/format";
 import type { PipelineWorld } from "@/lib/domain";
 import { InstrumentBezel } from "@/components/shared/InstrumentBezel";
 import { ConceptInfo } from "@/components/shared/ConceptInfo";
@@ -35,9 +36,15 @@ import { ConceptInfo } from "@/components/shared/ConceptInfo";
 // ============================================================================
 
 const VB_WIDTH = 1080;
-const VB_HEIGHT = 80;
 const PADDING = 40;
-const BASELINE_Y = 40;
+const TOP_LABEL_Y = 14;
+const LABEL_LANE_HEIGHT = 12;
+const LABEL_TO_BASELINE_GAP = 14;
+const BASELINE_TO_LABEL_GAP = 28;
+const SVG_BOTTOM_SPACE = 8;
+const STATION_NAME_CHARACTER_WIDTH = 5.2;
+const PK_CHARACTER_WIDTH = 4.5;
+const LABEL_INLINE_GAP = 4;
 
 /** Color map for cathodic point markers by alert level. */
 const LEVEL_COLOR: Record<AlertLevel, string> = {
@@ -53,6 +60,16 @@ const LEVEL_COLOR: Record<AlertLevel, string> = {
 export interface PipelineMapProps {
   world: PipelineWorld;
   selectedPointKey: string | null;
+}
+
+function stationLabelWidth(name: string, km: number): number {
+  const pkLabel = `pk${formatPk(km)}`;
+  return Math.max(
+    28,
+    name.length * STATION_NAME_CHARACTER_WIDTH +
+      LABEL_INLINE_GAP +
+      pkLabel.length * PK_CHARACTER_WIDTH,
+  );
 }
 
 // ============================================================================
@@ -166,8 +183,42 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
     });
   }
 
-  return (
-    <InstrumentBezel
+  const stationLabelPlacements = allocateAnchorAwareLanes(
+        world.stations.map((station) => ({
+          id: station.id,
+          x: toX(station.km),
+          width: stationLabelWidth(station.name, station.km),
+        })),
+        { left: PADDING, right: VB_WIDTH - PADDING },
+      );
+      const stationLabelById = new Map(
+        stationLabelPlacements.map((placement) => [placement.id, placement]),
+      );
+      const rectifierLabelPlacements = allocateAnchorAwareLanes(
+        rectifierGroups.map((group) => ({
+          id: group.markers[0].eq.id,
+          x: group.labelX,
+          width: Math.max(18, group.label.length * 5),
+        })),
+        { left: PADDING, right: VB_WIDTH - PADDING },
+      );
+      const rectifierLabelById = new Map(
+        rectifierLabelPlacements.map((placement) => [placement.id, placement]),
+      );
+      const rectifierLaneCount = Math.max(
+        1,
+        ...rectifierLabelPlacements.map((placement) => placement.lane + 1),
+      );
+      const stationLaneCount = Math.max(
+        1,
+        ...stationLabelPlacements.map((placement) => placement.lane + 1),
+      );
+      const baselineY = TOP_LABEL_Y + rectifierLaneCount * LABEL_LANE_HEIGHT + LABEL_TO_BASELINE_GAP;
+      const stationLabelY = baselineY + BASELINE_TO_LABEL_GAP;
+      const viewHeight = stationLabelY + stationLaneCount * LABEL_LANE_HEIGHT + SVG_BOTTOM_SPACE;
+
+      return (
+        <InstrumentBezel
       label="MAPA DE INTEGRIDAD"
       sublabel="PROTECCIÓN CATÓDICA"
     >
@@ -181,23 +232,24 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
           overflow-x-auto + min-w on mobile keeps SVG legible at 375px (B-7) */}
       <div className="overflow-x-auto">
       <svg
-        viewBox={`0 0 ${VB_WIDTH} ${VB_HEIGHT}`}
+        viewBox={`0 0 ${VB_WIDTH} ${viewHeight}`}
         preserveAspectRatio="xMidYMid meet"
         role="img"
-        aria-label="Pipeline cathodic integrity map"
+        aria-labelledby="pipeline-map-svg-title"
         className="block w-full min-w-[640px] md:min-w-0"
         style={{
           display: "block",
-          aspectRatio: `${VB_WIDTH} / ${VB_HEIGHT}`,
+          aspectRatio: `${VB_WIDTH} / ${viewHeight}`,
           minHeight: "70px",
         }}
       >
-        {/* Baseline */}
+        <title id="pipeline-map-svg-title">Mapa de integridad catódica</title>
+            {/* Baseline */}
         <line
           x1={PADDING}
-          y1={BASELINE_Y}
+          y1={baselineY}
           x2={VB_WIDTH - PADDING}
-          y2={BASELINE_Y}
+          y2={baselineY}
           stroke={INK_TERTIARY}
           strokeWidth={1}
           opacity={0.4}
@@ -205,12 +257,14 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
 
         {/* Station markers — rect 8×12, label below at y=68 */}
         {world.stations.map((station) => {
-          const x = toX(station.km);
+          const placement = stationLabelById.get(station.id);
+              if (!placement) return null;
+              const x = placement.x;
           return (
             <g key={station.id}>
               <rect
                 x={x - 4}
-                y={BASELINE_Y - 6}
+                y={baselineY - 6}
                 width={8}
                 height={12}
                 fill={INK_TERTIARY}
@@ -218,13 +272,18 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
               />
               <text
                 x={x}
-                y={68}
-                textAnchor="middle"
+                y={stationLabelY + placement.lane * LABEL_LANE_HEIGHT}
+                textAnchor={placement.textAnchor}
                 fontSize={8}
                 fontFamily={CHART_FONT_MONO}
                 fill={INK_TERTIARY}
               >
-                {station.name}
+                <>
+                      {station.name}
+                      <tspan dx={LABEL_INLINE_GAP} fontSize={6.5} fill={INK_TERTIARY} opacity={0.7}>
+                        pk{formatPk(station.km)}
+                      </tspan>
+                    </>
               </text>
             </g>
           );
@@ -232,24 +291,27 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
 
         {/* Rectifier markers — rotated squares (diamonds) fan out per station;
             one label per group (tag if single, ×N badge if clustered). */}
-        {rectifierGroups.map((g) => (
+        {rectifierGroups.map((g) => {
+              const placement = rectifierLabelById.get(g.markers[0].eq.id);
+              if (!placement) return null;
+              return (
           <g key={g.markers[0].eq.id}>
             {g.markers.map(({ eq, x }) => (
               <rect
                 key={eq.id}
                 x={x - 4}
-                y={BASELINE_Y - 4}
+                y={baselineY - 4}
                 width={8}
                 height={8}
                 fill={AMBER_SAFETY}
                 opacity={0.85}
-                transform={`rotate(45, ${x}, ${BASELINE_Y})`}
+                transform={`rotate(45, ${x}, ${baselineY})`}
               />
             ))}
             <text
-              x={g.labelX}
-              y={20}
-              textAnchor="middle"
+              x={placement.x}
+              y={TOP_LABEL_Y + placement.lane * LABEL_LANE_HEIGHT}
+              textAnchor={placement.textAnchor}
               fontSize={7}
               fontFamily={CHART_FONT_MONO}
               fill={AMBER_SAFETY}
@@ -258,9 +320,10 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
               {g.label}
             </text>
           </g>
-        ))}
+              );
+            })}
 
-        {/* Cathodic point markers — circle r=6, clickable */}
+            {/* Cathodic point markers — circle r=6, clickable */}
         {cathodicMarkers.map((marker) => {
           const x = toX(marker.km);
           const isActive = selectedPointKey === marker.key;
@@ -285,7 +348,7 @@ export function PipelineMap({ world, selectedPointKey }: PipelineMapProps) {
             >
               <circle
                 cx={x}
-                cy={BASELINE_Y}
+                cy={baselineY}
                 r={6}
                 fill={fill}
                 stroke={isActive ? "#ffffff" : "none"}

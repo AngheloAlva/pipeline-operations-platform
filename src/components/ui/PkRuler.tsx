@@ -1,31 +1,99 @@
 "use client";
 
 import type { Pipeline, Station } from "@/lib/domain/types";
-import { kmToX } from "@/lib/diagrams/layout";
+import { allocateAnchorAwareLanes, kmToX, SvgTextAnchor } from "@/lib/diagrams/layout";
 import { formatPk } from "@/lib/format";
 
 // ---------------------------------------------------------------------------
 // PkRuler props
 // ---------------------------------------------------------------------------
 
+export const StationLabelLayout = {
+  COMPACT: "compact",
+  COLLISION_FREE: "collision-free",
+} as const;
+
+export const StationLabelTextAnchor = SvgTextAnchor;
+
+type StationLabelLayout = (typeof StationLabelLayout)[keyof typeof StationLabelLayout];
+type StationLabelTextAnchor = (typeof StationLabelTextAnchor)[keyof typeof StationLabelTextAnchor];
+
 interface PkRulerProps {
   pipeline: Pipeline;
   stations: Station[];
+  /** Opt into lane allocation where dense station labels would otherwise overlap. */
+  stationLabelLayout?: StationLabelLayout;
   className?: string;
+}
+
+export interface StationLabelPlacement {
+  stationId: string;
+  lane: number;
+  x: number;
+  textAnchor: StationLabelTextAnchor;
+  left: number;
+  right: number;
+}
+
+interface StationLabelBounds {
+  left: number;
+  right: number;
 }
 
 // ---------------------------------------------------------------------------
 // Layout constants
 // ---------------------------------------------------------------------------
-const RULER_HEIGHT = 64; // total component height in px (SVG viewBox units)
+const RULER_BOTTOM_SPACE = 26; // track-to-bottom space, including km labels
 const H_PADDING = 55; // horizontal inset so km 0 / km max station labels never clip
-const TRACK_Y = 38; // vertical center of the pipe track
+const TRACK_Y = 38; // compact-layout vertical center of the pipe track
 const TRACK_THICKNESS = 3; // pipe track stroke width
 const MAJOR_TICK_H = 12; // major tick height (every 50 km)
 const MINOR_TICK_H = 6; // minor tick height (every 10 km)
 const STATION_DOT_R = 5.5; // station dot radius
-const LABEL_Y_TOP = 13; // station label y (above track)
-const KM_LABEL_Y = RULER_HEIGHT - 4; // km label y (below track)
+const LABEL_Y_TOP = 13; // first station-label baseline above track
+const LABEL_LANE_HEIGHT = 13; // single-line label height plus breathing room
+const LABEL_TO_TRACK_GAP = 5; // gap from the final label lane to the track
+const LABEL_CHARACTER_WIDTH = 5.8; // 9.5px monospace station-name width estimate in SVG units
+const PK_CHARACTER_WIDTH = 4.5; // 7.5px monospace PK width estimate in SVG units
+const LABEL_INLINE_GAP = 4; // space between station name and muted PK value
+const LABEL_HORIZONTAL_GUTTER = 8; // prevents labels in one lane from touching
+
+/**
+ * Allocate station labels to the first lane with enough horizontal space.
+ *
+ * The output is pure and data-derived: labels in the same lane have disjoint
+ * intervals, while every station remains represented by its marker and label.
+ */
+export function buildCollisionFreeStationLabels(
+  stations: readonly Station[],
+  xOf: (km: number) => number,
+  bounds?: StationLabelBounds,
+): StationLabelPlacement[] {
+  return allocateAnchorAwareLanes(
+    stations.map((station) => {
+      const pkLabel = `pk${formatPk(station.km)}`;
+      return {
+        id: station.id,
+        x: xOf(station.km),
+        width: Math.max(
+          20,
+          station.name.length * LABEL_CHARACTER_WIDTH +
+            LABEL_INLINE_GAP +
+            pkLabel.length * PK_CHARACTER_WIDTH,
+        ),
+      };
+    }),
+    bounds,
+    LABEL_HORIZONTAL_GUTTER,
+  ).map((placement) => ({
+    stationId: placement.id,
+    lane: placement.lane,
+    x: placement.x,
+    textAnchor: placement.textAnchor,
+    left: placement.left,
+    right: placement.right,
+  }));
+}
 
 /**
  * PkRuler — "La progresiva"
@@ -37,7 +105,12 @@ const KM_LABEL_Y = RULER_HEIGHT - 4; // km label y (below track)
  * This is the product's visual signature: the same element appears across all
  * three modules (overview, cockpit, maintenance/integrity) to orient the operator.
  */
-export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
+export function PkRuler({
+  pipeline,
+  stations,
+  stationLabelLayout = StationLabelLayout.COMPACT,
+  className,
+}: PkRulerProps) {
   const { totalLengthKm, segments } = pipeline;
 
   // Sort stations by km
@@ -46,11 +119,25 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
   // We render at 100% width — use a viewBox so SVG scales.
   // ViewBox width = totalLengthKm * 4 for reasonable resolution, then scale with preserveAspectRatio.
   const vbWidth = 1080; // fixed logical width for the viewBox
-  const vbHeight = RULER_HEIGHT;
 
   // Shared km→x mapping (same helper FlowDiagram/PipelineMap use) so the ruler
   // stays in lockstep with the rest of the diagrams. minKm=0, padding=H_PADDING.
   const xOf = (km: number) => kmToX(km, 0, totalLengthKm, vbWidth, H_PADDING);
+  const collisionFree = stationLabelLayout === StationLabelLayout.COLLISION_FREE;
+  const labelPlacements = collisionFree
+    ? buildCollisionFreeStationLabels(sorted, xOf, { left: 0, right: vbWidth })
+    : [];
+  const placementByStationId = new Map(
+    labelPlacements.map((placement) => [placement.stationId, placement]),
+  );
+  const laneCount = collisionFree
+    ? Math.max(1, ...labelPlacements.map((placement) => placement.lane + 1))
+    : 1;
+  const trackY = collisionFree
+    ? LABEL_Y_TOP + laneCount * LABEL_LANE_HEIGHT + LABEL_TO_TRACK_GAP
+    : TRACK_Y;
+  const vbHeight = trackY + RULER_BOTTOM_SPACE;
+  const kmLabelY = vbHeight - 4;
 
   // Tick generation
   const ticks: { km: number; major: boolean }[] = [];
@@ -68,7 +155,7 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
   return (
     <div
       className={`w-full border border-border-mid bg-surface-raised overflow-hidden ${className ?? ""}`}
-      role="img"
+      role={collisionFree ? undefined : "img"}
       aria-label={`Progresiva del oleoducto — ${totalLengthKm} km total`}
     >
       {/* Section header */}
@@ -95,7 +182,10 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
           display: "block",
           aspectRatio: `${vbWidth} / ${vbHeight}`,
         }}
-        aria-hidden="true"
+        role={collisionFree ? "group" : undefined}
+        aria-label={
+          collisionFree ? `Progresiva del oleoducto — ${totalLengthKm} km total` : undefined
+        }
       >
         {/* Segment tints */}
         {segments.map((seg, i) => (
@@ -126,9 +216,9 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
         {/* Pipe track — the main horizontal pipe line */}
         <line
           x1={0}
-          y1={TRACK_Y}
+          y1={trackY}
           x2={vbWidth}
-          y2={TRACK_Y}
+          y2={trackY}
           stroke="var(--border-strong)"
           strokeWidth={TRACK_THICKNESS}
           strokeLinecap="square"
@@ -142,9 +232,9 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
             <line
               key={`tick-${km}`}
               x1={x}
-              y1={TRACK_Y - halfH}
+              y1={trackY - halfH}
               x2={x}
-              y2={TRACK_Y + halfH}
+              y2={trackY + halfH}
               stroke={major ? "var(--border-strong)" : "var(--border-mid)"}
               strokeWidth={major ? 1.5 : 0.75}
             />
@@ -158,7 +248,7 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
             <text
               key={`label-${km}`}
               x={xOf(km)}
-              y={KM_LABEL_Y}
+              y={kmLabelY}
               textAnchor="middle"
               fontSize="8.5"
               fill="var(--ink-muted)"
@@ -171,16 +261,32 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
         {/* Station dots + labels */}
         {sorted.map((station) => {
           const x = xOf(station.km);
+          const placement = placementByStationId.get(station.id);
+          const labelY = collisionFree
+            ? LABEL_Y_TOP + (placement?.lane ?? 0) * LABEL_LANE_HEIGHT
+            : LABEL_Y_TOP;
+          const labelX = placement?.x ?? x;
+          const labelTextAnchor = placement?.textAnchor ?? StationLabelTextAnchor.MIDDLE;
+          const stationDetail = `${station.name} · pk ${formatPk(station.km)}`;
           const isTerminalOrSource = station.kind === "SOURCE" || station.kind === "TERMINAL";
 
           return (
-            <g key={station.id}>
+            <g
+              key={station.id}
+              role={collisionFree ? "group" : undefined}
+              aria-label={collisionFree ? stationDetail : undefined}
+              tabIndex={collisionFree ? 0 : undefined}
+              className={
+                collisionFree ? "outline-none focus-visible:[&_circle]:stroke-2" : undefined
+              }
+            >
+              {collisionFree ? <title>{stationDetail}</title> : null}
               {/* Vertical connector from label to dot */}
               <line
                 x1={x}
-                y1={TRACK_Y - STATION_DOT_R}
+                y1={trackY - STATION_DOT_R}
                 x2={x}
-                y2={LABEL_Y_TOP + 11}
+                y2={collisionFree ? labelY + 4 : labelY + 14}
                 stroke="var(--border-mid)"
                 strokeWidth="0.75"
               />
@@ -190,7 +296,7 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
                   Green/amber/red are reserved strictly for semantic status. */}
               <circle
                 cx={x}
-                cy={TRACK_Y}
+                cy={trackY}
                 r={STATION_DOT_R}
                 fill={isTerminalOrSource ? "var(--accent)" : "var(--surface-raised)"}
                 stroke={isTerminalOrSource ? "var(--accent)" : "var(--border-strong)"}
@@ -199,21 +305,36 @@ export function PkRuler({ pipeline, stations, className }: PkRulerProps) {
 
               {/* Station name */}
               <text
-                x={x}
-                y={LABEL_Y_TOP}
-                textAnchor="middle"
+                x={labelX}
+                y={labelY}
+                textAnchor={labelTextAnchor}
                 fontSize="9.5"
                 fill="var(--ink-secondary)"
                 fontFamily="var(--font-mono), monospace"
                 fontWeight="500"
               >
-                {station.name}
+                {collisionFree ? (
+                  <>
+                    {station.name}
+                    <tspan
+                      dx={LABEL_INLINE_GAP}
+                      fontSize="7.5"
+                      fill="var(--ink-muted)"
+                      fontWeight="400"
+                    >
+                      pk{formatPk(station.km)}
+                    </tspan>
+                  </>
+                ) : (
+                  station.name
+                )}
               </text>
 
-              {/* PK value below name */}
+              {/* PK value below name in compact mode */}
               <text
                 x={x}
-                y={LABEL_Y_TOP + 10}
+                y={labelY + 10}
+                display={collisionFree ? "none" : undefined}
                 textAnchor="middle"
                 fontSize="7.5"
                 fill="var(--ink-muted)"

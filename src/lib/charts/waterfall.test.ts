@@ -5,7 +5,12 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { buildWaterfallData, buildWaterfallEntry } from "./waterfall";
+import {
+  buildWaterfallData,
+  buildWaterfallEntry,
+  buildWaterfallFromDeltas,
+  formatWaterfallTick,
+} from "./waterfall";
 import type { WaterfallEntry } from "./waterfall";
 
 describe("buildWaterfallEntry", () => {
@@ -91,6 +96,66 @@ describe("buildWaterfallData", () => {
     const result = buildWaterfallData(inputs);
     expect(result[0].band).toBe("ok");
     expect(result[1].band).toBe("critical");
+  });
+});
+
+describe("buildWaterfallFromDeltas (MV-15)", () => {
+  it("builds cumulative bases from pre-computed deltas and bands", () => {
+    const result = buildWaterfallFromDeltas([
+      { shipperId: "SHP-001", label: "Cargador A", delta: -120, band: "ok" },
+      { shipperId: "SHP-002", label: "Cargador B", delta: 40, band: "warning" },
+      { shipperId: "SHP-003", label: "Cargador C", delta: -200, band: "critical" },
+    ]);
+
+    expect(result).toHaveLength(3);
+    expect(result[0]).toEqual({
+      shipperId: "SHP-001",
+      label: "Cargador A",
+      waterfallDelta: -120,
+      base: 0,
+      band: "ok",
+    });
+    // base = 0 + (-120)
+    expect(result[1].base).toBe(-120);
+    expect(result[1].waterfallDelta).toBe(40);
+    expect(result[1].band).toBe("warning");
+    // base = -120 + 40
+    expect(result[2].base).toBe(-80);
+    expect(result[2].band).toBe("critical");
+  });
+
+  it("returns an empty array for empty input", () => {
+    expect(buildWaterfallFromDeltas([])).toEqual([]);
+  });
+});
+
+describe("formatWaterfallTick (MV-20)", () => {
+  it("renders sub-1k magnitudes as plain integers instead of '0k'", () => {
+    expect(formatWaterfallTick(0)).toBe("0");
+    expect(formatWaterfallTick(250)).toBe("250");
+    expect(formatWaterfallTick(-177)).toBe("-177");
+    expect(formatWaterfallTick(999)).toBe("999");
+  });
+
+  it("never renders '-0k' for small negative values", () => {
+    expect(formatWaterfallTick(-300)).not.toBe("-0k");
+    expect(formatWaterfallTick(-0)).toBe("0");
+  });
+
+  it("rounds fractional sub-1k values to integers", () => {
+    expect(formatWaterfallTick(250.6)).toBe("251");
+    expect(formatWaterfallTick(-0.4)).toBe("0");
+  });
+
+  it("keeps whole thousands in compact 'k' notation", () => {
+    expect(formatWaterfallTick(1000)).toBe("1k");
+    expect(formatWaterfallTick(-5000)).toBe("-5k");
+    expect(formatWaterfallTick(240000)).toBe("240k");
+  });
+
+  it("keeps one es-AR decimal for non-whole thousands so adjacent ticks stay distinct", () => {
+    expect(formatWaterfallTick(1500)).toBe("1,5k");
+    expect(formatWaterfallTick(-1500)).toBe("-1,5k");
   });
 });
 

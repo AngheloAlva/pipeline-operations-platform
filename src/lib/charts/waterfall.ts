@@ -98,3 +98,51 @@ export function buildWaterfallData(inputs: WaterfallInput[]): WaterfallEntry[] {
     return { ...entry, base };
   });
 }
+
+/**
+ * Format a Y-axis tick for waterfall charts (MV-20).
+ *
+ * Small magnitudes (|value| < 1000) render as plain integers ("250", "-177")
+ * instead of the degenerate "0k"/"-0k" a fixed ÷1000 formatter produces.
+ * Thousands render compact: whole thousands as "5k", non-whole with one
+ * es-AR decimal ("1,5k") so adjacent ticks never collapse into duplicates.
+ */
+export function formatWaterfallTick(value: number): string {
+  if (Math.abs(value) < 1000) {
+    // Math.round(-0.4) yields -0; normalize so the tick reads "0".
+    return `${Math.round(value) + 0}`;
+  }
+
+  const thousands = value / 1000;
+  const rounded = Math.round(thousands * 10) / 10;
+  const label = Number.isInteger(rounded)
+    ? rounded.toFixed(0)
+    : rounded.toLocaleString("es-AR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  return `${label}k`;
+}
+
+/** Input for a waterfall bar whose delta and band are already computed (MV-15). */
+export interface WaterfallDeltaInput {
+  shipperId: string;
+  /** Display label on the X-axis. */
+  label: string;
+  /** Signed delta for the bar (e.g. custody diffM3). */
+  delta: number;
+  /** Semantic band for Cell color selection. */
+  band: ComplianceBand;
+}
+
+/**
+ * Build waterfall entries with cumulative bases from pre-computed deltas.
+ * Unlike buildWaterfallData, no compliance is derived — callers supply the
+ * delta and band (used for custody differences, MV-15).
+ */
+export function buildWaterfallFromDeltas(inputs: WaterfallDeltaInput[]): WaterfallEntry[] {
+  let running = 0;
+
+  return inputs.map(({ shipperId, label, delta, band }) => {
+    const base = running;
+    running += delta;
+    return { shipperId, label, waterfallDelta: delta, base, band };
+  });
+}

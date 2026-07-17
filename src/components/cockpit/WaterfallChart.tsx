@@ -19,7 +19,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import { buildWaterfallData } from "@/lib/charts/waterfall";
+import { buildWaterfallData, formatWaterfallTick } from "@/lib/charts/waterfall";
 import type { WaterfallEntry, WaterfallInput } from "@/lib/charts/waterfall";
 import type { ComplianceBand } from "@/lib/volumetrics/compliance";
 import {
@@ -109,8 +109,33 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 // PROPS
 // ============================================================================
 
+/** ConceptInfo affordance shown next to the panel heading. */
+export interface WaterfallConcept {
+  term: string;
+  label: string;
+}
+
+/** Default header concepts — SR-010 compliance mode. */
+const DEFAULT_CONCEPTS: WaterfallConcept[] = [
+  { term: "cumplimiento", label: "Cumplimiento" },
+  { term: "cargador", label: "Cargador" },
+  { term: "programa", label: "Programa" },
+];
+
 export interface WaterfallChartProps {
-  inputs: WaterfallInput[];
+  /** Compliance inputs — the chart derives deltas/bands (SR-010 default mode). */
+  inputs?: WaterfallInput[];
+  /**
+   * Pre-built entries with deltas, bands and cumulative bases (MV-15 custody
+   * mode — see buildWaterfallFromDeltas). Takes precedence over `inputs`.
+   */
+  entries?: WaterfallEntry[];
+  /** Panel heading (also the section's accessible name). */
+  title?: string;
+  /** Unit legend at the right of the header. */
+  unitLabel?: string;
+  /** ConceptInfo affordances next to the heading. */
+  concepts?: WaterfallConcept[];
 }
 
 // ============================================================================
@@ -121,12 +146,19 @@ export interface WaterfallChartProps {
  * WaterfallChart renders a TRUE waterfall per shipper.
  * Uses ComposedChart + stacked Bars: invisible `base` + visible `displayDelta`.
  * Cell colors map compliance band to palette constants.
- * SR-010.
+ * SR-010. Header + data source are configurable so the custody-difference
+ * panel (MV-15) reuses the same chart with pre-built entries.
  */
-export function WaterfallChart({ inputs }: WaterfallChartProps) {
+export function WaterfallChart({
+  inputs,
+  entries: prebuiltEntries,
+  title = "Cumplimiento por Cargador",
+  unitLabel = "Δreal − programa · m³",
+  concepts = DEFAULT_CONCEPTS,
+}: WaterfallChartProps) {
   // Memoize waterfall data — includes cumulative bases
   const data = useMemo(() => {
-    const entries = buildWaterfallData(inputs);
+    const entries = prebuiltEntries ?? buildWaterfallData(inputs ?? []);
     // Recharts stacked Bar needs two separate dataKeys.
     // `base` = invisible stack base; `displayDelta` = visible bar.
     // For negative deltas, we need to handle them as absolute values stacked from base.
@@ -138,14 +170,14 @@ export function WaterfallChart({ inputs }: WaterfallChartProps) {
       waterfallBase: e.waterfallDelta >= 0 ? e.base : e.base + e.waterfallDelta,
       displayDelta: Math.abs(e.waterfallDelta),
     }));
-  }, [inputs]);
+  }, [inputs, prebuiltEntries]);
 
   const isEmpty = data.length === 0;
 
   return (
     <section
       className="flex flex-col gap-3 border border-border-mid bg-surface-raised p-4"
-      aria-label="Cumplimiento por Cargador"
+      aria-label={title}
     >
       {/* Panel header */}
       <header className="flex items-center justify-between">
@@ -154,17 +186,17 @@ export function WaterfallChart({ inputs }: WaterfallChartProps) {
             className="text-[12px] font-medium uppercase tracking-[0.12em] text-ink-tertiary"
             style={{ fontFamily: "var(--font-mono), monospace" }}
           >
-            Cumplimiento por Cargador
+            {title}
           </h2>
-          <ConceptInfo term="cumplimiento" label="Cumplimiento" />
-          <ConceptInfo term="cargador" label="Cargador" />
-          <ConceptInfo term="programa" label="Programa" />
+          {concepts.map((concept) => (
+            <ConceptInfo key={concept.term} term={concept.term} label={concept.label} />
+          ))}
         </div>
         <span
           className="text-[12px] text-ink-muted"
           style={{ fontFamily: "var(--font-mono), monospace" }}
         >
-          Δreal − programa · m³
+          {unitLabel}
         </span>
       </header>
 
@@ -202,7 +234,7 @@ export function WaterfallChart({ inputs }: WaterfallChartProps) {
                 axisLine={false}
                 tickLine={false}
                 width={64}
-                tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
+                tickFormatter={formatWaterfallTick}
                 domain={[
                   (dataMin: number) => dataMin,
                   (dataMax: number) => dataMax * 1.15,

@@ -66,6 +66,7 @@
 
   /* --- Accent (telemetry-cyan as single brand channel) --- */
   --accent:       var(--telemetry-blue);
+  --accent-foreground: var(--graphite-900);
   --accent-hover: #7dd3fc;  /* sky-300 — lighter on hover */
   --accent-dim:   var(--telemetry-blue-dim);
 
@@ -109,15 +110,16 @@
   --amber-safety-dim: rgba(217, 119, 6, 0.10);
   --alarm-red:        #dc2626;  /* red-600 */
   --alarm-red-dim:    rgba(220, 38, 38, 0.10);
-  --telemetry-blue:   #0284c7;  /* sky-600 */
-  --telemetry-blue-dim: rgba(2, 132, 199, 0.10);
+  --telemetry-blue:   #0369a1;  /* sky-700 — AA-safe with white foreground */
+  --telemetry-blue-dim: rgba(3, 105, 161, 0.10);
 
   --border-subtle: rgba(24, 24, 27, 0.08);
   --border-mid:    rgba(24, 24, 27, 0.13);
   --border-strong: rgba(24, 24, 27, 0.22);
 
   --accent:       var(--telemetry-blue);
-  --accent-hover: #0369a1;
+  --accent-foreground: #ffffff;
+  --accent-hover: #075985;
 }
 
 /* ---------------------------------------------------------------------------
@@ -150,6 +152,7 @@
 
   /* Accent */
   --color-accent:     var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --color-accent-hover: var(--accent-hover);
   --color-accent-dim: var(--accent-dim);
 
@@ -209,8 +212,28 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Keep capture propagation visible without flashing away. */
   .capture-propagation-highlight {
-    animation: capture-highlight-reduced 0.9s linear both;
+    animation: none;
+    outline: 1px solid var(--accent);
+    background-color: var(--accent-dim);
+  }
+
+  /* Hero flow, rings, tank fill, and SMIL particles remain informative but still. */
+  .hero-flow-motion,
+  .hero-status-ring,
+  .tank-gauge-alarm-pulse,
+  .hero-tank-motion * {
+    animation: none !important;
+  }
+
+  .hero-flow-smil {
+    display: none;
+  }
+
+  .tank-gauge-fill-motion,
+  .hero-tank-motion * {
+    transition: none !important;
   }
 }
 

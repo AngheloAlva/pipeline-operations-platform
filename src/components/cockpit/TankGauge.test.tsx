@@ -8,4 +8,12 @@ describe("TankGauge", () => {
     expect(screen.getByText("18.000 m³")).toBeTruthy();
     expect(screen.getByLabelText("Calculado por el sistema")).toBeTruthy();
   });
+
+  it("exposes stable hooks for fill transition and alarm pulse reduction", () => {
+    const { container } = render(
+      <TankGauge tankId="TNK-1" level={28_500} capacity={30_000} label="T-101" />,
+    );
+    expect(container.querySelector(".tank-gauge-fill-motion")).toBeTruthy();
+    expect(container.querySelector(".tank-gauge-alarm-pulse")).toBeTruthy();
+  });
 });

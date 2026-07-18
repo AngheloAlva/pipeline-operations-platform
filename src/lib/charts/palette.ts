@@ -1,10 +1,11 @@
 /**
  * Chart color palette for the Pipeline Operations Cockpit.
- * Mirrors the Sala de Control design tokens as JS hex/rgb strings.
- * Used in Recharts props — CSS var() is NOT usable there.
+ * Mirrors the Sala de Control design tokens for Recharts props.
+ * Semantic data colors stay as JS values; theme-aware chart surfaces use CSS variables.
  * SR-009, SR-010, SR-015.
  *
- * IMPORTANT: No var(--...) strings in this file. All values are hex or rgb.
+ * Theme-aware surface and typography exports use CSS variables because Recharts
+ * resolves them in SVG props; semantic data colors remain stable JS values.
  */
 
 // ============================================================================
@@ -44,8 +45,17 @@ export const TELEMETRY_BLUE = "#60a5fa";
 // TEXT / CHART AXES
 // ============================================================================
 
-/** Tertiary ink — used for axis labels and secondary annotations. */
+/** Tertiary ink — legacy fixed color for charts without theme-aware surfaces. */
 export const INK_TERTIARY = "#6b7280";
+
+/** Theme-aware chart text, grid, neutral bar, tooltip, and cursor surfaces. */
+export const CHART_AXIS = "var(--ink-tertiary)";
+export const CHART_GRID = "var(--border-mid)";
+export const CHART_BUDGET_BAR = "var(--ink-secondary)";
+export const CHART_TOOLTIP = "var(--surface-overlay)";
+export const CHART_TOOLTIP_BORDER = "var(--border-mid)";
+export const CHART_CURSOR = "var(--accent-dim)";
+export const CHART_FLOW = "var(--status-flow)";
 
 // ============================================================================
 // TYPOGRAPHY

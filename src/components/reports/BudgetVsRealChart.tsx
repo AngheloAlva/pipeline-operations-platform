@@ -25,8 +25,13 @@ import {
   STATUS_OK,
   STATUS_WARNING,
   ALARM_RED,
-  TELEMETRY_BLUE,
-  INK_TERTIARY,
+  CHART_FLOW,
+  CHART_AXIS,
+  CHART_GRID,
+  CHART_BUDGET_BAR,
+  CHART_TOOLTIP,
+  CHART_TOOLTIP_BORDER,
+  CHART_CURSOR,
   CHART_FONT_MONO,
 } from "@/lib/charts/palette";
 
@@ -42,11 +47,12 @@ const BAND_COLOR: Record<ComplianceBand, string> = {
 };
 
 const COLORS = {
-  axis: INK_TERTIARY,
-  grid: "rgba(200,208,220,0.08)",
-  budgetBar: "rgba(139,139,145,0.35)",
-  tooltip: "#1e2229",
-  tooltipBorder: "rgba(200,208,220,0.14)",
+  axis: CHART_AXIS,
+  grid: CHART_GRID,
+  budgetBar: CHART_BUDGET_BAR,
+  tooltip: CHART_TOOLTIP,
+  tooltipBorder: CHART_TOOLTIP_BORDER,
+  cursor: CHART_CURSOR,
 } as const;
 
 // ============================================================================
@@ -101,18 +107,18 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
     >
       <p
         className="mb-1.5 text-[12px] font-medium uppercase tracking-[0.12em]"
-        style={{ color: INK_TERTIARY }}
+        style={{ color: COLORS.axis }}
       >
         {label}
       </p>
-      <p style={{ color: INK_TERTIARY }}>Ppto: {M3_FORMAT.format(data.budgetM3)} m³</p>
-      <p style={{ color: TELEMETRY_BLUE }}>Programa: {M3_FORMAT.format(data.programM3)} m³</p>
+      <p style={{ color: COLORS.axis }}>Ppto: {M3_FORMAT.format(data.budgetM3)} m³</p>
+      <p style={{ color: CHART_FLOW }}>Programa: {M3_FORMAT.format(data.programM3)} m³</p>
       {data.realM3 !== null && data.band !== null ? (
         <p style={{ color: BAND_COLOR[data.band] }}>
           Real: {M3_FORMAT.format(data.realM3)} m³
         </p>
       ) : (
-        <p style={{ color: INK_TERTIARY }}>Real: sin cierre</p>
+        <p style={{ color: COLORS.axis }}>Real: sin cierre</p>
       )}
     </div>
   );
@@ -179,9 +185,15 @@ export function BudgetVsRealChart({ rows }: BudgetVsRealChartProps) {
                 width={56}
                 tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
               />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(200,208,220,0.04)" }} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: COLORS.cursor }} />
               {/* Budget — neutral reference bar */}
-              <Bar dataKey="budgetM3" name="Presupuesto" fill={COLORS.budgetBar} radius={0} />
+              <Bar
+                dataKey="budgetM3"
+                name="Presupuesto"
+                fill={COLORS.budgetBar}
+                fillOpacity={0.35}
+                radius={0}
+              />
               {/* Real — band-toned bar (null months skipped by Recharts) */}
               <Bar dataKey="realM3" name="Real" radius={0}>
                 {data.map((entry, index) => (
@@ -197,7 +209,7 @@ export function BudgetVsRealChart({ rows }: BudgetVsRealChartProps) {
                 type="monotone"
                 dataKey="programM3"
                 name="Programa"
-                stroke={TELEMETRY_BLUE}
+                stroke={CHART_FLOW}
                 strokeWidth={1.5}
                 strokeDasharray="4 2"
                 dot={false}

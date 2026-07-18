@@ -21,7 +21,7 @@ import Link from "next/link";
 import type { PipelineWorld, Station, Tank } from "@/lib/domain";
 import { CUSTODY_MANIFOLD_TAG } from "@/lib/data/canonical";
 import { resolveNodeStatus, NodeStatus } from "@/lib/domain/nodeStatus";
-import { computeCustodyDiff } from "@/lib/volumetrics/custody";
+import { computeCustodyDiff, custodyToleranceBand } from "@/lib/volumetrics/custody";
 import { MODULE_PATH } from "@/lib/focus/focusUrl";
 import { CUSTODY_DIFF_ANCHOR } from "@/components/cockpit/CustodyDiffPanel";
 import { useSimulationStore, selectTankLevel, useActiveFlows } from "@/store/simulationStore";
@@ -70,9 +70,6 @@ const STATUS_STYLE: Record<NodeStatus, { ring: string | null; label: string | nu
   [NodeStatus.ALERT]: { ring: "var(--status-flow)", label: "ALERTA" },
 };
 
-/** Custody-difference tolerance (±% of origin volume) — DOMAIN_RULES §balance. */
-const CUSTODY_TOLERANCE_PCT = 0.5;
-
 const M3_FORMAT = new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 });
 const PCT_FORMAT = new Intl.NumberFormat("es-CL", {
   minimumFractionDigits: 2,
@@ -118,7 +115,7 @@ const HeroEdge = memo(function HeroEdge({ edge, isActive, flowRateM3h }: HeroEdg
   const gapLen = pathLen * 0.85;
 
   return (
-    <g data-edge-id={edge.id}>
+    <g data-edge-id={edge.id} data-hero-flow={isActive || undefined}>
       {/* Pipe casing — the outer wall */}
       <path
         d={pathD}
@@ -157,10 +154,22 @@ const HeroEdge = memo(function HeroEdge({ edge, isActive, flowRateM3h }: HeroEdg
             strokeWidth={PIPE_BORE_W - 1.5}
             strokeLinecap="round"
             strokeDasharray={`${dashLen} ${gapLen}`}
+            className="hero-flow-motion"
             style={{ animation: `flow-dash ${animDur}s linear infinite` }}
           />
-          <circle r="2.75" fill="var(--status-flow)" opacity="0.9">
-            <animateMotion dur={`${animDur}s`} repeatCount="indefinite" path={pathD} />
+          <circle
+            cx={edge.waypoints[0].x}
+            cy={edge.waypoints[0].y}
+            r="2.75"
+            fill="var(--status-flow)"
+            opacity="0.9"
+          >
+            <animateMotion
+              className="hero-flow-smil"
+              dur={`${animDur}s`}
+              repeatCount="indefinite"
+              path={pathD}
+            />
           </circle>
         </>
       )}
@@ -239,7 +248,8 @@ const HeroStationNode = memo(function HeroStationNode({
           stroke={ring}
           strokeWidth="2.5"
           data-status-ring
-          className="animate-[pulse-border_1.5s_ease-in-out_infinite]"
+          data-hero-status-ring
+          className="hero-status-ring animate-[pulse-border_1.5s_ease-in-out_infinite]"
         />
       )}
 
@@ -373,7 +383,7 @@ const HeroTankCard = memo(function HeroTankCard({
         }
       }}
       data-tank-id={tank.id}
-      className="absolute flex flex-col items-center gap-1"
+      className="hero-tank-motion absolute flex flex-col items-center gap-1"
       style={{
         left: pctX(slot.x),
         top: pctY(slot.y),
@@ -457,13 +467,20 @@ interface CustodyChipProps {
 }
 
 function CustodyChip({ data, highlightSequence }: CustodyChipProps) {
-  const absPct = Math.abs(data.diffPct);
-  const tone =
-    absPct <= CUSTODY_TOLERANCE_PCT
-      ? { color: "var(--status-ok)", bg: "var(--status-ok-bg)" }
-      : absPct <= CUSTODY_TOLERANCE_PCT * 2
-        ? { color: "var(--status-warning)", bg: "var(--status-warning-bg)" }
-        : { color: "var(--status-critical)", bg: "var(--status-critical-bg)" };
+  const toneByBand = {
+    ok: { color: "var(--status-ok)", bg: "var(--status-ok-bg)", label: "OK · ≤ ±0,5 %" },
+    warning: {
+      color: "var(--status-warning)",
+      bg: "var(--status-warning-bg)",
+      label: "Advertencia · ≤ ±1 %",
+    },
+    critical: {
+      color: "var(--status-critical)",
+      bg: "var(--status-critical-bg)",
+      label: "Crítico · > ±1 %",
+    },
+  } as const;
+  const tone = toneByBand[custodyToleranceBand(data.diffPct)];
 
   // MV-15: the chip lands on the binational custody-difference panel
   // (CustodyDiffPanel) mounted in the cockpit analytics deck.
@@ -489,6 +506,12 @@ function CustodyChip({ data, highlightSequence }: CustodyChipProps) {
         style={MONO_STYLE}
       >
         Descuadre OTA↔OTC
+      </span>
+      <span
+        className="text-[10px] font-medium uppercase tracking-[0.1em]"
+        style={{ ...MONO_STYLE, color: tone.color }}
+      >
+        {tone.label}
       </span>
       <span
         className="text-[17px] font-semibold tabular-nums leading-none"

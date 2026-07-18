@@ -747,3 +747,12 @@
   --border-mid: rgba(255, 255, 255, 0.10);
   --border-strong: rgba(255, 255, 255, 0.16);
 }
+
+/* Preserve critical state information without pulsing, flashing, or backlight motion. */
+@media (prefers-reduced-motion: reduce) {
+  .mc-lamp--critical,
+  .mc-status--critical,
+  .mc-cell--critical {
+    animation: none;
+  }
+}

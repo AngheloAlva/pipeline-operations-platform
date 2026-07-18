@@ -125,7 +125,9 @@ export function TankGauge({
           fill="var(--surface-base)"
           stroke={isAlarm ? "var(--amber-safety)" : "var(--border-mid)"}
           strokeWidth={isAlarm ? BORDER_W * 1.5 : BORDER_W}
-          className={cn(isAlarm && "animate-[pulse-border_1.5s_ease-in-out_infinite]")}
+          className={cn(
+            isAlarm && "tank-gauge-alarm-pulse animate-[pulse-border_1.5s_ease-in-out_infinite]",
+          )}
         />
 
         {/* Liquid fill — animates via CSS transition on height/y */}
@@ -135,6 +137,7 @@ export function TankGauge({
           width={GAUGE_W - BORDER_W * 2}
           height={fillH}
           fill="var(--status-flow)"
+          className="tank-gauge-fill-motion"
           style={{ transition: "y 0.2s ease, height 0.2s ease" }}
         />
 

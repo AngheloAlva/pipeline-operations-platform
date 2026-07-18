@@ -469,6 +469,53 @@ describe("generateWorld — report series (MV-4)", () => {
 });
 
 // ---------------------------------------------------------------------------
+// MV-27/MV-28: credible closing comments and emissions by source
+// ---------------------------------------------------------------------------
+describe("generateWorld — closing comments and emissions by source (MV-27/MV-28)", () => {
+  const world = generateWorld({ seed: 7 });
+
+  it("rotates credible operational closing subjects deterministically", () => {
+    const comments = world.closingComments.map((comment) => comment.comment);
+    for (const subject of [
+      "ILI en la línea de 30 pulgadas",
+      "taller volumétrico OTA–OTC",
+      "instalación del rectificador KMT",
+      "estudio de protección catódica PK201–270",
+    ]) {
+      expect(comments.some((comment) => comment.includes(subject))).toBe(true);
+    }
+    const subjects = comments.map((comment) => comment.slice(comment.indexOf(": ") + 2));
+    expect(new Set(subjects).size).toBeGreaterThanOrEqual(5);
+  });
+
+  it("allocates five realistic emissions sources per month that reconcile by scope", () => {
+    const periods = new Set(world.emissionEntries.map((entry) => entry.period));
+    for (const period of periods) {
+      const entries = world.emissionEntries.filter((entry) => entry.period === period);
+      expect(entries).toHaveLength(5);
+      expect(entries.some((entry) => entry.source === "Combustión de bombas")).toBe(true);
+      expect(entries.some((entry) => entry.source === "Electricidad comprada")).toBe(true);
+      expect(entries.some((entry) => entry.source === "Transporte contratado")).toBe(true);
+
+      for (const scope of Object.values(EmissionScope)) {
+        const allocations = entries.filter((entry) => entry.scope === scope);
+        expect(allocations.length).toBeGreaterThan(0);
+        expect(allocations.every((entry) => Number.isInteger(entry.tonsCo2e * 10))).toBe(true);
+        const roundedScopeTotal = Math.round(
+          allocations.reduce((total, entry) => total + entry.tonsCo2e, 0) * 10,
+        ) / 10;
+        expect(allocations.reduce((total, entry) => total + entry.tonsCo2e, 0)).toBeCloseTo(
+          roundedScopeTotal,
+          10,
+        );
+      }
+      expect(entries.filter((entry) => entry.scope === EmissionScope.SCOPE_1)).toHaveLength(2);
+      expect(entries.filter((entry) => entry.scope === EmissionScope.SCOPE_3)).toHaveLength(2);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
 // MV-5: Seeded non-OK node states
 // ---------------------------------------------------------------------------
 describe("generateWorld — seeded non-OK node states (MV-5)", () => {

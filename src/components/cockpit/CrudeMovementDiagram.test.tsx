@@ -136,6 +136,21 @@ describe("custody-difference chip", () => {
     // MV-15: the chip lands on the CustodyDiffPanel section in the cockpit.
     expect(chip.getAttribute("href")).toBe(`/cockpit#${CUSTODY_DIFF_ANCHOR}`);
   });
+
+  it("labels the custody chip with the domain warning tolerance band", () => {
+    const warningWorld = structuredClone(seedWorld);
+    const simMonth = new Date(useSimulationStore.getState().simulatedTime).toISOString().slice(0, 7);
+    for (const record of warningWorld.custodyDifferences) {
+      if (record.period.slice(0, 7) === simMonth) {
+        record.destVolM3 = record.originVolM3 * 0.993;
+      }
+    }
+
+    render(<CrudeMovementDiagram world={warningWorld} />);
+    expect(screen.getByRole("link", { name: /descuadre/i }).textContent).toContain(
+      "Advertencia · ≤ ±1 %",
+    );
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -184,6 +199,17 @@ describe("node status", () => {
       .map((s) => screen.getByRole("button", { name: new RegExp(s.name) }))
       .filter((el) => el.getAttribute("data-status") !== "OK");
     expect(nonOk.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("exposes stable reduced-motion hooks for status rings and active flow", () => {
+    const terminalConcepcion = stationByTag.get(CANONICAL_STATION_TAGS.TERMINAL_CONCEPCION)!;
+    useSimulationStore.setState({
+      activeFlows: [{ fromNodeId: phStation.id, toNodeId: terminalConcepcion.id, flowRateM3h: 500 }],
+    });
+    const { container } = render(<CrudeMovementDiagram world={seedWorld} />);
+    expect(container.querySelector("[data-hero-flow]")).toBeTruthy();
+    expect(container.querySelector(".hero-flow-smil")).toBeTruthy();
+    expect(container.querySelector("[data-hero-status-ring]")).toBeTruthy();
   });
 });
 

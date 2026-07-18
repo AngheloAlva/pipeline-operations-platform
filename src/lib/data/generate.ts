@@ -1106,10 +1106,10 @@ const STOPPAGE_CAUSES = [
   "Inspección de integridad en línea",
 ] as const;
 
-const EMISSION_SOURCES: Record<EmissionScope, string> = {
-  [EmissionScope.SCOPE_1]: "Combustión en bombas y generadores",
-  [EmissionScope.SCOPE_2]: "Energía eléctrica comprada",
-  [EmissionScope.SCOPE_3]: "Transporte y servicios contratados",
+const EMISSION_SOURCES: Record<EmissionScope, readonly string[]> = {
+  [EmissionScope.SCOPE_1]: ["Combustión de bombas", "Generadores de respaldo"],
+  [EmissionScope.SCOPE_2]: ["Electricidad comprada"],
+  [EmissionScope.SCOPE_3]: ["Transporte contratado", "Servicios logísticos de terceros"],
 };
 
 /** Monthly CO₂e ranges (tons) per scope. */
@@ -1121,12 +1121,30 @@ const EMISSION_RANGES: Record<EmissionScope, { min: number; max: number }> = {
 
 const CLOSING_AREAS = ["Operaciones", "Mantenimiento", "Integridad", "Medio Ambiente"] as const;
 
-const CLOSING_COMMENT_POOL = [
-  "Sin desviaciones relevantes; indicadores dentro de banda.",
-  "Se cumplió el programa del período con observaciones menores.",
-  "Desviación puntual gestionada; plan de acción en curso.",
-  "Resultados dentro de lo presupuestado para el período.",
+const CLOSING_COMMENT_SUBJECTS = [
+  "ILI en la línea de 30 pulgadas: revisión de hallazgos y priorización de intervenciones completada.",
+  "taller volumétrico OTA–OTC: criterios de conversión y conciliación validados con ambas partes.",
+  "instalación del rectificador KMT: puesta en servicio verificada y parámetros iniciales registrados.",
+  "estudio de protección catódica PK201–270: campaña de potenciales y plan de seguimiento emitidos.",
+  "programa de mantenimiento de bombeo: disponibilidad revisada y ventanas de intervención coordinadas.",
+  "balance de despacho marítimo: documentación de transferencia y trazabilidad de cargadores conciliadas.",
 ] as const;
+
+/** Split a rounded monthly scope total into display-safe source allocations. */
+function allocateEmissionSources(total: number, sourceCount: number, rng: Rng): number[] {
+  const allocations: number[] = [];
+  let residual = total;
+
+  for (let sourceIndex = 0; sourceIndex < sourceCount - 1; sourceIndex++) {
+    const allocation = Math.round(residual * pickFloat(rng, 0.35, 0.65) * 10) / 10;
+    allocations.push(allocation);
+    residual = Math.round((residual - allocation) * 10) / 10;
+  }
+
+  // The final source absorbs the display-rounded residual, preserving the scope total.
+  allocations.push(residual);
+  return allocations;
+}
 
 /**
  * Generate the report-only series over cfg.reportMonths months:
@@ -1169,21 +1187,29 @@ function generateReportEntities(
 
     for (const scope of Object.values(EmissionScope)) {
       const range = EMISSION_RANGES[scope];
-      emissionEntries.push({
-        id: nextId("EMI"),
-        period,
-        scope,
-        tonsCo2e: Math.round(pickFloat(rng, range.min, range.max) * 10) / 10,
-        source: EMISSION_SOURCES[scope],
-      });
+      const total = Math.round(pickFloat(rng, range.min, range.max) * 10) / 10;
+      const sources = EMISSION_SOURCES[scope];
+      const allocations = allocateEmissionSources(total, sources.length, rng);
+      for (const [sourceIndex, source] of sources.entries()) {
+        emissionEntries.push({
+          id: nextId("EMI"),
+          period,
+          scope,
+          tonsCo2e: allocations[sourceIndex],
+          source,
+        });
+      }
     }
 
-    for (const area of CLOSING_AREAS) {
+    for (const [areaIndex, area] of CLOSING_AREAS.entries()) {
+      const subjectIndex =
+        ((cfg.reportMonths - 1 - m) * CLOSING_AREAS.length + areaIndex) %
+        CLOSING_COMMENT_SUBJECTS.length;
       closingComments.push({
         id: nextId("CLC"),
         period,
         area,
-        comment: `Cierre ${period} — ${area}: ${pickOne(rng, CLOSING_COMMENT_POOL)}`,
+        comment: `Cierre ${period} — ${area}: ${CLOSING_COMMENT_SUBJECTS[subjectIndex]}`,
         authorId: operators.length > 0 ? pickOne(rng, operators).id : undefined,
       });
     }

@@ -5,6 +5,7 @@
 
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { ReportNav } from "@/components/reports/ReportNav";
 
 export const metadata: Metadata = {
   title: "Reportes | Pipeline Operations",
@@ -17,5 +18,11 @@ interface ReportsLayoutProps {
 }
 
 export default function ReportsLayout({ children }: ReportsLayoutProps) {
-  return <main className="min-h-[calc(100vh-48px)]">{children}</main>;
+  return (
+    <main className="min-h-[calc(100vh-48px)]">
+      {/* Module toolbar: back to index + prev/next stepper (renders nothing on the index) */}
+      <ReportNav />
+      {children}
+    </main>
+  );
 }

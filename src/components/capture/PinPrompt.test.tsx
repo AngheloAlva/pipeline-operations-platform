@@ -41,16 +41,18 @@ describe("PinPrompt", () => {
     expect(names.some((n) => n?.includes("Rosa Fuentes"))).toBe(false);
   });
 
-  it("shows a clear error on a wrong PIN and does not resolve", () => {
+  it("accepts any non-empty PIN in the demo and resolves the actor", () => {
     declareStandardRoster();
     const onResolved = vi.fn();
     render(<PinPrompt open title="Confirmar" onCancel={() => {}} onResolved={onResolved} />);
 
-    fireEvent.change(screen.getByLabelText("PIN"), { target: { value: "9999" } });
+    fireEvent.change(screen.getByLabelText(/operador/i), { target: { value: MARIA.id } });
+    fireEvent.change(screen.getByLabelText("PIN"), { target: { value: "0000" } });
     fireEvent.click(screen.getByRole("button", { name: "Confirmar" }));
 
-    expect(screen.getByText(/pin incorrecto/i)).toBeTruthy();
-    expect(onResolved).not.toHaveBeenCalled();
+    expect(onResolved).toHaveBeenCalledTimes(1);
+    const [operator] = onResolved.mock.calls[0];
+    expect(operator.id).toBe(MARIA.id);
   });
 
   it("resolves the actor on a correct PIN and returns it to the caller", () => {

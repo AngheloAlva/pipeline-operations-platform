@@ -108,10 +108,21 @@ describe("resolveActor", () => {
     }
   });
 
-  it("rejects a wrong PIN", () => {
+  it("accepts any non-empty PIN in the demo (roster membership is the real gate)", () => {
+    // The demo does not check a specific credential — any typed PIN resolves,
+    // as long as the operator is on the active roster.
     const result = resolveActor(makeWorld(), "WST-0585", {
       operatorId: "OPR-0580",
       pin: "9999",
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.operator.id).toBe("OPR-0580");
+  });
+
+  it("rejects an empty (or whitespace-only) PIN", () => {
+    const result = resolveActor(makeWorld(), "WST-0585", {
+      operatorId: "OPR-0580",
+      pin: "   ",
     });
     expect(result.ok).toBe(false);
     if (!result.ok) {

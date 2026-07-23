@@ -83,12 +83,7 @@ describe("TankReadingForm", () => {
     fireEvent.change(levelInput(), { target: { value: "18100" } });
     fireEvent.click(confirmButton());
 
-    // PinPrompt opens; a wrong PIN shows the resolver's error
-    fireEvent.change(screen.getByLabelText("PIN"), { target: { value: "9999" } });
-    fireEvent.click(screen.getByRole("button", { name: "Confirmar" }));
-    expect(screen.getByText(/pin incorrecto/i)).toBeTruthy();
-
-    // Correct PIN commits
+    // PinPrompt opens; in the demo any non-empty PIN commits
     fireEvent.change(screen.getByLabelText("PIN"), { target: { value: MARIA.pin } });
     fireEvent.click(screen.getByRole("button", { name: "Confirmar" }));
 

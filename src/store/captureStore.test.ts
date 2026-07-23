@@ -314,11 +314,12 @@ describe("captureStore", () => {
     expect(useSimulationStore.getState().tankLevels["TNK-1"]).toBe(18_000);
   });
 
-  it("a wrong PIN rejects the commit and nothing is applied", () => {
+  it("an empty PIN rejects the commit and nothing is applied", () => {
+    // The demo accepts any non-empty PIN; an empty PIN is still rejected.
     declareStandardRoster();
     const result = getStore().commitTankReading(
       { tankId: "TNK-1", levelM3: 18_100 },
-      { operatorId: "OPR-0580", pin: "9999" },
+      { operatorId: "OPR-0580", pin: "" },
       { enteredAt: T_COMMIT },
     );
     expect(result.status).toBe(CommitStatus.REJECTED);
@@ -595,7 +596,7 @@ describe("captureStore", () => {
     expect(useSimulationStore.getState().tankLevels["TNK-1"]).toBe(18_200);
   });
 
-  it("an amendment with a wrong PIN is rejected and creates no record", () => {
+  it("an amendment with an empty PIN is rejected and creates no record", () => {
     const credential = declareStandardRoster();
     const first = getStore().commitTankReading(
       { tankId: "TNK-1", levelM3: 18_100 },
@@ -607,7 +608,7 @@ describe("captureStore", () => {
     const result = getStore().amendRecord(
       first.record.id,
       { levelM3: 18_200 },
-      { operatorId: "OPR-0580", pin: "0000" },
+      { operatorId: "OPR-0580", pin: "" },
       { enteredAt: T_AMEND },
     );
     expect(result.status).toBe(CommitStatus.REJECTED);

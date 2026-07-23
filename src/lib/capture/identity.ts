@@ -6,8 +6,10 @@
  * the person selector hangs off the crew declared for the shift (the roster).
  *
  * resolveActor() is the SINGLE entry point (PLAN_MEJORAS_VENTA §6.2): in the
- * demo it checks a mock, deterministic PIN; in production it resolves on the
- * server. Swapping the implementation requires touching nothing else.
+ * demo it accepts ANY non-empty PIN — the presenter should not need to type a
+ * specific credential, and roster membership is what gates who may sign. In
+ * production the PIN check moves behind a server call. Swapping the
+ * implementation requires touching nothing else.
  *
  * Rejections are returned as a typed discriminated union (never thrown, never
  * null) so callers can surface the reason to the operator.
@@ -106,7 +108,8 @@ function reject(code: ActorRejectionCode, message: string): ActorRejected {
  *
  * Checks, in order: workstation exists → the workstation has an active
  * roster → the operator is on that roster → the operator entity exists →
- * the PIN matches (mock scheme in the demo).
+ * a non-empty PIN is present (the demo accepts any PIN; a real check runs
+ * server-side in production).
  */
 export function resolveActor(
   world: PipelineWorld,
@@ -144,10 +147,12 @@ export function resolveActor(
     );
   }
 
-  if (credential.pin !== mockPinFor(operator.id)) {
+  // DEMO: any non-empty PIN is accepted (see file header). An empty PIN is
+  // still rejected — the UI blocks it, but resolveActor is the authority.
+  if (credential.pin.trim().length === 0) {
     return reject(
       ActorRejectionCode.INVALID_PIN,
-      "PIN incorrecto. Verifique e intente nuevamente.",
+      "Ingrese un PIN para confirmar.",
     );
   }
 
